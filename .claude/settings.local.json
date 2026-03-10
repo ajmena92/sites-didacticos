@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /mnt/c/Dev/sites-didacticos/ccna -name \"*.html\" 2>/dev/null | head -30)"
+    ]
+  }
+}

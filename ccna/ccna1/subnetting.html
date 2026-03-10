@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subnetting y ANDing — CCNA 1</title>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    /* ── Contenedor de teoría ── */
+    .theory-section { max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem; }
+    .theory-section h2 { font-size: 1.25rem; margin: 2.5rem 0 .75rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); }
+    .theory-section h3 { font-size: 1rem; margin: 1.5rem 0 .5rem; color: var(--accent); }
+    .theory-section p  { color: var(--muted); margin-bottom: .75rem; font-size: .95rem; }
+    .theory-section strong { color: var(--text); }
+
+    /* ── Callout / nota ── */
+    .callout {
+      background: rgba(88,166,255,.08);
+      border-left: 3px solid var(--accent);
+      padding: .75rem 1rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 1rem 0;
+      font-size: .9rem;
+      color: var(--text);
+    }
+    .callout.warning { border-color: var(--linux); background: rgba(245,166,35,.08); }
+    .callout.success { border-color: #3fb950; background: rgba(63,185,80,.08); }
+
+    /* ── Visualización binaria ── */
+    .bit-block { margin: 1.25rem 0; }
+    .bit-label { font-size: .75rem; color: var(--muted); margin-bottom: 3px; font-family: monospace; }
+    .bit-row { display: flex; gap: 2px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+    .bit-cell {
+      min-width: 22px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 4px; border: 1px solid var(--border);
+      font-family: monospace; font-size: .8rem;
+      flex-shrink: 0;
+    }
+    .bit-cell.net  { background: rgba(27,161,226,.2); border-color: var(--ccna); color: var(--ccna); font-weight: 700; }
+    .bit-cell.host { background: var(--surface); color: var(--muted); }
+    .bit-cell.one  { background: rgba(27,161,226,.15); border-color: rgba(27,161,226,.5); color: var(--ccna); }
+    .bit-cell.zero { background: var(--surface); color: var(--muted); }
+    .bit-cell.res-one  { background: rgba(63,185,80,.2); border-color: #3fb950; color: #3fb950; font-weight:700; }
+    .bit-cell.res-zero { background: var(--surface); border-color: var(--border); color: var(--muted); }
+    .bit-cell.sep { background: transparent; border-color: transparent; color: var(--border); font-size: .6rem; }
+
+    .octet-labels { display: flex; margin-top: 4px; }
+    .octet-label  { font-size: .7rem; color: var(--muted); text-align: center; font-family: monospace; min-width: calc(22px * 8 + 2px * 7 + 4px); }
+
+    .and-operator { text-align: left; padding: 2px 0; font-family: monospace; font-size: .85rem; color: var(--muted); }
+    .and-separator { border: none; border-top: 2px solid var(--text); margin: 4px 0 6px; }
+
+    /* ── Tabla de verdad AND ── */
+    .truth-table { border-collapse: collapse; margin: .75rem 0; font-family: monospace; font-size: .9rem; }
+    .truth-table th, .truth-table td { padding: .4rem .75rem; border: 1px solid var(--border); text-align: center; }
+    .truth-table th { background: var(--surface); color: var(--muted); font-size: .75rem; }
+    .r1 { color: #3fb950; font-weight: 700; }
+    .r0 { color: var(--muted); }
+
+    /* ── Cálculo wildcard octeto a octeto ── */
+    .octet-math {
+      display: inline-grid;
+      grid-template-columns: repeat(4, auto);
+      gap: .25rem 1.25rem;
+      font-family: monospace;
+      font-size: .95rem;
+      margin: .75rem 0;
+      padding: .75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .octet-math .om-label { color: var(--muted); font-size: .75rem; grid-column: 1 / -1; margin-bottom: .1rem; }
+    .octet-math .om-row   { display: contents; }
+    .octet-math .om-op    { color: var(--muted); text-align: right; }
+    .octet-math .om-val   { color: var(--text); }
+    .octet-math .om-result { color: var(--accent); font-weight: 700; border-top: 1px solid var(--border); padding-top: .15rem; }
+    .octet-math .om-sep   { grid-column: 1 / -1; border: none; border-top: 1px solid var(--border); margin: .15rem 0; }
+
+    /* ── Cadena de fórmulas ── */
+    .formula-chain { display: flex; flex-direction: column; gap: .5rem; margin: 1rem 0; }
+    .formula-step {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .65rem 1rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .formula-op    { color: var(--accent); font-weight: 700; min-width: 20px; text-align: center; font-size: 1.1rem; }
+    .formula-label { color: var(--muted); font-size: .8rem; min-width: 160px; }
+    .formula-value { font-family: monospace; font-size: .95rem; font-weight: 600; }
+    .formula-eq    { color: var(--muted); font-weight: 700; margin: 0 .25rem; }
+    .formula-step.highlight { border-color: var(--accent); background: rgba(88,166,255,.07); }
+
+    /* ── Tabla de referencia ── */
+    .ref-table-wrap { overflow-x: auto; margin: 1rem 0; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: .85rem; font-family: monospace; }
+    .ref-table th {
+      background: var(--surface); padding: .55rem .75rem;
+      border-bottom: 2px solid var(--border);
+      text-align: left; color: var(--muted);
+      font-size: .72rem; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .ref-table td { padding: .45rem .75rem; border-bottom: 1px solid var(--border); }
+    .ref-table tr:hover td { background: var(--surface); }
+    .ref-table .pfx  { color: var(--accent); font-weight: 700; }
+    .ref-table .wld  { color: #f5a623; }
+    .ref-table .hst  { color: #3fb950; }
+    .ref-table .cls  { background: rgba(88,166,255,.05); }
+    .ref-table .cls td { border-top: 2px solid var(--border); }
+
+    /* ── Resumen pasos ── */
+    .steps-summary { counter-reset: step; display: flex; flex-direction: column; gap: .5rem; margin: 1rem 0; }
+    .steps-summary li {
+      list-style: none; display: flex; align-items: flex-start; gap: .75rem;
+      padding: .65rem 1rem; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .steps-summary li::before {
+      counter-increment: step;
+      content: counter(step);
+      min-width: 26px; height: 26px;
+      background: var(--ccna); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 700; flex-shrink: 0;
+    }
+    .steps-summary li span { font-size: .9rem; color: var(--text); }
+    .steps-summary li code { font-family: monospace; color: var(--accent); font-size: .9rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="course-nav">
+      <a class="nav-brand" href="index.html">🌐 CCNA 1</a>
+      <div class="nav-pages">
+        <a href="index.html">Inicio</a>
+        <a href="subnetting.html" class="active">Subnetting — Teoría</a>
+        <a href="subnetting-practica.html">Práctica</a>
+      </div>
+      <div class="nav-divider"></div>
+      <a class="back-to-catalog" href="../../index.html">← Catálogo</a>
+    </nav>
+  </header>
+
+  <div class="subject-hero">
+    <p class="breadcrumb"><a href="index.html">CCNA 1</a> / Subnetting y ANDing</p>
+    <h1>🧮 Subnetting y ANDing</h1>
+    <p>Domina el método de la wildcard: AND para encontrar la red, suma para encontrar el broadcast.</p>
+  </div>
+
+  <div class="theory-section">
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 1 — Anatomía de una dirección IP
+    ══════════════════════════════════════════════ -->
+    <h2>1. Anatomía de una dirección IPv4</h2>
+    <p>Una dirección IPv4 tiene <strong>32 bits</strong> organizados en 4 grupos de 8 bits (octetos), separados por puntos en notación decimal.</p>
+
+    <div class="bit-block">
+      <div class="bit-label">Ejemplo: 192 . 168 . 10 . 130</div>
+      <div class="bit-row" id="ipExample"></div>
+      <div class="octet-labels">
+        <div class="octet-label">192</div>
+        <div class="octet-label">168</div>
+        <div class="octet-label">10</div>
+        <div class="octet-label">130</div>
+      </div>
+    </div>
+
+    <p>La dirección se divide en dos partes según la <strong>máscara de subred</strong>:</p>
+    <div class="callout">
+      <strong>Bits de red</strong> (primeros n bits) → identifican la red o subred<br>
+      <strong>Bits de host</strong> (bits restantes) → identifican al dispositivo dentro de la red
+    </div>
+
+    <h3>Notación CIDR</h3>
+    <p>El prefijo <code>/n</code> indica cuántos bits son de red. Ejemplo: <strong>192.168.10.130/26</strong> significa que los primeros 26 bits son de red y los últimos 6 son de host.</p>
+
+    <div class="bit-block">
+      <div class="bit-label">192.168.10.130 /26 — 26 bits de red (azul) · 6 bits de host (gris)</div>
+      <div class="bit-row" id="cidrExample"></div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 2 — Máscara de subred
+    ══════════════════════════════════════════════ -->
+    <h2>2. La máscara de subred</h2>
+    <p>La máscara tiene <strong>1s consecutivos</strong> en la parte de red y <strong>0s</strong> en la parte de host. Se escribe igual que una IP.</p>
+
+    <div class="bit-block">
+      <div class="bit-label">Máscara /26 = 255.255.255.192</div>
+      <div class="bit-row" id="maskExample"></div>
+      <div class="octet-labels">
+        <div class="octet-label">255</div>
+        <div class="octet-label">255</div>
+        <div class="octet-label">255</div>
+        <div class="octet-label">192</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      Los 26 primeros bits son 1 (parte de red) → los últimos 6 son 0 (parte de host).<br>
+      El octeto crítico es el 4.º: <code>11000000</code> = 192 en decimal.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 3 — Operación AND
+    ══════════════════════════════════════════════ -->
+    <h2>3. La operación AND (ANDing)</h2>
+    <p>AND es una operación bit a bit que nos da la <strong>dirección de red</strong> al comparar la IP con la máscara.</p>
+
+    <h3>Tabla de verdad AND</h3>
+    <table class="truth-table">
+      <tr><th>Bit IP</th><th>Bit Máscara</th><th>Resultado</th></tr>
+      <tr><td>1</td><td>1</td><td class="r1">1</td></tr>
+      <tr><td>1</td><td>0</td><td class="r0">0</td></tr>
+      <tr><td>0</td><td>1</td><td class="r0">0</td></tr>
+      <tr><td>0</td><td>0</td><td class="r0">0</td></tr>
+    </table>
+    <p><strong>Regla:</strong> el resultado es 1 <em>solo</em> cuando los dos bits son 1. En cualquier otro caso es 0.</p>
+
+    <h3>Ejemplo completo: 192.168.10.130 AND 255.255.255.192</h3>
+    <p>El único octeto con acción interesante es el 4.º (los tres primeros dan el mismo resultado porque la máscara es 255):</p>
+
+    <div class="bit-block">
+      <div class="bit-label">IP:       192.168.10.130</div>
+      <div class="bit-row" id="andIP"></div>
+    </div>
+    <div class="and-operator">AND</div>
+    <div class="bit-block">
+      <div class="bit-label">Máscara:  255.255.255.192</div>
+      <div class="bit-row" id="andMask"></div>
+    </div>
+    <hr class="and-separator" />
+    <div class="bit-block">
+      <div class="bit-label">Red:      192.168.10.128</div>
+      <div class="bit-row" id="andResult"></div>
+      <div class="octet-labels">
+        <div class="octet-label">192</div>
+        <div class="octet-label">168</div>
+        <div class="octet-label">10</div>
+        <div class="octet-label">128</div>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <strong>Resultado:</strong> La dirección de red es <strong>192.168.10.128</strong>.<br>
+      Los bits de host quedaron en 0 porque la máscara los anuló con AND.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 4 — Wildcard
+    ══════════════════════════════════════════════ -->
+    <h2>4. La Wildcard mask (complemento de la máscara)</h2>
+    <p>La wildcard es el <strong>inverso</strong> de la máscara: tiene 0s donde la máscara tiene 1s, y 1s donde la máscara tiene 0s.</p>
+
+    <div class="callout">
+      <strong>Fórmula:</strong> <code>Wildcard = 255.255.255.255 − Máscara de subred</code>
+    </div>
+
+    <h3>Cálculo para /26 (máscara 255.255.255.192)</h3>
+    <div class="octet-math">
+      <span class="om-label"></span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">1.er octeto</span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">2.do octeto</span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">3.er octeto</span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">4.to octeto</span>
+
+      <span class="om-op" style="color:var(--muted)"></span>
+      <span class="om-val">255</span>
+      <span class="om-val">255</span>
+      <span class="om-val">255</span>
+      <span class="om-val">255</span>
+
+      <span class="om-op">−</span>
+      <span class="om-val">255</span>
+      <span class="om-val">255</span>
+      <span class="om-val">255</span>
+      <span class="om-val">192</span>
+
+      <hr class="om-sep" />
+
+      <span class="om-op">=</span>
+      <span class="om-result">0</span>
+      <span class="om-result">0</span>
+      <span class="om-result">0</span>
+      <span class="om-result">63</span>
+    </div>
+
+    <p><strong>Wildcard /26 = 0.0.0.63</strong></p>
+
+    <div class="callout">
+      <strong>¿Qué significa 63?</strong> Es el "tamaño" de la subred menos 1.<br>
+      63 en binario = <code>00111111</code> → exactamente los 6 bits de host en 1.<br>
+      La subred tiene 2<sup>6</sup> = 64 direcciones totales (0 a 63).
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 5 — Broadcast con wildcard
+    ══════════════════════════════════════════════ -->
+    <h2>5. Broadcast = Red + Wildcard</h2>
+    <p>Una vez que tienes la dirección de red y la wildcard, el broadcast se calcula sumando octeto a octeto:</p>
+
+    <div class="formula-chain">
+      <div class="formula-step">
+        <span class="formula-op">📌</span>
+        <span class="formula-label">Dirección de Red</span>
+        <span class="formula-value">192.168.10.<strong>128</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">+</span>
+        <span class="formula-label">Wildcard</span>
+        <span class="formula-value">0.0.0.<strong>63</strong></span>
+      </div>
+      <div class="formula-step highlight">
+        <span class="formula-op">=</span>
+        <span class="formula-label">Broadcast</span>
+        <span class="formula-value">192.168.10.<strong>191</strong></span>
+      </div>
+    </div>
+
+    <p>La suma se hace octeto por octeto: 128 + 63 = 191. Los primeros tres octetos no cambian porque la wildcard es 0 en esos octetos.</p>
+
+    <h3>Primer host, último host y cantidad de hosts</h3>
+    <div class="formula-chain">
+      <div class="formula-step">
+        <span class="formula-op">+1</span>
+        <span class="formula-label">Primer host = Red + 1</span>
+        <span class="formula-value">192.168.10.<strong>129</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">−1</span>
+        <span class="formula-label">Último host = Broadcast − 1</span>
+        <span class="formula-value">192.168.10.<strong>190</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">2<sup>h</sup></span>
+        <span class="formula-label">Hosts útiles = 2<sup>6</sup> − 2</span>
+        <span class="formula-value"><strong>62</strong> hosts</span>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <strong>Resumen de la subred 192.168.10.128/26</strong><br>
+      Red: 192.168.10.128 &nbsp;|&nbsp; Broadcast: 192.168.10.191<br>
+      Primer host: 192.168.10.129 &nbsp;|&nbsp; Último host: 192.168.10.190<br>
+      Hosts útiles: 62
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 6 — Segundo ejemplo (octeto distinto)
+    ══════════════════════════════════════════════ -->
+    <h2>6. Segundo ejemplo: 172.16.45.200 /20</h2>
+    <p>Este ejemplo cruza el tercer octeto. La acción ocurre en el octeto 3.</p>
+
+    <h3>Paso 1 — Máscara /20</h3>
+    <p>20 bits de red = 8 + 8 + 4 bits. El tercer octeto tiene 4 bits de red y 4 de host.</p>
+
+    <div class="bit-block">
+      <div class="bit-label">Máscara /20 = 255.255.240.0</div>
+      <div class="bit-row" id="ex2Mask"></div>
+      <div class="octet-labels">
+        <div class="octet-label">255</div>
+        <div class="octet-label">255</div>
+        <div class="octet-label">240</div>
+        <div class="octet-label">0</div>
+      </div>
+    </div>
+
+    <h3>Paso 2 — AND para encontrar la red</h3>
+    <div class="bit-block">
+      <div class="bit-label">IP:      172.16.45.200</div>
+      <div class="bit-row" id="ex2IP"></div>
+    </div>
+    <div class="and-operator">AND</div>
+    <div class="bit-block">
+      <div class="bit-label">Máscara: 255.255.240.0</div>
+      <div class="bit-row" id="ex2MaskAnd"></div>
+    </div>
+    <hr class="and-separator" />
+    <div class="bit-block">
+      <div class="bit-label">Red:     172.16.32.0</div>
+      <div class="bit-row" id="ex2Result"></div>
+      <div class="octet-labels">
+        <div class="octet-label">172</div>
+        <div class="octet-label">16</div>
+        <div class="octet-label">32</div>
+        <div class="octet-label">0</div>
+      </div>
+    </div>
+
+    <h3>Paso 3 — Wildcard</h3>
+    <div class="octet-math">
+      <span class="om-label"></span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">1.er</span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">2.do</span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">3.er</span>
+      <span class="om-val" style="color:var(--muted);font-size:.7rem">4.to</span>
+
+      <span class="om-op"></span>
+      <span class="om-val">255</span><span class="om-val">255</span><span class="om-val">255</span><span class="om-val">255</span>
+      <span class="om-op">−</span>
+      <span class="om-val">255</span><span class="om-val">255</span><span class="om-val">240</span><span class="om-val">0</span>
+      <hr class="om-sep" />
+      <span class="om-op">=</span>
+      <span class="om-result">0</span><span class="om-result">0</span><span class="om-result">15</span><span class="om-result">255</span>
+    </div>
+
+    <h3>Paso 4 — Broadcast y hosts</h3>
+    <div class="formula-chain">
+      <div class="formula-step">
+        <span class="formula-op">📌</span>
+        <span class="formula-label">Red</span>
+        <span class="formula-value">172.16.<strong>32</strong>.<strong>0</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">+</span>
+        <span class="formula-label">Wildcard</span>
+        <span class="formula-value">0.0.<strong>15</strong>.<strong>255</strong></span>
+      </div>
+      <div class="formula-step highlight">
+        <span class="formula-op">=</span>
+        <span class="formula-label">Broadcast</span>
+        <span class="formula-value">172.16.<strong>47</strong>.<strong>255</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">+1</span>
+        <span class="formula-label">Primer host</span>
+        <span class="formula-value">172.16.32.<strong>1</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">−1</span>
+        <span class="formula-label">Último host</span>
+        <span class="formula-value">172.16.47.<strong>254</strong></span>
+      </div>
+      <div class="formula-step">
+        <span class="formula-op">2<sup>12</sup></span>
+        <span class="formula-label">Hosts útiles = 2<sup>12</sup> − 2</span>
+        <span class="formula-value"><strong>4094</strong> hosts</span>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>Nota:</strong> En /20 la suma en el 3.er octeto (32 + 15 = 47) funciona sin acarreo.<br>
+      En /20 el 4.º octeto completo es de host: wildcard = 255, broadcast = .255, último host = .254.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 7 — Tabla de referencia
+    ══════════════════════════════════════════════ -->
+    <h2>7. Tabla de referencia rápida /8 – /30</h2>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Prefijo</th>
+            <th>Máscara</th>
+            <th>Wildcard</th>
+            <th>Bits host (h)</th>
+            <th>Hosts útiles (2<sup>h</sup>−2)</th>
+            <th>Bloque (256−oct.)</th>
+          </tr>
+        </thead>
+        <tbody id="refTableBody"></tbody>
+      </table>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════
+         SECCIÓN 8 — Resumen del método
+    ══════════════════════════════════════════════ -->
+    <h2>8. Resumen del método (los 5 pasos)</h2>
+    <ol class="steps-summary">
+      <li><span>Convertir el prefijo <code>/n</code> a <strong>máscara de subred</strong> en decimal</span></li>
+      <li><span>Calcular la <strong>wildcard</strong>: <code>255.255.255.255 − Máscara</code></span></li>
+      <li><span>Aplicar <strong>AND</strong> entre la IP y la máscara → <strong>dirección de red</strong></span></li>
+      <li><span>Sumar wildcard a la red → <strong>broadcast</strong>. Luego ±1 para primer y último host</span></li>
+      <li><span>Calcular hosts útiles: <code>2<sup>h</sup> − 2</code> (h = bits de host = 32 − prefijo)</span></li>
+    </ol>
+
+    <div style="text-align:center; margin-top:2rem;">
+      <a href="subnetting-practica.html" style="
+        display:inline-flex; align-items:center; gap:.5rem;
+        background:var(--ccna); color:#fff; padding:.65rem 1.5rem;
+        border-radius:var(--radius); font-weight:700; font-size:1rem;
+        text-decoration:none; transition:opacity .2s;
+      ">¡A practicar! →</a>
+    </div>
+
+  </div><!-- /theory-section -->
+
+  <footer><p>CCNA 1 — Sites Didácticos</p></footer>
+
+  <script>
+    // ── Helpers binarios ──────────────────────────────────────────────────
+    function toBin8(n) {
+      return n.toString(2).padStart(8, '0');
+    }
+
+    function renderBitRow(containerId, octets, prefix) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      octets.forEach((octet, i) => {
+        const bits = toBin8(octet);
+        bits.split('').forEach((bit, j) => {
+          const globalBit = i * 8 + j;
+          const cell = document.createElement('div');
+          cell.className = 'bit-cell';
+          cell.textContent = bit;
+
+          if (prefix !== undefined) {
+            cell.classList.add(globalBit < prefix ? 'net' : 'host');
+          } else {
+            cell.classList.add(bit === '1' ? 'one' : 'zero');
+          }
+          container.appendChild(cell);
+        });
+        // Separador entre octetos
+        if (i < 3) {
+          const sep = document.createElement('div');
+          sep.className = 'bit-cell sep';
+          sep.textContent = '·';
+          container.appendChild(sep);
+        }
+      });
+    }
+
+    function renderAndResult(containerId, ipOctets, maskOctets) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      ipOctets.forEach((ipOct, i) => {
+        const maskOct  = maskOctets[i];
+        const result   = ipOct & maskOct;
+        const bits     = toBin8(result);
+        const maskBits = toBin8(maskOct);
+        bits.split('').forEach((bit, j) => {
+          const cell = document.createElement('div');
+          cell.className = 'bit-cell ' + (maskBits[j] === '1' ? 'res-one' : 'res-zero');
+          cell.textContent = bit;
+          container.appendChild(cell);
+        });
+        if (i < 3) {
+          const sep = document.createElement('div');
+          sep.className = 'bit-cell sep';
+          sep.textContent = '·';
+          container.appendChild(sep);
+        }
+      });
+    }
+
+    // ── Tabla de referencia ──────────────────────────────────────────────
+    function buildRefTable() {
+      const tbody = document.getElementById('refTableBody');
+      const classDiv = new Set([8, 16, 24]);
+
+      for (let p = 8; p <= 30; p++) {
+        const hostBits = 32 - p;
+        const hosts    = Math.pow(2, hostBits) - 2;
+
+        // Generar máscara
+        const mask = [];
+        for (let i = 0; i < 4; i++) {
+          const bits = Math.min(8, Math.max(0, p - i * 8));
+          mask.push(256 - Math.pow(2, 8 - bits));
+        }
+        const wildcard = mask.map(m => 255 - m);
+
+        // Octeto crítico (el que no es 0 o 255 en la máscara)
+        let block = '—';
+        for (let i = 3; i >= 0; i--) {
+          if (mask[i] !== 0 && mask[i] !== 255) {
+            block = String(256 - mask[i]);
+            break;
+          }
+        }
+
+        const tr = document.createElement('tr');
+        if (classDiv.has(p)) tr.className = 'cls';
+        tr.innerHTML = `
+          <td class="pfx">/${p}</td>
+          <td>${mask.join('.')}</td>
+          <td class="wld">${wildcard.join('.')}</td>
+          <td style="text-align:center">${hostBits}</td>
+          <td class="hst" style="text-align:right">${hosts.toLocaleString()}</td>
+          <td style="text-align:center">${block}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // ── Renderizar todo al cargar ────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sección 1 — IP ejemplo
+      renderBitRow('ipExample', [192, 168, 10, 130]);
+
+      // Sección 1 — CIDR /26
+      renderBitRow('cidrExample', [192, 168, 10, 130], 26);
+
+      // Sección 2 — Máscara /26
+      renderBitRow('maskExample', [255, 255, 255, 192]);
+
+      // Sección 3 — AND ejemplo 1
+      renderBitRow('andIP',   [192, 168, 10, 130]);
+      renderBitRow('andMask', [255, 255, 255, 192]);
+      renderAndResult('andResult', [192, 168, 10, 130], [255, 255, 255, 192]);
+
+      // Sección 6 — AND ejemplo 2
+      renderBitRow('ex2Mask',    [255, 255, 240, 0]);
+      renderBitRow('ex2IP',      [172, 16,  45,  200]);
+      renderBitRow('ex2MaskAnd', [255, 255, 240, 0]);
+      renderAndResult('ex2Result', [172, 16, 45, 200], [255, 255, 240, 0]);
+
+      // Tabla de referencia
+      buildRefTable();
+    });
+  </script>
+</body>
+</html>
