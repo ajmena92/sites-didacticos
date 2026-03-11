@@ -197,8 +197,12 @@
       <span id="lvlBadge" class="level-badge intermedio">Intermedio</span>
     </div>
 
-    <!-- Pool de hosts -->
+    <!-- Red base + Pool de hosts -->
     <div class="pool-section">
+      <div class="pool-label">Red base de partida</div>
+      <div style="margin-bottom:.75rem">
+        <span id="baseNetDisplay" style="font-family:monospace;font-size:1.05rem;font-weight:700;color:var(--ccna)"></span>
+      </div>
       <div class="pool-label">Hosts requeridos (asigna de mayor a menor)</div>
       <div class="pool-chips" id="poolChips"></div>
     </div>
@@ -305,6 +309,7 @@
   const V = {
     subnets:    [],   // [{hosts, prefix, mask[], net[], first[], last[], bc[], wan}]
     hostsGiven: [],   // hosts en orden aleatorio para los chips
+    baseNet:    '',   // string de la red base (ej. "172.20.0.0/16")
     activeRow:  0,
     done:       false
   };
@@ -333,6 +338,8 @@
     // Calcular subredes VLSM secuencialmente
     const base = cfg.base();
     let cur = [...base.ip];
+    V.baseNet = str(base.ip) + '/' + base.prefix;
+    document.getElementById('baseNetDisplay').textContent = V.baseNet;
 
     V.subnets = allSorted.map((h, idx) => {
       const bits   = Math.ceil(Math.log2(h + 2));
