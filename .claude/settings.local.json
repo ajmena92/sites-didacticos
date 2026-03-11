@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /mnt/c/Dev/sites-didacticos/ccna -name \"*.html\" 2>/dev/null | head -30)"
+      "Bash(find /mnt/c/Dev/sites-didacticos/ccna -name \"*.html\" 2>/dev/null | head -30)",
+      "Bash(echo $CLAUDE_PLUGIN_ROOT)",
+      "Read(//home/dev/.claude/plugins/**)",
+      "Bash(/home/dev/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0/lib/brainstorm-server/start-server.sh --project-dir /mnt/c/Dev/sites-didacticos)",
+      "Bash(/home/dev/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0/lib/brainstorm-server/start-server.sh --project-dir /mnt/c/Dev/sites-didacticos --host 0.0.0.0 --url-host localhost 2>&1 | head -20)",
+      "Bash(cd /home/dev/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0/lib/brainstorm-server && npm install --silent 2>&1 | tail -3)",
+      "Bash(cd /home/dev/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0/lib/brainstorm-server && npm install 2>&1 | tail -5 && echo \"DONE\")",
+      "Bash(curl -s http://localhost:58223 > /dev/null 2>&1 && echo \"Server running\" || echo \"Server down\")",
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ]
   }
 }

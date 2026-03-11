@@ -1,0 +1,193 @@
+<h2>¿Cómo presentamos la tabla VLSM?</h2>
+<p class="subtitle">Elige el layout que prefieras para el ejercicio de subnetting</p>
+
+<style>
+  /* Mock styles for previews */
+  .preview-wrap { background: #0d1117; border-radius: 10px; padding: 1rem; overflow-x: auto; }
+  .mock-table { border-collapse: collapse; width: 100%; font-family: monospace; font-size: .78rem; }
+  .mock-table th { background: #161b22; color: #8b949e; padding: .5rem .6rem; border: 1px solid #30363d; text-align: left; font-size: .68rem; text-transform: uppercase; }
+  .mock-table td { padding: .45rem .6rem; border: 1px solid #30363d; }
+  .mock-input { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; color: #c9d1d9; padding: .25rem .4rem; font-family: monospace; font-size: .75rem; }
+  .mock-input.w-ip  { width: 100px; }
+  .mock-input.w-pfx { width: 36px; }
+  .mock-input.w-h   { width: 50px; }
+  .mock-input.locked { opacity: .3; }
+  .mock-input.correct { border-color: #3fb950; color: #3fb950; }
+  .mock-btn { background: #1ba1e2; color: #fff; border: none; border-radius: 4px; padding: .22rem .55rem; font-size: .72rem; cursor: pointer; }
+  .mock-btn.ghost { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
+  .row-active td { background: rgba(27,161,226,.07); }
+  .row-done td { background: rgba(63,185,80,.05); }
+  .row-locked td { opacity: .35; }
+  .chip { display: inline-block; background: #21262d; border: 1px solid #30363d; border-radius: 20px; padding: .15rem .55rem; font-family: monospace; font-size: .75rem; color: #c9d1d9; margin: .15rem; }
+  .chip.used { text-decoration: line-through; opacity: .4; }
+  .chip.big { background: rgba(27,161,226,.15); border-color: rgba(27,161,226,.4); color: #1ba1e2; }
+  .pool-box { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: .6rem .85rem; margin-bottom: .75rem; font-size: .75rem; }
+  .pool-label { color: #8b949e; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .35rem; }
+  .fb-row td { padding: .3rem .6rem; background: rgba(248,81,73,.07); border-color: rgba(248,81,73,.3); }
+  .fb-msg { font-size: .72rem; color: #f85149; font-family: monospace; }
+  .row-num { color: #8b949e; font-size: .72rem; text-align: center; }
+  .badge { font-size: .65rem; padding: .1rem .4rem; border-radius: 10px; font-weight: 700; }
+  .badge-ccna { background: rgba(27,161,226,.2); color: #1ba1e2; border: 1px solid rgba(27,161,226,.3); }
+  .section { margin-bottom: 1.25rem; }
+  .tag-ok { background: rgba(63,185,80,.15); color: #3fb950; border: 1px solid rgba(63,185,80,.3); border-radius: 3px; padding: .05rem .3rem; font-size: .7rem; }
+  .tag-err { background: rgba(248,81,73,.15); color: #f85149; border: 1px solid rgba(248,81,73,.3); border-radius: 3px; padding: .05rem .3rem; font-size: .7rem; }
+</style>
+
+<div class="options">
+
+  <!-- Option A: Table full-width with host pool above -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Tabla completa — pool de hosts arriba</h3>
+      <p>Pool de hosts en chips arriba de la tabla. La tabla usa todo el ancho. Verificación fila por fila.</p>
+
+      <div class="preview-wrap">
+        <div class="pool-box">
+          <div class="pool-label">Hosts requeridos (asigna de mayor a menor)</div>
+          <span class="chip big">1500</span>
+          <span class="chip">512</span>
+          <span class="chip">350</span>
+          <span class="chip">126</span>
+          <span class="chip">50</span>
+          <span class="chip">25</span>
+          <span class="chip used">10</span>
+          <span class="chip">2</span><span class="chip">2</span><span class="chip">2</span><span class="chip">2</span>
+        </div>
+
+        <table class="mock-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Hosts</th><th>Dir. de Red</th><th>Pref.</th>
+              <th>Máscara</th><th>Primer host</th><th>Último host</th><th>Broadcast</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row done -->
+            <tr class="row-done">
+              <td class="row-num">1</td>
+              <td><input class="mock-input w-h correct" value="1500" /></td>
+              <td><input class="mock-input w-ip correct" value="172.30.0.0" /></td>
+              <td><input class="mock-input w-pfx correct" value="/21" /></td>
+              <td><input class="mock-input w-ip correct" value="255.255.248.0" /></td>
+              <td><input class="mock-input w-ip correct" value="172.30.0.1" /></td>
+              <td><input class="mock-input w-ip correct" value="172.30.7.254" /></td>
+              <td><input class="mock-input w-ip correct" value="172.30.7.255" /></td>
+              <td><span class="tag-ok">✓</span></td>
+            </tr>
+            <!-- Row active -->
+            <tr class="row-active">
+              <td class="row-num">2</td>
+              <td><input class="mock-input w-h" placeholder="n" /></td>
+              <td><input class="mock-input w-ip" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-pfx" placeholder="/n" /></td>
+              <td><input class="mock-input w-ip" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-ip" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-ip" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-ip" placeholder="x.x.x.x" /></td>
+              <td><button class="mock-btn">Verificar</button></td>
+            </tr>
+            <!-- Row locked -->
+            <tr class="row-locked">
+              <td class="row-num">3</td>
+              <td><input class="mock-input w-h locked" placeholder="n" /></td>
+              <td><input class="mock-input w-ip locked" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-pfx locked" placeholder="/n" /></td>
+              <td><input class="mock-input w-ip locked" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-ip locked" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-ip locked" placeholder="x.x.x.x" /></td>
+              <td><input class="mock-input w-ip locked" placeholder="x.x.x.x" /></td>
+              <td></td>
+            </tr>
+            <!-- Feedback row -->
+            <tr class="fb-row">
+              <td colspan="9">
+                <span class="fb-msg">⚠ Hosts: ingresa el mayor pendiente (512) · Prefijo incorrecto para 512 hosts → /23</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Two-panel — table left, pool+hints right -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Dos columnas — tabla + panel lateral</h3>
+      <p>Panel derecho con pool de hosts, tabla de referencia y pistas. La tabla a la izquierda, más estrecha.</p>
+
+      <div class="preview-wrap">
+        <div style="display:grid;grid-template-columns:1fr 200px;gap:.75rem">
+          <!-- Left: table -->
+          <div>
+            <table class="mock-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Hosts</th><th>Dir. Red/Pref.</th>
+                  <th>Máscara</th><th>1.er host</th><th>Últ. host</th><th>Broadcast</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row-done">
+                  <td class="row-num">1</td>
+                  <td><input class="mock-input w-h correct" value="1500" /></td>
+                  <td style="white-space:nowrap"><input class="mock-input correct" style="width:90px" value="172.30.0.0" /><input class="mock-input w-pfx correct" value="/21" style="margin-left:2px"/></td>
+                  <td><input class="mock-input correct" style="width:105px" value="255.255.248.0" /></td>
+                  <td><input class="mock-input correct" style="width:90px" value="172.30.0.1" /></td>
+                  <td><input class="mock-input correct" style="width:90px" value="172.30.7.254" /></td>
+                  <td><input class="mock-input correct" style="width:90px" value="172.30.7.255" /></td>
+                  <td><span class="tag-ok">✓</span></td>
+                </tr>
+                <tr class="row-active">
+                  <td class="row-num">2</td>
+                  <td><input class="mock-input w-h" placeholder="n" /></td>
+                  <td style="white-space:nowrap"><input class="mock-input" style="width:90px" placeholder="x.x.x.x" /><input class="mock-input w-pfx" style="margin-left:2px" placeholder="/n" /></td>
+                  <td><input class="mock-input" style="width:105px" placeholder="x.x.x.x" /></td>
+                  <td><input class="mock-input" style="width:90px" placeholder="x.x.x.x" /></td>
+                  <td><input class="mock-input" style="width:90px" placeholder="x.x.x.x" /></td>
+                  <td><input class="mock-input" style="width:90px" placeholder="x.x.x.x" /></td>
+                  <td><button class="mock-btn">OK</button></td>
+                </tr>
+                <tr class="row-locked">
+                  <td class="row-num">3</td>
+                  <td><input class="mock-input w-h locked" placeholder="n" /></td>
+                  <td style="white-space:nowrap"><input class="mock-input locked" style="width:90px" placeholder="x.x.x.x" /><input class="mock-input w-pfx locked" style="margin-left:2px" placeholder="/n" /></td>
+                  <td><input class="mock-input locked" style="width:105px" placeholder="x.x.x.x" /></td>
+                  <td><input class="mock-input locked" style="width:90px" placeholder="x.x.x.x" /></td>
+                  <td><input class="mock-input locked" style="width:90px" placeholder="x.x.x.x" /></td>
+                  <td><input class="mock-input locked" style="width:90px" placeholder="x.x.x.x" /></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Right: panel -->
+          <div>
+            <div class="pool-box" style="font-size:.7rem">
+              <div class="pool-label">Hosts pendientes</div>
+              <span class="chip big" style="font-size:.7rem">512</span>
+              <span class="chip" style="font-size:.7rem">350</span>
+              <span class="chip" style="font-size:.7rem">126</span>
+              <span class="chip" style="font-size:.7rem">50</span>
+              <span class="chip" style="font-size:.7rem">25</span>
+              <span class="chip" style="font-size:.7rem">2</span>
+            </div>
+            <div class="pool-box" style="font-size:.7rem">
+              <div class="pool-label">💡 Ayuda fila 2</div>
+              <div style="color:#8b949e;font-size:.68rem;line-height:1.6">
+                Siguiente: <strong style="color:#1ba1e2">512</strong> hosts<br>
+                Prefijo → /23<br>
+                Red = BC anterior + 1
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:1.5rem">Haz clic en tu opción preferida y responde en el terminal. La URL es <strong>http://localhost:58223</strong></p>
