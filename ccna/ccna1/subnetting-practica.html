@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Práctica Subnetting — CCNA 1</title>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    /* ── Layout full-width dos columnas ── */
+    .practice-body {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.75rem;
+      padding: 2rem 2.5rem 5rem;
+      align-items: start;
+    }
+
+    /* ── Panel de puntuación ── */
+    .score-bar {
+      display: flex; align-items: center; flex-wrap: wrap; gap: .85rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: .85rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .score-item { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
+    .score-item .si-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+    .score-item .si-lbl { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .score-sep { width: 1px; height: 36px; background: var(--border); }
+    .si-num.ok-color  { color: var(--green); }
+    .si-num.err-color { color: var(--red); }
+
+    .btn-next {
+      margin-left: auto;
+      background: var(--ccna); color: #fff; border: none;
+      padding: .6rem 1.4rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-next:disabled { opacity: .3; cursor: not-allowed; transform: none; }
+    .btn-next:not(:disabled):hover { opacity: .87; transform: translateY(-1px); }
+
+    /* ── Tarjeta de ejercicio ── */
+    .ex-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+
+    .ex-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(27,161,226,.1), transparent);
+      display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+    }
+    .ex-num { font-size: .8rem; color: var(--muted); margin-bottom: .2rem; }
+    .ex-type-badge {
+      font-size: .72rem; padding: .2rem .65rem;
+      border-radius: 20px; font-weight: 600; flex-shrink: 0;
+    }
+    .ex-type-badge.host { background: rgba(245,166,35,.15); color: var(--linux); border: 1px solid rgba(245,166,35,.35); }
+    .ex-type-badge.net  { background: rgba(27,161,226,.15); color: var(--ccna); border: 1px solid rgba(27,161,226,.35); }
+
+    .ex-ip-block { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .ex-ip-row { display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; margin-bottom: .3rem; }
+    .ex-ip  { font-family: monospace; font-size: 1.65rem; font-weight: 800; color: var(--ccna); }
+    .ex-pfx { font-family: monospace; font-size: 1.65rem; font-weight: 800; color: var(--accent); }
+    .ex-mask-line { font-family: monospace; font-size: .85rem; color: var(--muted); }
+    .ex-note { font-size: .82rem; color: var(--muted); margin-top: .4rem;
+               background: rgba(255,255,255,.04); padding: .4rem .7rem; border-radius: 6px; border-left: 2px solid var(--border); }
+
+    /* ── Pasos ── */
+    .steps-wrap { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: .85rem; }
+
+    .step {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; transition: border-color .25s;
+    }
+    .step.locked  { opacity: .38; pointer-events: none; }
+    .step.active  { border-color: var(--ccna); }
+    .step.correct { border-color: var(--green); }
+    .step.wrong   { border-color: var(--red); animation: shake .32s ease; }
+
+    @keyframes shake {
+      0%,100%{ transform:translateX(0) }
+      30%    { transform:translateX(-5px) }
+      70%    { transform:translateX(5px) }
+    }
+
+    .step-head {
+      display: flex; align-items: center; gap: .7rem;
+      padding: .75rem 1rem;
+      background: rgba(255,255,255,.02); border-bottom: 1px solid var(--border);
+    }
+    .step.correct .step-head { background: rgba(63,185,80,.06); border-color: rgba(63,185,80,.2); }
+    .step.active  .step-head { background: rgba(27,161,226,.07); border-color: rgba(27,161,226,.2); }
+
+    .snum {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--border); color: var(--text);
+      font-size: .78rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .snum.done { background: var(--green); color: #0d1117; }
+
+    .step-title { font-weight: 700; font-size: .92rem; }
+    .step-body  { padding: .85rem 1rem; display: flex; flex-direction: column; gap: .55rem; }
+    .step-desc  { font-size: .83rem; color: var(--muted); }
+    .step-formula {
+      font-family: monospace; font-size: .82rem; color: var(--accent);
+      background: rgba(88,166,255,.09); padding: .28rem .65rem;
+      border-radius: 6px; display: inline-block;
+    }
+
+    /* ── Inputs ── */
+    .input-group { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .input-label { font-size: .8rem; color: var(--muted); width: 100px; flex-shrink: 0; }
+    .sinput {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .42rem .75rem;
+      border-radius: 6px; font-family: monospace; font-size: .95rem;
+      width: 185px; outline: none; transition: border-color .2s;
+    }
+    .sinput:focus { border-color: var(--accent); }
+    .sinput.ok  { border-color: var(--green); color: var(--green); }
+    .sinput.err { border-color: var(--red);   color: var(--red); }
+    .sinput:disabled { opacity: .5; }
+
+    .btn-check {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      padding: .42rem .9rem; border-radius: 6px;
+      font-size: .85rem; cursor: pointer; transition: border-color .2s, background .2s;
+    }
+    .btn-check:hover   { border-color: var(--accent); }
+    .btn-check:disabled{ opacity: .4; cursor: not-allowed; }
+
+    /* ── Feedback ── */
+    .step-fb {
+      font-size: .83rem; padding: .45rem .8rem; border-radius: 6px;
+      display: none; line-height: 1.55;
+    }
+    .step-fb.show { display: block; }
+    .step-fb.ok  { background: rgba(63,185,80,.11); color: var(--green); border: 1px solid rgba(63,185,80,.3); }
+    .step-fb.err { background: rgba(248,81,73,.1);  color: var(--red);   border: 1px solid rgba(248,81,73,.3); }
+    .hint-line   { color: var(--muted); font-family: monospace; font-size: .8rem; margin-top: .25rem; }
+
+    /* ── Completado ── */
+    .ex-done {
+      margin: 0 1.5rem 1.5rem;
+      padding: 1.1rem; border-radius: var(--radius);
+      background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.3);
+      text-align: center; display: none;
+    }
+    .ex-done.show { display: block; }
+    .ex-done h3   { color: var(--green); font-size: 1rem; margin-bottom: .2rem; }
+    .ex-done p    { color: var(--muted); font-size: .85rem; }
+
+    /* ── Panel derecho: referencia ── */
+    .right-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .ref-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      position: sticky; top: calc(var(--nav-h) + 1rem);
+      max-height: calc(100vh - var(--nav-h) - 3rem);
+    }
+    .ref-card-head {
+      padding: .75rem 1rem; border-bottom: 1px solid var(--border);
+      background: var(--surface2); font-size: .78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+    }
+    .ref-scroll { overflow-y: auto; max-height: calc(100vh - var(--nav-h) - 6rem); scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+    .mini-tbl { width: 100%; border-collapse: collapse; font-size: .8rem; font-family: monospace; }
+    .mini-tbl th { background: var(--surface2); padding: .4rem .65rem; border-bottom: 2px solid var(--border); color: var(--muted); font-size: .68rem; text-transform: uppercase; text-align: left; }
+    .mini-tbl td { padding: .35rem .65rem; border-bottom: 1px solid var(--border); }
+    .mini-tbl tr:last-child td { border-bottom: none; }
+    .mini-tbl tr:hover td { background: rgba(255,255,255,.03); }
+    .mp { color: var(--accent); font-weight: 700; }
+    .mw { color: var(--linux); }
+    .mh { color: var(--green); text-align: right; }
+    .mini-tbl .cls td { border-top: 2px solid var(--border); }
+
+    /* ── Tip de tips colapsable ── */
+    .tip-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .tip-card summary {
+      padding: .75rem 1rem; cursor: pointer; font-size: .82rem;
+      color: var(--muted); list-style: none; user-select: none;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .tip-card summary::-webkit-details-marker { display: none; }
+    .tip-card summary::before { content: '▶'; font-size: .65rem; transition: transform .2s; }
+    .tip-card[open] summary::before { transform: rotate(90deg); }
+    .tip-body { padding: .85rem 1rem; font-size: .82rem; color: var(--muted); line-height: 1.7; }
+    .tip-body code { color: var(--accent); font-family: monospace; background: rgba(88,166,255,.1); padding: .05rem .3rem; border-radius: 4px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1000px) {
+      .practice-body { grid-template-columns: 1fr; padding: 1.5rem 1.25rem 4rem; }
+      .ref-card { position: static; max-height: 300px; }
+    }
+    @media (max-width: 600px) {
+      .ex-ip { font-size: 1.2rem; } .ex-pfx { font-size: 1.2rem; }
+      .sinput { width: 150px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVEGACIÓN ── -->
+  <header>
+    <nav>
+      <span class="nav-brand">🌐 CCNA 1 — Subnetting</span>
+      <div class="nav-pages">
+        <a href="subnetting.html">Teoría</a>
+        <a href="subnetting-practica.html" class="active">ANDing</a>
+        <a href="subnetting-vlsm.html">VLSM</a>
+        <a href="subnetting-practica-final.html">Evaluación Final</a>
+      </div>
+      <div class="nav-divider"></div>
+      <a class="back-to-catalog" href="../../index.html">← Catálogo</a>
+    </nav>
+  </header>
+
+  <!-- ── HERO ── -->
+  <div class="topic-hero">
+    <div class="breadcrumb">CCNA 1 / Subnetting y ANDing — Práctica</div>
+    <h1>🎯 Práctica: Subnetting y ANDing</h1>
+    <p class="hero-sub">
+      Resolvemos cada ejercicio paso a paso. Verificamos nuestra respuesta en cada etapa
+      y recibimos retroalimentación inmediata con pistas cuando las necesitamos.
+    </p>
+    <span class="author-chip">✍️ Prof. Andrés Mena Abarca</span>
+  </div>
+
+  <!-- ── CUERPO ── -->
+  <div class="practice-body">
+
+    <!-- COLUMNA IZQUIERDA: EJERCICIO -->
+    <div class="left-col">
+
+      <!-- Puntuación -->
+      <div class="score-bar">
+        <div class="score-item">
+          <span class="si-num" id="sNum">1</span>
+          <span class="si-lbl">Ejercicio</span>
+        </div>
+        <div class="score-sep"></div>
+        <div class="score-item">
+          <span class="si-num ok-color" id="sOk">0</span>
+          <span class="si-lbl">Completados</span>
+        </div>
+        <div class="score-sep"></div>
+        <div class="score-item">
+          <span class="si-num err-color" id="sErr">0</span>
+          <span class="si-lbl">Errores (paso)</span>
+        </div>
+        <button class="btn-next" id="btnNext" disabled>Siguiente ejercicio →</button>
+      </div>
+
+      <!-- Ejercicio dinámico -->
+      <div id="exerciseArea"></div>
+
+    </div><!-- /left-col -->
+
+    <!-- COLUMNA DERECHA: REFERENCIA -->
+    <div class="right-panel">
+
+      <div class="ref-card">
+        <div class="ref-card-head">📋 Tabla de referencia rápida</div>
+        <div class="ref-scroll">
+          <table class="mini-tbl">
+            <thead>
+              <tr><th>Pref.</th><th>Máscara</th><th>Wildcard</th><th>Hosts</th></tr>
+            </thead>
+            <tbody id="miniRefBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <details class="tip-card">
+        <summary>💡 Recordatorio del método</summary>
+        <div class="tip-body">
+          <strong>Paso 1 — AND</strong><br>
+          Aplicamos: <code>IP AND Máscara = Red</code><br><br>
+          <strong>Paso 2 — Wildcard</strong><br>
+          Calculamos: <code>255.255.255.255 − Máscara</code><br><br>
+          <strong>Paso 3 — Broadcast</strong><br>
+          Sumamos: <code>Red + Wildcard</code><br><br>
+          <strong>Paso 4 — Rangos</strong><br>
+          <code>Primer host = Red + 1</code><br>
+          <code>Último host = Broadcast − 1</code><br>
+          <code>Hosts útiles = 2<sup>h</sup> − 2</code>
+        </div>
+      </details>
+
+    </div><!-- /right-panel -->
+
+  </div><!-- /practice-body -->
+
+  <footer>
+    <span>CCNA 1 — Subnetting y ANDing (Práctica)</span>
+    <span class="footer-author">✍️ Material elaborado por el <strong>Prof. Andrés Mena Abarca</strong></span>
+  </footer>
+
+  <script>
+  // ════════════════════════════════════
+  //  CÁLCULOS PUROS
+  // ════════════════════════════════════
+
+  function prefixToMask(p) {
+    return Array.from({length:4}, (_,i) => {
+      const b = Math.min(8, Math.max(0, p - i*8));
+      return b===8 ? 255 : b===0 ? 0 : 256 - Math.pow(2, 8-b);
+    });
+  }
+  function wildcard(m) { return m.map(x=>255-x); }
+  function netAddr(ip, m) { return ip.map((b,i)=>b&m[i]); }
+  function broadcast(net, wc) { return net.map((b,i)=>b+wc[i]); }
+  function addOne(o) {
+    const n=(((o[0]<<24)|(o[1]<<16)|(o[2]<<8)|o[3])>>>0)+1;
+    return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
+  }
+  function subOne(o) {
+    const n=(((o[0]<<24)|(o[1]<<16)|(o[2]<<8)|o[3])>>>0)-1;
+    return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
+  }
+  function usable(p) { return Math.pow(2,32-p)-2; }
+  function str(o)    { return o.join('.'); }
+
+  function normIP(s) {
+    if (!s) return null;
+    const parts = s.trim().replace(/\s+/g,'.').replace(/,/g,'.').split('.');
+    if (parts.length!==4) return null;
+    const n = parts.map(p=>parseInt(p,10));
+    if (n.some(x=>isNaN(x)||x<0||x>255)) return null;
+    return n.join('.');
+  }
+
+  // ════════════════════════════════════
+  //  POOL DE EJERCICIOS
+  // ════════════════════════════════════
+
+  const POOL = [
+    {p:26, net:[192,168,10,128]}, {p:24, net:[192,168,1,0]},
+    {p:20, net:[172,16,32,0]},   {p:27, net:[10,0,0,224]},
+    {p:28, net:[192,168,5,16]},  {p:22, net:[10,10,4,0]},
+    {p:29, net:[172,16,10,8]},   {p:30, net:[192,168,99,4]},
+    {p:16, net:[172,16,0,0]},    {p:8,  net:[10,0,0,0]},
+    {p:25, net:[192,168,20,128]},{p:23, net:[10,10,10,0]},
+    {p:18, net:[172,20,0,0]},    {p:19, net:[192,168,128,0]},
+    {p:21, net:[10,1,0,0]},
+  ];
+
+  function randomHost(net, wc) {
+    const r = [...net];
+    for (let i=3;i>=0;i--) {
+      if (wc[i] > 1) {
+        r[i] = net[i] + 1 + Math.floor(Math.random()*(wc[i]-1));
+        for (let j=i+1;j<4;j++) { if(wc[j]===255) r[j]=Math.floor(Math.random()*256); }
+        break;
+      } else if (wc[i]===1) { r[i]=net[i]+1; break; }
+    }
+    return r;
+  }
+
+  // ════════════════════════════════════
+  //  ESTADO
+  // ════════════════════════════════════
+
+  const S = {
+    ex: null, step: 0, wrong: 0,
+    done: 0, count: 1, lastEntry: null
+  };
+
+  function newExercise() {
+    let e;
+    do { e = POOL[Math.floor(Math.random()*POOL.length)]; } while(POOL.length>1 && e===S.lastEntry);
+    S.lastEntry = e;
+    const type  = Math.random()<0.6 ? 'host' : 'network';
+    const m     = prefixToMask(e.p);
+    const wc    = wildcard(m);
+    const net   = [...e.net];
+    const bc    = broadcast(net, wc);
+    const given = type==='host' ? randomHost(net,wc) : net;
+    return {
+      type, prefix: e.p,
+      givenStr:  str(given),
+      maskStr:   str(m),
+      netStr:    str(net),
+      wcStr:     str(wc),
+      bcStr:     str(bc),
+      firstStr:  str(addOne(net)),
+      lastStr:   str(subOne(bc)),
+      hosts:     usable(e.p),
+    };
+  }
+
+  // ════════════════════════════════════
+  //  DEFINICIÓN DE PASOS
+  // ════════════════════════════════════
+
+  function steps(ex) {
+    return [
+      {
+        id:    'net',
+        title: 'Paso 1 — Dirección de Red (AND)',
+        desc:  ex.type==='host'
+          ? `Aplicamos AND entre la IP dada y la máscara para encontrar la red.`
+          : `La IP dada ya es la dirección de red. La confirmamos automáticamente.`,
+        formula: `${ex.givenStr}  AND  ${ex.maskStr}  =  ?`,
+        inputs:  [{key:'netStr', lbl:'Red:', ph:'ej. 192.168.10.128'}],
+        hint:    `${ex.givenStr} AND ${ex.maskStr} = ${ex.netStr}`,
+        okMsg:   `Correcto. ${ex.givenStr} AND ${ex.maskStr} = ${ex.netStr}`,
+        skip:    ex.type==='network',
+        skipVal: ex.netStr,
+      },
+      {
+        id:    'wc',
+        title: 'Paso 2 — Wildcard mask',
+        desc:  'Calculamos el complemento de la máscara.',
+        formula: `255.255.255.255  −  ${ex.maskStr}  =  ?`,
+        inputs:  [{key:'wcStr', lbl:'Wildcard:', ph:'ej. 0.0.0.63'}],
+        hint:    `255.255.255.255 − ${ex.maskStr} = ${ex.wcStr}`,
+        okMsg:   `Correcto. 255.255.255.255 − ${ex.maskStr} = ${ex.wcStr}`,
+      },
+      {
+        id:    'bc',
+        title: 'Paso 3 — Broadcast (Red + Wildcard)',
+        desc:  'Sumamos la dirección de red y la wildcard, octeto por octeto.',
+        formula: `${ex.netStr}  +  ${ex.wcStr}  =  ?`,
+        inputs:  [{key:'bcStr', lbl:'Broadcast:', ph:'ej. 192.168.10.191'}],
+        hint:    `${ex.netStr} + ${ex.wcStr} = ${ex.bcStr}`,
+        okMsg:   `Correcto. ${ex.netStr} + ${ex.wcStr} = ${ex.bcStr}`,
+      },
+      {
+        id:    'hosts',
+        title: 'Paso 4 — Rangos y hosts útiles',
+        desc:  `Red = ${ex.netStr} · Broadcast = ${ex.bcStr} · Hosts útiles = 2^${32-ex.prefix} − 2`,
+        formula: `Primer = ${ex.netStr}+1  |  Último = ${ex.bcStr}−1  |  Total = 2^${32-ex.prefix}−2`,
+        inputs:  [
+          {key:'firstStr', lbl:'Primer host:', ph:'ej. 192.168.10.129'},
+          {key:'lastStr',  lbl:'Último host:', ph:'ej. 192.168.10.190'},
+          {key:'hosts',    lbl:'Hosts útiles:', ph:`ej. ${usable(ex.prefix)}`, numeric:true},
+        ],
+        hint:  `Primer: ${ex.firstStr} | Último: ${ex.lastStr} | Hosts: ${ex.hosts}`,
+        okMsg: `Correcto. Rango: ${ex.firstStr} — ${ex.lastStr}, Hosts útiles: ${ex.hosts}`,
+      },
+    ];
+  }
+
+  // ════════════════════════════════════
+  //  RENDER
+  // ════════════════════════════════════
+
+  function render(ex) {
+    const defs = steps(ex);
+    const note = ex.type==='host'
+      ? 'Esta es una IP de host — debemos aplicar AND para encontrar la red.'
+      : 'Esta ya es la dirección de red — vamos directo a calcular wildcard y broadcast.';
+
+    const stepsHTML = defs.map((d,i) => `
+      <div class="step locked" id="step-${i}">
+        <div class="step-head">
+          <div class="snum" id="snum-${i}">${i+1}</div>
+          <span class="step-title">${d.title}</span>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">${d.desc}</div>
+          <div class="step-formula">${d.formula}</div>
+          ${d.inputs.map((inp,j) => `
+            <div class="input-group" style="margin-bottom:.2rem">
+              <span class="input-label">${inp.lbl}</span>
+              <input class="sinput" type="text" id="inp-${i}-${j}"
+                inputmode="${inp.numeric?'numeric':'text'}"
+                placeholder="${inp.ph}"
+                data-step="${i}" data-inp="${j}"
+                autocomplete="off" autocorrect="off" spellcheck="false" />
+              ${j===d.inputs.length-1 ? `<button class="btn-check" data-step="${i}">Verificar</button>` : ''}
+            </div>
+          `).join('')}
+          <div class="step-fb" id="sfb-${i}"></div>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('exerciseArea').innerHTML = `
+      <div class="ex-card">
+        <div class="ex-header">
+          <div>
+            <div class="ex-num">Ejercicio #${S.count}</div>
+          </div>
+          <span class="ex-type-badge ${ex.type}">${ex.type==='host'?'🔍 Hallar red con AND':'📌 Red dada — calcular rangos'}</span>
+        </div>
+        <div class="ex-ip-block">
+          <div class="ex-ip-row">
+            <span class="ex-ip">${ex.givenStr}</span>
+            <span class="ex-pfx">/${ex.prefix}</span>
+          </div>
+          <div class="ex-mask-line">Máscara: ${ex.maskStr}</div>
+          <div class="ex-note">${note}</div>
+        </div>
+        <div class="steps-wrap">${stepsHTML}</div>
+        <div class="ex-done" id="exDone">
+          <h3>🎉 ¡Ejercicio completado!</h3>
+          <p>Pulsamos <strong>"Siguiente ejercicio"</strong> para continuar.</p>
+        </div>
+      </div>
+    `;
+
+    // Auto-completar paso 0 si tipo=network
+    if (defs[0].skip) {
+      const inp = document.getElementById('inp-0-0');
+      if (inp) { inp.value = defs[0].skipVal; inp.disabled = true; inp.classList.add('ok'); }
+      markDone(0, defs[0], ex, true);
+      unlock(1);
+    } else {
+      unlock(0);
+    }
+
+    attachEvents(defs, ex);
+  }
+
+  function unlock(idx) {
+    const el = document.getElementById(`step-${idx}`);
+    if (!el) return;
+    el.classList.remove('locked');
+    el.classList.add('active');
+    const inp = el.querySelector('.sinput:not(:disabled)');
+    if (inp) setTimeout(()=>inp.focus(), 80);
+    el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  function markDone(idx, def, ex, silent) {
+    const el  = document.getElementById(`step-${idx}`);
+    const num = document.getElementById(`snum-${idx}`);
+    const fb  = document.getElementById(`sfb-${idx}`);
+    el.classList.remove('active','wrong'); el.classList.add('correct');
+    num.classList.add('done'); num.textContent = '✓';
+    el.querySelectorAll('.sinput').forEach(i=>{i.disabled=true;i.classList.add('ok');i.classList.remove('err');});
+    el.querySelectorAll('.btn-check').forEach(b=>b.disabled=true);
+    if (!silent && fb) { fb.className='step-fb show ok'; fb.textContent=def.okMsg(ex); }
+  }
+
+  function shake(idx) {
+    const el = document.getElementById(`step-${idx}`);
+    el.classList.remove('wrong');
+    void el.offsetWidth;
+    el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'), 350);
+  }
+
+  // ════════════════════════════════════
+  //  VALIDACIÓN
+  // ════════════════════════════════════
+
+  function validate(idx, defs, ex) {
+    const def = defs[idx];
+    let allOk = true;
+
+    def.inputs.forEach((inp,j) => {
+      const el  = document.getElementById(`inp-${idx}-${j}`);
+      const raw = el ? el.value : '';
+      let ok;
+      if (inp.numeric) {
+        ok = parseInt(raw.trim(),10) === ex[inp.key];
+      } else {
+        const n = normIP(raw);
+        ok = n !== null && n === ex[inp.key];
+      }
+      if (el) { el.classList.toggle('ok',ok); el.classList.toggle('err',!ok); }
+      if (!ok) allOk = false;
+    });
+
+    const fb = document.getElementById(`sfb-${idx}`);
+
+    if (allOk) {
+      S.wrong = 0;
+      document.getElementById('sErr').textContent = '0';
+      markDone(idx, def, ex, false);
+      const next = idx + 1;
+      if (next < defs.length) { unlock(next); S.step = next; }
+      else { complete(); }
+    } else {
+      S.wrong++;
+      shake(idx);
+      document.getElementById('sErr').textContent = S.wrong;
+      if (fb) {
+        fb.className = 'step-fb show err';
+        fb.innerHTML = S.wrong >= 2
+          ? `Incorrecto. <span class="hint-line">💡 Pista: ${def.hint}</span>`
+          : 'Incorrecto. Revisamos el cálculo e intentamos de nuevo.';
+      }
+    }
+  }
+
+  function attachEvents(defs, ex) {
+    document.querySelectorAll('.btn-check').forEach(btn => {
+      btn.addEventListener('click', () => validate(+btn.dataset.step, defs, ex));
+    });
+    document.querySelectorAll('.sinput').forEach(inp => {
+      inp.addEventListener('keydown', e => {
+        if (e.key==='Enter') validate(+inp.dataset.step, defs, ex);
+      });
+    });
+  }
+
+  function complete() {
+    S.done++;
+    document.getElementById('sOk').textContent  = S.done;
+    document.getElementById('sErr').textContent = '0';
+    const d = document.getElementById('exDone');
+    if (d) { d.classList.add('show'); d.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+    document.getElementById('btnNext').disabled = false;
+  }
+
+  // ════════════════════════════════════
+  //  TABLA DE REFERENCIA
+  // ════════════════════════════════════
+
+  function buildMini() {
+    const tb = document.getElementById('miniRefBody');
+    const sp = new Set([8,16,24]);
+    for (let p=8;p<=30;p++) {
+      const m = prefixToMask(p);
+      const w = wildcard(m);
+      const h = usable(p);
+      const tr = document.createElement('tr');
+      if(sp.has(p)) tr.className='cls';
+      tr.innerHTML=`<td class="mp">/${p}</td><td>${str(m)}</td><td class="mw">${str(w)}</td><td class="mh">${h.toLocaleString()}</td>`;
+      tb.appendChild(tr);
+    }
+  }
+
+  // ════════════════════════════════════
+  //  INIT
+  // ════════════════════════════════════
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildMini();
+    document.getElementById('btnNext').addEventListener('click', () => {
+      S.step=0; S.wrong=0; S.count++;
+      document.getElementById('sNum').textContent  = S.count;
+      document.getElementById('sErr').textContent  = '0';
+      document.getElementById('btnNext').disabled  = true;
+      S.ex = newExercise();
+      render(S.ex);
+    });
+    S.ex = newExercise();
+    render(S.ex);
+  });
+  </script>
+</body>
+</html>
