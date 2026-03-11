@@ -8,50 +8,71 @@
   <style>
     /* ── Layout ── */
     .vlsm-body { padding: 2rem 2.5rem 5rem; }
+    @media (max-width: 700px) { .vlsm-body { padding: 1.25rem 1rem 4rem; } }
 
     /* ── Controles superiores ── */
     .vlsm-controls {
-      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-      margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+      margin-bottom: 1.1rem;
     }
     .vlsm-select {
       background: var(--surface); border: 1px solid var(--border);
       color: var(--text); padding: .5rem .9rem;
       border-radius: var(--radius); font-size: .9rem; cursor: pointer; outline: none;
+      flex: 1; min-width: 180px; max-width: 260px;
     }
     .vlsm-select:focus { border-color: var(--ccna); }
     .btn-new {
       background: var(--ccna); color: #fff; border: none;
-      padding: .55rem 1.2rem; border-radius: var(--radius);
+      padding: .55rem 1.3rem; border-radius: var(--radius);
       font-weight: 700; font-size: .9rem; cursor: pointer;
-      transition: opacity .2s, transform .15s;
+      transition: opacity .2s, transform .15s; white-space: nowrap;
     }
     .btn-new:hover { opacity: .88; transform: translateY(-1px); }
     .level-badge {
-      font-size: .75rem; padding: .25rem .7rem; border-radius: 20px;
-      font-weight: 700; letter-spacing: .04em;
+      font-size: .75rem; padding: .28rem .8rem; border-radius: 20px;
+      font-weight: 700; letter-spacing: .04em; white-space: nowrap;
     }
     .level-badge.basico     { background: rgba(63,185,80,.15);  color: var(--green); border: 1px solid rgba(63,185,80,.35); }
     .level-badge.intermedio { background: rgba(27,161,226,.15); color: var(--ccna);  border: 1px solid rgba(27,161,226,.35); }
     .level-badge.avanzado   { background: rgba(248,81,73,.15);  color: var(--red);   border: 1px solid rgba(248,81,73,.35); }
 
-    /* ── Pool de hosts ── */
-    .pool-section {
+    /* ── Panel de información (red base + pool) ── */
+    .info-panel {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: .85rem 1.1rem;
-      margin-bottom: 1.25rem;
+      border-radius: var(--radius); margin-bottom: 1.25rem;
+      overflow: hidden;
     }
+
+    /* Fila de red base */
+    .base-row {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      padding: .75rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(27,161,226,.07), transparent);
+    }
+    .base-label {
+      font-size: .68rem; text-transform: uppercase; letter-spacing: .07em;
+      color: var(--muted); white-space: nowrap;
+    }
+    .base-value {
+      font-family: monospace; font-size: 1.1rem; font-weight: 800;
+      color: var(--ccna); letter-spacing: .02em;
+    }
+
+    /* Fila de chips */
+    .pool-row { padding: .75rem 1.1rem; }
     .pool-label {
       font-size: .68rem; text-transform: uppercase; letter-spacing: .07em;
-      color: var(--muted); margin-bottom: .55rem;
+      color: var(--muted); margin-bottom: .5rem;
     }
     .pool-chips { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
     .chip {
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--bg); border: 1px solid var(--border);
-      border-radius: 20px; padding: .22rem .75rem;
+      border-radius: 20px; padding: .24rem .8rem;
       font-family: monospace; font-size: .82rem; color: var(--text);
-      transition: all .25s;
+      transition: all .25s; user-select: none;
     }
     .chip.used {
       text-decoration: line-through; opacity: .28;
@@ -61,90 +82,114 @@
     .chip.next {
       background: rgba(27,161,226,.12); border-color: rgba(27,161,226,.5);
       color: var(--ccna); font-weight: 700;
-      box-shadow: 0 0 0 2px rgba(27,161,226,.18);
+      box-shadow: 0 0 0 3px rgba(27,161,226,.18);
     }
 
     /* ── Tabla VLSM ── */
-    .vlsm-wrap { overflow-x: auto; }
+    .vlsm-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      /* Indicador visual de scroll */
+      background:
+        linear-gradient(to right, var(--bg) 20px, transparent 20px),
+        linear-gradient(to left,  var(--bg) 20px, transparent 20px) right,
+        radial-gradient(ellipse at left,  rgba(0,0,0,.18), transparent 70%) left,
+        radial-gradient(ellipse at right, rgba(0,0,0,.18), transparent 70%) right;
+      background-repeat: no-repeat;
+      background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+      background-attachment: local, local, scroll, scroll;
+    }
     .vlsm-table {
       border-collapse: collapse; width: 100%;
       font-family: monospace; font-size: .8rem;
-      min-width: 820px;
+      min-width: 780px;
     }
     .vlsm-table th {
       background: var(--surface); color: var(--muted);
-      padding: .55rem .7rem; border: 1px solid var(--border);
-      text-align: left; font-size: .7rem; text-transform: uppercase;
-      letter-spacing: .05em; white-space: nowrap;
+      padding: .6rem .75rem; border-bottom: 2px solid var(--border);
+      border-right: 1px solid var(--border);
+      text-align: left; font-size: .68rem; text-transform: uppercase;
+      letter-spacing: .06em; white-space: nowrap;
+      position: sticky; top: 0; z-index: 1;
     }
     .vlsm-table td {
-      padding: .4rem .55rem; border: 1px solid var(--border);
+      padding: .42rem .6rem; border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
       vertical-align: middle;
     }
+    .vlsm-table tr:last-child td { border-bottom: none; }
 
     /* ── Estados de fila ── */
-    .row-done td   { background: rgba(63,185,80,.05); }
+    .row-done   td { background: rgba(63,185,80,.05); }
     .row-active td { background: rgba(27,161,226,.06); }
-    .row-locked td { opacity: .28; pointer-events: none; }
-    .row-wan.row-active td { background: rgba(248,81,73,.05); }
-    .row-wan.row-locked td { opacity: .22; }
+    .row-locked td { opacity: .25; pointer-events: none; }
+    .row-wan.row-active td { background: rgba(248,81,73,.04); }
+    .row-wan.row-locked td { opacity: .18; }
 
     /* ── Fila de feedback ── */
     .fb-row td {
-      background: rgba(248,81,73,.06); border-color: rgba(248,81,73,.35);
-      padding: .55rem .8rem;
+      background: rgba(248,81,73,.07); border-bottom: 1px solid rgba(248,81,73,.3);
+      padding: .6rem .85rem;
     }
-    .fb-msg { font-size: .76rem; color: var(--red); font-family: monospace; line-height: 1.8; }
+    .fb-msg {
+      font-size: .76rem; color: var(--red); font-family: monospace;
+      line-height: 1.85; white-space: pre-wrap;
+    }
 
     /* ── Inputs de la tabla ── */
     .ti {
       background: var(--bg); border: 1px solid var(--border);
       border-radius: 4px; color: var(--text);
-      padding: .22rem .4rem; font-family: monospace; font-size: .78rem;
-      outline: none; transition: border-color .2s;
+      padding: .25rem .45rem; font-family: monospace; font-size: .78rem;
+      outline: none; transition: border-color .2s, box-shadow .2s;
     }
-    .ti:focus  { border-color: var(--ccna); }
+    .ti:focus  { border-color: var(--ccna); box-shadow: 0 0 0 2px rgba(27,161,226,.15); }
     .ti.ok     { border-color: var(--green); color: var(--green); }
     .ti-h  { width: 52px; }
-    .ti-ip { width: 102px; }
-    .ti-px { width: 38px; }
-    .ti-mk { width: 108px; }
+    .ti-ip { width: 104px; }
+    .ti-px { width: 40px; }
+    .ti-mk { width: 110px; }
 
     /* ── Botón Verificar ── */
     .btn-verify {
       background: var(--ccna); color: #fff; border: none;
-      padding: .28rem .72rem; border-radius: 4px;
+      padding: .3rem .8rem; border-radius: 4px;
       font-size: .78rem; font-weight: 700; cursor: pointer;
-      white-space: nowrap; transition: opacity .2s;
+      white-space: nowrap; transition: opacity .2s, transform .1s;
     }
-    .btn-verify:hover { opacity: .85; }
+    .btn-verify:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-verify:active { transform: none; }
 
     /* ── Número de fila ── */
-    .rnum { color: var(--muted); font-size: .75rem; text-align: center; width: 28px; }
+    .rnum {
+      color: var(--muted); font-size: .72rem; text-align: center;
+      width: 30px; white-space: nowrap;
+    }
 
     /* ── Etiqueta WAN ── */
     .wan-label {
-      font-size: .65rem; padding: .08rem .4rem; border-radius: 10px;
+      display: inline-block;
+      font-size: .62rem; padding: .06rem .38rem; border-radius: 8px;
       background: rgba(248,81,73,.12); color: var(--red);
-      border: 1px solid rgba(248,81,73,.3); margin-left: .35rem;
-      vertical-align: middle;
+      border: 1px solid rgba(248,81,73,.3); margin-left: .3rem;
+      vertical-align: middle; line-height: 1.4;
     }
 
-    /* ── Estado de celda ── */
+    /* ── Estado completado ── */
     .tag-ok {
       background: rgba(63,185,80,.15); color: var(--green);
       border: 1px solid rgba(63,185,80,.3); border-radius: 3px;
-      padding: .05rem .35rem; font-size: .75rem;
+      padding: .08rem .4rem; font-size: .75rem;
     }
 
     /* ── Banner final ── */
     .done-banner {
       margin-top: 1.5rem;
       background: rgba(63,185,80,.08); border: 1px solid rgba(63,185,80,.3);
-      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      border-radius: var(--radius); padding: 1.5rem 2rem;
       text-align: center; display: none;
     }
-    .done-banner h3 { color: var(--green); font-size: 1.25rem; margin-bottom: .5rem; }
+    .done-banner h3 { color: var(--green); font-size: 1.3rem; margin-bottom: .5rem; }
     .done-banner p  { color: var(--muted); font-size: .9rem; }
 
     @keyframes shake {
@@ -197,14 +242,16 @@
       <span id="lvlBadge" class="level-badge intermedio">Intermedio</span>
     </div>
 
-    <!-- Red base + Pool de hosts -->
-    <div class="pool-section">
-      <div class="pool-label">Red base de partida</div>
-      <div style="margin-bottom:.75rem">
-        <span id="baseNetDisplay" style="font-family:monospace;font-size:1.05rem;font-weight:700;color:var(--ccna)"></span>
+    <!-- Panel: red base + pool de hosts -->
+    <div class="info-panel">
+      <div class="base-row">
+        <span class="base-label">Red base de partida</span>
+        <span class="base-value" id="baseNetDisplay">—</span>
       </div>
-      <div class="pool-label">Hosts requeridos (asigna de mayor a menor)</div>
-      <div class="pool-chips" id="poolChips"></div>
+      <div class="pool-row">
+        <div class="pool-label">Hosts requeridos — asigna de mayor a menor</div>
+        <div class="pool-chips" id="poolChips"></div>
+      </div>
     </div>
 
     <!-- Tabla -->
