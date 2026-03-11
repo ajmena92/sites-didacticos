@@ -594,6 +594,27 @@
   //  INICIO
   // ═══════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', () => { newExercise(); });
+
+  // ── Ctrl + Shift + Enter → resolver todo el esquema ──
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'Enter') {
+      e.preventDefault();
+      V.subnets.forEach((s, i) => {
+        if (i < V.activeRow) return; // ya completada
+        V.activeRow = i;
+        renderPool();
+        renderTable();
+        document.getElementById('in-h-'   + i).value = s.hosts;
+        document.getElementById('in-net-' + i).value = str(s.net);
+        document.getElementById('in-px-'  + i).value = '/' + s.prefix;
+        document.getElementById('in-mk-'  + i).value = str(s.mask);
+        document.getElementById('in-f-'   + i).value = str(s.first);
+        document.getElementById('in-l-'   + i).value = str(s.last);
+        document.getElementById('in-bc-'  + i).value = str(s.bc);
+        verify(i);
+      });
+    }
+  });
   </script>
 
 </body>
