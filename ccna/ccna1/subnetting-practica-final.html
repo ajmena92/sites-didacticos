@@ -240,6 +240,13 @@
     .btn-repeat:hover { border-color: var(--ccna); }
     .save-confirm { font-size: .82rem; color: var(--green); margin-top: .5rem; display: none; }
     .save-confirm.show { display: block; }
+    .btn-send-form {
+      background: var(--green); color: #fff; border: none;
+      padding: .65rem 1.25rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: opacity .2s; width: 100%; margin-top: .5rem;
+    }
+    .btn-send-form:hover { opacity: .88; }
 
     /* ── Right panel ── */
     .right-panel { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -330,8 +337,6 @@
         <a href="subnetting-vlsm.html">VLSM</a>
         <a href="subnetting-practica-final.html" class="active">Evaluación Final</a>
       </div>
-      <div class="nav-divider"></div>
-      <a class="back-to-catalog" href="../../index.html">← Catálogo</a>
     </nav>
   </header>
 
@@ -410,6 +415,9 @@
             <button class="btn-repeat" id="btnRepetir">🔄 Repetir evaluación</button>
           </div>
           <div class="save-confirm" id="saveConfirm">✓ Resultado guardado en este dispositivo.</div>
+          <button class="btn-send-form" id="btnEnviar" onclick="sendToForm()">
+            📤 Enviar al profesor
+          </button>
         </div>
       </div>
 
@@ -456,6 +464,44 @@
   </footer>
 
   <script>
+  // ── CONFIGURACIÓN DEL PROFESOR ───────────────────────────────────
+  // Reemplaza FORM_ID y los entry.XXXXXXX con los de tu Google Form
+  const FORM_CONFIG = {
+    id: '1FAIpQLSexKLoZIJHyCZHHxKz7mMvzIW4dSO2R2TamV1_-ksNpqAn0GQ',
+    nombre:      'entry.335584076',
+    fecha:       'entry.433021297',
+    tipo:        'entry.478783910',
+    completados: 'entry.85754048',
+    errores:     'entry.1963425968',
+    calificacion:'entry.85846131',
+  };
+  // ─────────────────────────────────────────────────────────────────
+
+  function buildFormUrl(data) {
+    const base = `https://docs.google.com/forms/d/e/${FORM_CONFIG.id}/viewform?`;
+    const p = (key, val) => `${FORM_CONFIG[key]}=${encodeURIComponent(val)}`;
+    return base + [
+      p('nombre',      data.nombre),
+      p('fecha',       data.fecha),
+      p('tipo',        data.tipo),
+      p('completados', data.completados),
+      p('errores',     data.errores),
+      p('calificacion',data.calificacion),
+    ].join('&') + '&usp=pp_url';
+  }
+
+  function sendToForm() {
+    const url = buildFormUrl({
+      nombre:      S.nombre,
+      fecha:       new Date().toLocaleDateString('es-CR'),
+      tipo:        'Evaluación Final — Subnetting/ANDing',
+      completados: S.done + '/' + S.totalEx,
+      errores:     S.totalWrong,
+      calificacion: Math.max(0, 100 - S.totalWrong * 5),
+    });
+    window.open(url, '_blank');
+  }
+
   // ════════════════════════════════════
   //  CÁLCULOS PUROS
   // ════════════════════════════════════

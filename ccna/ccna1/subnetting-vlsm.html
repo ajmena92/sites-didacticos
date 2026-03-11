@@ -198,6 +198,31 @@
       70%    { transform:translateX(4px) }
     }
     .shake { animation: shake .32s ease; }
+
+    /* ── Campo nombre estudiante ── */
+    .nombre-row {
+      display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+      padding: .75rem 1.1rem; border-bottom: 1px solid var(--border);
+    }
+    .nombre-input {
+      flex: 1; min-width: 180px; max-width: 340px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .4rem .75rem;
+      border-radius: 6px; font-size: .9rem; outline: none;
+      transition: border-color .2s;
+    }
+    .nombre-input:focus { border-color: var(--ccna); }
+    .nombre-input.input-error { border-color: var(--red); }
+
+    /* ── Botón enviar al profesor ── */
+    .btn-send-form {
+      background: var(--green); color: #fff; border: none;
+      padding: .65rem 1.25rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: opacity .2s; margin-top: .75rem;
+    }
+    .btn-send-form:hover { opacity: .88; }
+    .done-hint { font-size: .78rem; color: var(--muted); margin-top: .5rem; }
   </style>
 </head>
 <body>
@@ -212,8 +237,6 @@
         <a href="subnetting-vlsm.html" class="active">VLSM</a>
         <a href="subnetting-practica-final.html">Evaluación Final</a>
       </div>
-      <div class="nav-divider"></div>
-      <a class="back-to-catalog" href="../../index.html">← Catálogo</a>
     </nav>
   </header>
 
@@ -240,6 +263,15 @@
       </select>
       <button class="btn-new" onclick="newExercise()">Nuevo ejercicio</button>
       <span id="lvlBadge" class="level-badge intermedio">Intermedio</span>
+    </div>
+
+    <!-- Campo nombre estudiante -->
+    <div class="info-panel" style="margin-bottom:.75rem">
+      <div class="nombre-row">
+        <label class="base-label" for="estudianteNombre">Tu nombre</label>
+        <input id="estudianteNombre" class="nombre-input"
+               placeholder="Escribe tu nombre completo" maxlength="80" />
+      </div>
     </div>
 
     <!-- Panel: red base + pool de hosts -->
@@ -277,7 +309,11 @@
     <!-- Banner final -->
     <div class="done-banner" id="doneBanner">
       <h3>🎉 ¡Esquema completo!</h3>
-      <p>Completaste todas las subredes correctamente. Pulsa <strong>Nuevo ejercicio</strong> para practicar de nuevo.</p>
+      <p id="doneStats">Completaste todas las subredes correctamente.</p>
+      <button class="btn-send-form" onclick="sendVlsmToForm()">
+        📤 Enviar al profesor
+      </button>
+      <p class="done-hint">Se abrirá Google Forms pre-llenado. Solo presiona Enviar.</p>
     </div>
 
   </div>
@@ -288,6 +324,53 @@
   </footer>
 
   <script>
+  // ── CONFIGURACIÓN DEL PROFESOR ───────────────────────────────────
+  // Reemplaza FORM_ID y los entry.XXXXXXX con los de tu Google Form
+  const FORM_CONFIG = {
+    id: '1FAIpQLSexKLoZIJHyCZHHxKz7mMvzIW4dSO2R2TamV1_-ksNpqAn0GQ',
+    nombre:      'entry.335584076',
+    fecha:       'entry.433021297',
+    tipo:        'entry.478783910',
+    completados: 'entry.85754048',
+    errores:     'entry.1963425968',
+    calificacion:'entry.85846131',
+  };
+  // ─────────────────────────────────────────────────────────────────
+
+  function buildFormUrl(data) {
+    const base = `https://docs.google.com/forms/d/e/${FORM_CONFIG.id}/viewform?`;
+    const p = (key, val) => `${FORM_CONFIG[key]}=${encodeURIComponent(val)}`;
+    return base + [
+      p('nombre',      data.nombre),
+      p('fecha',       data.fecha),
+      p('tipo',        data.tipo),
+      p('completados', data.completados),
+      p('errores',     data.errores),
+      p('calificacion',data.calificacion),
+    ].join('&') + '&usp=pp_url';
+  }
+
+  function sendVlsmToForm() {
+    const nombreInput = document.getElementById('estudianteNombre');
+    const nombre = nombreInput.value.trim();
+    if (!nombre) {
+      nombreInput.classList.add('input-error');
+      nombreInput.focus();
+      return;
+    }
+    const lvl   = document.getElementById('lvlSelect').value;
+    const total = V.subnets.length;
+    const url = buildFormUrl({
+      nombre,
+      fecha:       new Date().toLocaleDateString('es-CR'),
+      tipo:        'VLSM — ' + LEVELS[lvl].label,
+      completados: total + '/' + total,
+      errores:     V.totalErrors,
+      calificacion: 100,
+    });
+    window.open(url, '_blank');
+  }
+
   // ═══════════════════════════════════════════════════════
   //  UTILIDADES IP
   // ═══════════════════════════════════════════════════════
@@ -354,11 +437,12 @@
   //  ESTADO GLOBAL
   // ═══════════════════════════════════════════════════════
   const V = {
-    subnets:    [],   // [{hosts, prefix, mask[], net[], first[], last[], bc[], wan}]
-    hostsGiven: [],   // hosts en orden aleatorio para los chips
-    baseNet:    '',   // string de la red base (ej. "172.20.0.0/16")
-    activeRow:  0,
-    done:       false
+    subnets:     [],   // [{hosts, prefix, mask[], net[], first[], last[], bc[], wan}]
+    hostsGiven:  [],   // hosts en orden aleatorio para los chips
+    baseNet:     '',   // string de la red base (ej. "172.20.0.0/16")
+    activeRow:   0,
+    done:        false,
+    totalErrors: 0,    // contador de errores acumulados en todo el ejercicio
   };
 
   // ═══════════════════════════════════════════════════════
@@ -411,8 +495,9 @@
     // Pool desordenado para los chips
     V.hostsGiven = [...allSorted].sort(() => Math.random() - .5);
 
-    V.activeRow = 0;
-    V.done      = false;
+    V.activeRow   = 0;
+    V.done        = false;
+    V.totalErrors = 0;
     document.getElementById('doneBanner').style.display = 'none';
 
     renderPool();
@@ -572,12 +657,17 @@
       V.activeRow++;
       if (V.activeRow >= V.subnets.length) {
         V.done = true;
+        const lvl   = document.getElementById('lvlSelect').value;
+        const total = V.subnets.length;
+        document.getElementById('doneStats').textContent =
+          `Nivel: ${LEVELS[lvl].label} · Filas: ${total}/${total} · Intentos fallidos: ${V.totalErrors} · Calificación: 100/100`;
         document.getElementById('doneBanner').style.display = 'block';
       }
       renderPool();
       renderTable();
     } else {
       // ✗ Error → shake + fila de feedback
+      V.totalErrors++;
       const activeRow = document.getElementById('row-' + i);
       activeRow?.classList.add('shake');
       setTimeout(() => activeRow?.classList.remove('shake'), 380);
@@ -593,7 +683,11 @@
   // ═══════════════════════════════════════════════════════
   //  INICIO
   // ═══════════════════════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', () => { newExercise(); });
+  document.addEventListener('DOMContentLoaded', () => {
+    newExercise();
+    document.getElementById('estudianteNombre')
+      .addEventListener('input', function() { this.classList.remove('input-error'); });
+  });
 
   // ── Ctrl + Shift + Enter → resolver todo el esquema ──
   document.addEventListener('keydown', e => {
