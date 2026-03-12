@@ -250,6 +250,20 @@
     .hi-err  { color: var(--muted); font-size: .75rem; }
     .hi-date { color: var(--muted); font-size: .72rem; white-space: nowrap; }
 
+    .cum-progress {
+      margin: .75rem auto 0; padding: .65rem 1rem;
+      border-radius: 8px; font-size: .85rem; max-width: 400px;
+    }
+    .cum-progress.pending {
+      background: rgba(139,148,158,.1); border: 1px solid rgba(139,148,158,.25);
+      color: var(--muted);
+    }
+    .cum-progress.ok {
+      background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.3);
+      color: var(--green);
+    }
+    .cum-hint { font-size: .78rem; color: var(--muted); }
+
     /* ── Botón enviar al profesor ── */
     .btn-send-form {
       background: var(--green); color: #fff; border: none;
@@ -270,6 +284,68 @@
       70%    { transform:translateX(4px) }
     }
     .shake { animation: shake .32s ease; }
+
+    /* ── Mobile card layout ── */
+    @media (max-width: 767px) {
+      .vlsm-wrap { display: none !important; }
+      .vlsm-cards { display: flex !important; flex-direction: column; gap: 1rem; padding: 0 1rem 1rem; }
+    }
+    .vlsm-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem;
+      transition: border-color .2s;
+    }
+    .vlsm-card.card-done   { border-color: var(--green); opacity: .7; }
+    .vlsm-card.card-active { border-color: var(--ccna); }
+    .vlsm-card.card-locked { opacity: .4; pointer-events: none; }
+    .vlsm-card-header {
+      display: flex; align-items: center; gap: .6rem;
+      margin-bottom: .75rem; font-size: .85rem; font-weight: 700;
+    }
+    .vlsm-field {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: .5rem;
+      margin-bottom: .5rem; font-size: .82rem;
+    }
+    .vlsm-field label { color: var(--muted); min-width: 110px; }
+    .vlsm-field input { flex: 1; min-width: 0; }
+
+    /* ── Botón revisar solución ── */
+    .btn-review {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: .45rem 1.1rem;
+      border-radius: var(--radius); font-size: .85rem;
+      cursor: pointer; transition: color .2s, border-color .2s;
+      margin-top: .5rem;
+    }
+    .btn-review:hover { color: var(--text); border-color: var(--text); }
+    .review-row td {
+      background: rgba(63,185,80,.07);
+      color: var(--green); font-size: .78rem;
+      font-family: monospace; padding: .3rem .5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .review-row .rv-label {
+      font-size: .68rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em;
+      display: block;
+    }
+
+    /* ── Barra de progreso de fila ── */
+    .row-progress {
+      display: flex; align-items: center; gap: .75rem;
+      max-width: 440px; margin: .75rem auto 1rem;
+    }
+    .rp-bar {
+      flex: 1; height: 6px; background: var(--border);
+      border-radius: 3px; overflow: hidden;
+    }
+    .rp-fill {
+      height: 100%; background: var(--ccna);
+      border-radius: 3px; transition: width .3s ease;
+      width: 0%;
+    }
+    .rp-label { font-size: .78rem; color: var(--muted); white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -343,6 +419,12 @@
       </div>
     </div>
 
+    <!-- Barra de progreso de fila -->
+    <div class="row-progress" id="rowProgress" style="display:none">
+      <div class="rp-bar"><div class="rp-fill" id="rpFill"></div></div>
+      <span class="rp-label" id="rpLabel">Fila 0 de 0</span>
+    </div>
+
     <!-- Tabla -->
     <div class="vlsm-wrap">
       <table class="vlsm-table" id="vlsmTable">
@@ -363,6 +445,9 @@
       </table>
     </div>
 
+    <!-- Cards (mobile) -->
+    <div class="vlsm-cards" id="vlsmCards" style="display:none"></div>
+
     <!-- Banner final -->
     <div class="done-banner" id="doneBanner">
       <h3>🎉 ¡Esquema completo!</h3>
@@ -371,6 +456,7 @@
       <span id="submitIndicator" class="submit-ind"></span>
       <button id="btnFallback" class="btn-send-form" style="display:none"
               onclick="sendVlsmToForm()">📤 Reenviar al profesor</button>
+      <button class="btn-review" id="btnReview" onclick="toggleReview()">🔍 Revisar solución</button>
     </div>
 
   </div>
@@ -380,57 +466,9 @@
     <span class="footer-author">✍️ Material elaborado por el <strong>Prof. Andrés Mena Abarca</strong></span>
   </footer>
 
+  <script src="../../assets/js/net-utils.js"></script>
+  <script src="../../assets/js/ccna1-submit.js"></script>
   <script>
-  // ── CONFIGURACIÓN DEL PROFESOR ───────────────────────────────────
-  const FORM_CONFIG = {
-    scriptUrl:   'https://script.google.com/macros/s/AKfycbzzdEibQEN9nRjZKBU7CBR5fk1UbE4bdqWzFcXxZanX1DtfzBlw09dIyTljbiWRJ9hfKw/exec',
-    id: '1FAIpQLSexKLoZIJHyCZHHxKz7mMvzIW4dSO2R2TamV1_-ksNpqAn0GQ',
-    nombre:      'entry.335584076',
-    fecha:       'entry.433021297',
-    tipo:        'entry.478783910',
-    completados: 'entry.85754048',
-    errores:     'entry.1963425968',
-    calificacion:'entry.85846131',
-  };
-  // ─────────────────────────────────────────────────────────────────
-
-  function buildFormUrl(data) {
-    const base = `https://docs.google.com/forms/d/e/${FORM_CONFIG.id}/viewform?`;
-    const p = (key, val) => `${FORM_CONFIG[key]}=${encodeURIComponent(val)}`;
-    return base + [
-      p('nombre',      data.nombre),
-      p('fecha',       data.fecha),
-      p('tipo',        data.tipo),
-      p('completados', data.completados),
-      p('errores',     data.errores),
-      p('calificacion',data.calificacion),
-    ].join('&') + '&usp=pp_url';
-  }
-
-  async function autoSubmit(data) {
-    const indicator = document.getElementById('submitIndicator');
-    if (indicator) { indicator.textContent = '⏳ Registrando…'; indicator.className = 'submit-ind pending'; }
-    if (FORM_CONFIG.scriptUrl === 'PASTE_SCRIPT_URL_HERE') {
-      if (indicator) { indicator.textContent = '⚠ Script no configurado — usa el botón de reenvío'; indicator.className = 'submit-ind err'; }
-      document.getElementById('btnFallback').style.display = 'block';
-      return;
-    }
-    try {
-      const res = await fetch(FORM_CONFIG.scriptUrl, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
-      const json = await res.json();
-      if (json.ok && indicator) {
-        indicator.textContent = '✓ Registrado automáticamente';
-        indicator.className = 'submit-ind ok';
-      } else throw new Error(json.error || 'Error desconocido');
-    } catch(err) {
-      if (indicator) { indicator.textContent = '⚠ No se pudo registrar — usa el botón'; indicator.className = 'submit-ind err'; }
-      document.getElementById('btnFallback').style.display = 'block';
-    }
-  }
-
   function sendVlsmToForm() {
     const h = V.historial;
     if (h.length === 0) return;
@@ -448,36 +486,7 @@
     window.open(url, '_blank');
   }
 
-  // ═══════════════════════════════════════════════════════
-  //  UTILIDADES IP
-  // ═══════════════════════════════════════════════════════
-  function prefixToMask(p) {
-    return Array.from({length:4}, (_,i) => {
-      const b = Math.min(8, Math.max(0, p - i*8));
-      return b===8 ? 255 : b===0 ? 0 : 256 - Math.pow(2, 8-b);
-    });
-  }
-  function wildcard(m) { return m.map(x=>255-x); }
-  function netAddr(ip, m) { return ip.map((b,i)=>b&m[i]); }
-  function broadcast(net, wc) { return net.map((b,i)=>b+wc[i]); }
-  function addOne(o) {
-    const n=(((o[0]<<24)|(o[1]<<16)|(o[2]<<8)|o[3])>>>0)+1;
-    return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
-  }
-  function subOne(o) {
-    const n=(((o[0]<<24)|(o[1]<<16)|(o[2]<<8)|o[3])>>>0)-1;
-    return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
-  }
-  function str(o) { return o.join('.'); }
-
-  function normIP(s) {
-    if (!s) return null;
-    const parts = s.trim().replace(/\s+/g,'.').replace(/,/g,'.').split('.');
-    if (parts.length!==4) return null;
-    const n = parts.map(p=>parseInt(p,10));
-    if (n.some(x=>isNaN(x)||x<0||x>255)) return null;
-    return n.join('.');
-  }
+  // normPfx es exclusiva de VLSM (valida prefijo /0-32)
   function normPfx(s) {
     const t = String(s).trim().replace(/^\//, '');
     const n = parseInt(t, 10);
@@ -487,28 +496,45 @@
   // ═══════════════════════════════════════════════════════
   //  CONFIGURACIÓN DE NIVELES
   // ═══════════════════════════════════════════════════════
-  function ri(min,max){ return min + Math.floor(Math.random()*(max-min+1)); }
 
-  const LEVELS = {
-    basico: {
-      label: 'Básico', cls: 'basico',
-      lanRanges: [[30,62],[62,126],[126,254]],
-      wan: 0,
-      base() { return { ip:[192,168,ri(1,254),0], prefix:24 }; }
-    },
-    intermedio: {
-      label: 'Intermedio', cls: 'intermedio',
-      lanRanges: [[6,14],[14,30],[30,62],[62,126],[500,1022]],
-      wan: 0,
-      base() { return { ip:[172,ri(16,31),ri(0,15)*16,0], prefix:20 }; }
-    },
-    avanzado: {
-      label: 'Avanzado', cls: 'avanzado',
-      lanRanges: [[2000,4000],[500,1022],[200,500],[100,200],[30,62],[6,14]],
-      wan: 4,
-      base() { return { ip:[10,ri(1,200),0,0], prefix:16 }; }
+  let LEVELS = {};
+
+  async function loadLevels() {
+    try {
+      const res  = await fetch('../../assets/data/vlsm-levels.json');
+      const data = await res.json();
+      // Reattach base() function per level (functions can't be serialized to JSON)
+      const baseFns = {
+        basico:     function() { return { ip:[192,168,ri(1,254),0], prefix:24 }; },
+        intermedio: function() { return { ip:[172,ri(16,31),ri(0,15)*16,0], prefix:20 }; },
+        avanzado:   function() { return { ip:[10,ri(1,200),0,0], prefix:16 }; },
+      };
+      Object.keys(data).forEach(k => { data[k].base = baseFns[k] || (() => ({ ip:[10,0,0,0], prefix:8 })); });
+      LEVELS = data;
+    } catch(e) {
+      // Fallback: inline data if fetch fails (e.g., file:// protocol)
+      LEVELS = {
+        basico: {
+          label: 'Básico', cls: 'basico',
+          lanRanges: [[30,62],[62,126],[126,254]],
+          wan: 0,
+          base() { return { ip:[192,168,ri(1,254),0], prefix:24 }; }
+        },
+        intermedio: {
+          label: 'Intermedio', cls: 'intermedio',
+          lanRanges: [[6,14],[14,30],[30,62],[62,126],[500,1022]],
+          wan: 0,
+          base() { return { ip:[172,ri(16,31),ri(0,15)*16,0], prefix:20 }; }
+        },
+        avanzado: {
+          label: 'Avanzado', cls: 'avanzado',
+          lanRanges: [[2000,4000],[500,1022],[200,500],[100,200],[30,62],[6,14]],
+          wan: 4,
+          base() { return { ip:[10,ri(1,200),0,0], prefix:16 }; }
+        }
+      };
     }
-  };
+  }
 
   // ═══════════════════════════════════════════════════════
   //  ESTADO GLOBAL
@@ -522,7 +548,19 @@
     totalErrors: 0,
     nombre:      '',
     historial:   [],   // últimos 3 ejercicios completados
+    tablasDone:        0,   // tablas completadas en esta sesión
+    erroresAcumulados: 0,   // errores totales acumulados
+    rowAttempts:       {},  // intentos por fila: índice → contador
   };
+
+  // Restaurar sesión si el estudiante recargó la página
+  try {
+    const _sess = JSON.parse(sessionStorage.getItem('vlsm_session') || 'null');
+    if (_sess && typeof _sess.tablasDone === 'number') {
+      V.tablasDone        = _sess.tablasDone;
+      V.erroresAcumulados = _sess.erroresAcumulados;
+    }
+  } catch(e) {}
 
   // ═══════════════════════════════════════════════════════
   //  GENERADOR DE EJERCICIO
@@ -569,10 +607,16 @@
     V.activeRow   = 0;
     V.done        = false;
     V.totalErrors = 0;
+    V.rowAttempts = {};
     document.getElementById('doneBanner').style.display = 'none';
+    document.querySelectorAll('.review-row').forEach(r => r.remove());
+    const btnRev = document.getElementById('btnReview');
+    if (btnRev) btnRev.textContent = '🔍 Revisar solución';
 
     renderPool();
     renderTable();
+    document.getElementById('rowProgress').style.display = 'flex';
+    updateProgress();
   }
 
   // ═══════════════════════════════════════════════════════
@@ -609,6 +653,21 @@
   }
 
   // ═══════════════════════════════════════════════════════
+  //  PROGRESO DE FILA
+  // ═══════════════════════════════════════════════════════
+  function updateProgress() {
+    const prog  = document.getElementById('rowProgress');
+    const fill  = document.getElementById('rpFill');
+    const label = document.getElementById('rpLabel');
+    if (!prog || V.subnets.length === 0) return;
+    const done  = V.activeRow;
+    const total = V.subnets.length;
+    prog.style.display  = V.done ? 'none' : 'flex';
+    fill.style.width    = `${Math.round(done / total * 100)}%`;
+    label.textContent   = `Fila ${done} de ${total}`;
+  }
+
+  // ═══════════════════════════════════════════════════════
   //  RENDER TABLA
   // ═══════════════════════════════════════════════════════
   function renderTable() {
@@ -638,22 +697,37 @@
           <td><span class="tag-ok">✓</span></td>`;
 
       } else if (i === V.activeRow) {
-        tr.innerHTML = `
-          <td class="rnum">${i+1}${wanTag}</td>
-          <td><input class="ti ti-h"  id="in-h-${i}"   placeholder="n" /></td>
-          <td><input class="ti ti-ip" id="in-net-${i}" placeholder="x.x.x.x" /></td>
-          <td><input class="ti ti-px" id="in-px-${i}"  placeholder="/n" /></td>
-          <td><input class="ti ti-mk" id="in-mk-${i}"  placeholder="x.x.x.x" /></td>
-          <td><input class="ti ti-ip" id="in-f-${i}"   placeholder="x.x.x.x" /></td>
-          <td><input class="ti ti-ip" id="in-l-${i}"   placeholder="x.x.x.x" /></td>
-          <td><input class="ti ti-ip" id="in-bc-${i}"  placeholder="x.x.x.x" /></td>
-          <td><button class="btn-verify" onclick="verify(${i})">Verificar</button></td>`;
+        const isMobile = window.matchMedia('(max-width: 767px)').matches;
+        if (isMobile) {
+          // On mobile the card view handles inputs; table row shows placeholder only
+          tr.innerHTML = `
+            <td class="rnum">${i+1}${wanTag}</td>
+            <td><input class="ti ti-h"  placeholder="n"       disabled /></td>
+            <td><input class="ti ti-ip" placeholder="x.x.x.x" disabled /></td>
+            <td><input class="ti ti-px" placeholder="/n"      disabled /></td>
+            <td><input class="ti ti-mk" placeholder="x.x.x.x" disabled /></td>
+            <td><input class="ti ti-ip" placeholder="x.x.x.x" disabled /></td>
+            <td><input class="ti ti-ip" placeholder="x.x.x.x" disabled /></td>
+            <td><input class="ti ti-ip" placeholder="x.x.x.x" disabled /></td>
+            <td></td>`;
+        } else {
+          tr.innerHTML = `
+            <td class="rnum">${i+1}${wanTag}</td>
+            <td><input class="ti ti-h"  id="in-h-${i}"   placeholder="n" /></td>
+            <td><input class="ti ti-ip" id="in-net-${i}" placeholder="x.x.x.x" /></td>
+            <td><input class="ti ti-px" id="in-px-${i}"  placeholder="/n" /></td>
+            <td><input class="ti ti-mk" id="in-mk-${i}"  placeholder="x.x.x.x" /></td>
+            <td><input class="ti ti-ip" id="in-f-${i}"   placeholder="x.x.x.x" /></td>
+            <td><input class="ti ti-ip" id="in-l-${i}"   placeholder="x.x.x.x" /></td>
+            <td><input class="ti ti-ip" id="in-bc-${i}"  placeholder="x.x.x.x" /></td>
+            <td><button class="btn-verify" onclick="verify(${i})">Verificar</button></td>`;
 
-        setTimeout(() => {
-          document.getElementById('in-bc-' + i)
-            ?.addEventListener('keydown', e => { if(e.key==='Enter') verify(i); });
-          document.getElementById('in-h-' + i)?.focus();
-        }, 30);
+          setTimeout(() => {
+            document.getElementById('in-bc-' + i)
+              ?.addEventListener('keydown', e => { if(e.key==='Enter') verify(i); });
+            document.getElementById('in-h-' + i)?.focus();
+          }, 30);
+        }
 
       } else {
         tr.innerHTML = `
@@ -670,27 +744,175 @@
 
       tbody.appendChild(tr);
     });
+
+    updateProgress();
+    renderCards();
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  RENDER CARDS (MOBILE)
+  // ═══════════════════════════════════════════════════════
+  function renderCards() {
+    const container = document.getElementById('vlsmCards');
+    if (!container) return;
+    container.innerHTML = '';
+
+    V.subnets.forEach((s, i) => {
+      const stateClass = i < V.activeRow ? 'card-done'
+                       : i === V.activeRow ? 'card-active'
+                       : 'card-locked';
+      const wanTag = s.wan
+        ? '<span class="wan-label">WAN</span>'
+        : '';
+
+      const card = document.createElement('div');
+      card.className = 'vlsm-card ' + stateClass;
+      card.id = 'card-' + i;
+
+      if (i < V.activeRow) {
+        // Completed card — show values as read-only text
+        card.innerHTML = `
+          <div class="vlsm-card-header">
+            <span>Subred ${i + 1}</span>${wanTag}
+            <span class="tag-ok" style="margin-left:auto">✓</span>
+          </div>
+          <div class="vlsm-field"><label>Hosts:</label><span>${s.hosts}</span></div>
+          <div class="vlsm-field"><label>Dir. de Red:</label><span>${str(s.net)}</span></div>
+          <div class="vlsm-field"><label>Prefijo:</label><span>/${s.prefix}</span></div>
+          <div class="vlsm-field"><label>Máscara:</label><span>${str(s.mask)}</span></div>
+          <div class="vlsm-field"><label>Primer host:</label><span>${str(s.first)}</span></div>
+          <div class="vlsm-field"><label>Último host:</label><span>${str(s.last)}</span></div>
+          <div class="vlsm-field"><label>Broadcast:</label><span>${str(s.bc)}</span></div>`;
+
+      } else if (i === V.activeRow) {
+        // Active card — show input fields with same IDs as the table (mobile only)
+        const isMobile = window.matchMedia('(max-width: 767px)').matches;
+        if (isMobile) {
+          card.innerHTML = `
+            <div class="vlsm-card-header">
+              <span>Subred ${i + 1}</span>${wanTag}
+            </div>
+            <div class="vlsm-field">
+              <label>Hosts:</label>
+              <input class="ti ti-h"  id="mc-h-${i}"   placeholder="n" />
+            </div>
+            <div class="vlsm-field">
+              <label>Dir. de Red:</label>
+              <input class="ti ti-ip" id="mc-net-${i}" placeholder="x.x.x.x" />
+            </div>
+            <div class="vlsm-field">
+              <label>Prefijo:</label>
+              <input class="ti ti-px" id="mc-px-${i}"  placeholder="/n" />
+            </div>
+            <div class="vlsm-field">
+              <label>Máscara:</label>
+              <input class="ti ti-mk" id="mc-mk-${i}"  placeholder="x.x.x.x" />
+            </div>
+            <div class="vlsm-field">
+              <label>Primer host:</label>
+              <input class="ti ti-ip" id="mc-f-${i}"   placeholder="x.x.x.x" />
+            </div>
+            <div class="vlsm-field">
+              <label>Último host:</label>
+              <input class="ti ti-ip" id="mc-l-${i}"   placeholder="x.x.x.x" />
+            </div>
+            <div class="vlsm-field">
+              <label>Broadcast:</label>
+              <input class="ti ti-ip" id="mc-bc-${i}"  placeholder="x.x.x.x" />
+            </div>
+            <div id="card-fb-${i}"></div>
+            <button class="btn-verify" style="width:100%;margin-top:.5rem"
+                    onclick="verify(${i})">Verificar</button>`;
+
+          setTimeout(() => {
+            document.getElementById('mc-bc-' + i)
+              ?.addEventListener('keydown', e => { if (e.key === 'Enter') verify(i); });
+            document.getElementById('mc-h-' + i)?.focus();
+          }, 30);
+        } else {
+          // Desktop: card is hidden; render header only (no competing IDs)
+          card.innerHTML = `
+            <div class="vlsm-card-header">
+              <span>Subred ${i + 1}</span>${wanTag}
+            </div>`;
+        }
+
+      } else {
+        // Locked card
+        card.innerHTML = `
+          <div class="vlsm-card-header">
+            <span>Subred ${i + 1}</span>${wanTag}
+          </div>
+          <div class="vlsm-field"><label>Hosts:</label><span>—</span></div>
+          <div class="vlsm-field"><label>Dir. de Red:</label><span>—</span></div>
+          <div class="vlsm-field"><label>Prefijo:</label><span>—</span></div>
+          <div class="vlsm-field"><label>Máscara:</label><span>—</span></div>
+          <div class="vlsm-field"><label>Primer host:</label><span>—</span></div>
+          <div class="vlsm-field"><label>Último host:</label><span>—</span></div>
+          <div class="vlsm-field"><label>Broadcast:</label><span>—</span></div>`;
+      }
+
+      container.appendChild(card);
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  REVISAR SOLUCIÓN
+  // ═══════════════════════════════════════════════════════
+  function toggleReview() {
+    const existing = document.querySelectorAll('.review-row');
+    if (existing.length > 0) {
+      existing.forEach(r => r.remove());
+      document.getElementById('btnReview').textContent = '🔍 Revisar solución';
+      return;
+    }
+    document.getElementById('btnReview').textContent = '✕ Ocultar solución';
+    V.subnets.forEach((s, i) => {
+      const row = document.getElementById('row-' + i);
+      if (!row) return;
+      const rv = document.createElement('tr');
+      rv.className = 'review-row';
+      rv.innerHTML = `
+        <td><span class="rv-label">Correcto</span>${s.hosts}</td>
+        <td></td>
+        <td>${str(s.net)}</td>
+        <td>/${s.prefix}</td>
+        <td>${str(s.mask)}</td>
+        <td>${str(s.first)}</td>
+        <td>${str(s.last)}</td>
+        <td>${str(s.bc)}</td>
+        <td></td>
+      `;
+      row.insertAdjacentElement('afterend', rv);
+    });
   }
 
   // ═══════════════════════════════════════════════════════
   //  RENDER HISTORIAL
   // ═══════════════════════════════════════════════════════
-  function renderHistorial() {
+  function renderHistorial(califAcumulada) {
     const container = document.getElementById('histList');
-    const btn = document.getElementById('btnEnviar');
     if (!container || V.historial.length === 0) return;
 
     container.innerHTML =
-      `<div class="hist-title">Últimos ejercicios guardados (${V.historial.length}/3)</div>` +
+      `<div class="hist-title">Ejercicios completados esta sesión (${V.tablasDone})</div>` +
       V.historial.map((e, i) => `
         <div class="hist-item">
           <span class="hi-lbl">#${i+1} ${e.label}</span>
           <span class="hi-err">${e.errores} error${e.errores !== 1 ? 'es' : ''}</span>
           <span class="hi-date">${e.fecha}</span>
         </div>
-      `).join('');
-
-    btn.textContent = `📤 Enviar al profesor (${V.historial.length} ej.)`;
+      `).join('') +
+      (V.tablasDone < 2
+        ? `<div class="cum-progress pending">
+             ⏳ Tabla ${V.tablasDone}/2 completada — haz <strong>1 más</strong> para registrar tu nota.
+           </div>`
+        : `<div class="cum-progress ok">
+             ✓ Nota acumulada: <strong>${califAcumulada}/100</strong>
+             &nbsp;·&nbsp; ${V.tablasDone} tablas &nbsp;·&nbsp; ${V.erroresAcumulados} errores totales
+             ${V.totalErrors > 0 ? '<br><span class="cum-hint">Haz otra tabla para reducir la penalización.</span>' : ''}
+           </div>`
+      );
   }
 
   // ═══════════════════════════════════════════════════════
@@ -698,15 +920,17 @@
   // ═══════════════════════════════════════════════════════
   function verify(i) {
     const s   = V.subnets[i];
-    const val = id => (document.getElementById(id)?.value ?? '').trim();
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const pfx = isMobile ? 'mc-' : 'in-';
+    const val = id => (document.getElementById(pfx + id)?.value ?? '').trim();
 
-    const inH   = parseInt(val('in-h-'   + i), 10);
-    const inNet = normIP(val('in-net-' + i));
-    const inPx  = normPfx(val('in-px-' + i));
-    const inMk  = normIP(val('in-mk-'  + i));
-    const inF   = normIP(val('in-f-'   + i));
-    const inL   = normIP(val('in-l-'   + i));
-    const inBc  = normIP(val('in-bc-'  + i));
+    const inH   = parseInt(val('h-'   + i), 10);
+    const inNet = normIP(val('net-' + i));
+    const inPx  = normPfx(val('px-' + i));
+    const inMk  = normIP(val('mk-'  + i));
+    const inF   = normIP(val('f-'   + i));
+    const inL   = normIP(val('l-'   + i));
+    const inBc  = normIP(val('bc-'  + i));
 
     const usable = Math.pow(2, 32 - s.prefix) - 2;
     const errors = [];
@@ -736,6 +960,12 @@
       V.activeRow++;
       if (V.activeRow >= V.subnets.length) {
         V.done = true;
+        V.tablasDone++;
+        V.erroresAcumulados += V.totalErrors;
+        try { sessionStorage.setItem('vlsm_session', JSON.stringify({ tablasDone: V.tablasDone, erroresAcumulados: V.erroresAcumulados })); } catch(e) {}
+        const califAcumulada = Math.max(0,
+          Math.round(100 - V.erroresAcumulados * 10 / V.tablasDone));
+
         const lvl   = document.getElementById('lvlSelect').value;
         const total = V.subnets.length;
 
@@ -751,30 +981,49 @@
         try { localStorage.setItem('vlsm_historial', JSON.stringify(V.historial)); } catch(e) {}
 
         document.getElementById('doneStats').textContent =
-          `Nivel: ${LEVELS[lvl].label} · Filas: ${total}/${total} · Intentos fallidos: ${V.totalErrors} · Calificación: 100/100`;
-        renderHistorial();
+          `Nivel: ${LEVELS[lvl].label} · Filas: ${total}/${total} · Errores esta tabla: ${V.totalErrors}`;
+        renderHistorial(califAcumulada);
         document.getElementById('doneBanner').style.display = 'block';
-        autoSubmit({
-          nombre:      V.nombre,
-          fecha:       entry.fecha,
-          tipo:        'VLSM — ' + entry.label,
-          completados: total + '/' + total,
-          errores:     V.totalErrors,
-          calificacion: 100,
-        });
+
+        if (V.tablasDone >= 2) {
+          autoSubmit({
+            nombre:      V.nombre,
+            fecha:       entry.fecha,
+            tipo:        'VLSM — ' + entry.label,
+            completados: V.tablasDone + ' tablas',
+            errores:     V.erroresAcumulados,
+            calificacion: califAcumulada,
+          });
+        }
       }
       renderPool();
       renderTable();
     } else {
+      V.rowAttempts[i] = (V.rowAttempts[i] || 0) + 1;
       V.totalErrors++;
       const activeRow = document.getElementById('row-' + i);
       activeRow?.classList.add('shake');
       setTimeout(() => activeRow?.classList.remove('shake'), 380);
 
+      let fbMsg;
+      const attempt = V.rowAttempts[i];
+      if (attempt === 1) {
+        // Solo nombres de campos incorrectos, sin valores
+        const fieldNames = errors.map(e => e.split(':')[0]);
+        fbMsg = `⚠ Verifica: ${fieldNames.join(' · ')}`;
+      } else if (attempt === 2) {
+        // Pista/fórmula por campo (primera parte antes de " → ")
+        const hints = errors.map(e => e.split(' → ')[0]);
+        fbMsg = `⚠ ${hints.join('<br>⚠ ')}`;
+      } else {
+        // Detalle completo con la respuesta correcta
+        fbMsg = `⚠ ${errors.join('<br>⚠ ')}`;
+      }
+
       const fbTr = document.createElement('tr');
       fbTr.id = 'fb-' + i;
       fbTr.className = 'fb-row';
-      fbTr.innerHTML = `<td colspan="9"><div class="fb-msg">⚠ ${errors.join('<br>⚠ ')}</div></td>`;
+      fbTr.innerHTML = `<td colspan="9"><div class="fb-msg">${fbMsg}</div></td>`;
       activeRow?.insertAdjacentElement('afterend', fbTr);
     }
   }
@@ -824,27 +1073,52 @@
   // ═══════════════════════════════════════════════════════
   //  INICIO
   // ═══════════════════════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', () => { initModal(); });
+  document.addEventListener('DOMContentLoaded', async () => {
+    const lvlSelect = document.getElementById('lvlSelect');
+    lvlSelect.disabled = true;
+    const origText = [...lvlSelect.options].map(o => ({ value: o.value, text: o.textContent }));
+    lvlSelect.options[0].textContent = 'Cargando…';
+    await loadLevels();
+    if (Object.keys(LEVELS).length === 0) {
+      lvlSelect.innerHTML = '<option>Error al cargar niveles</option>';
+      lvlSelect.disabled = true;
+      // initModal() never called — page shows error state
+      return;
+    }
+    origText.forEach((o, i) => { lvlSelect.options[i].textContent = o.text; });
+    lvlSelect.disabled = false;
+    initModal();
+  });
 
   // ── Ctrl + Shift + Enter → resolver todo el esquema ──
   document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.shiftKey && e.key === 'Enter') {
       e.preventDefault();
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+      const pfx = isMobile ? 'mc-' : 'in-';
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
       V.subnets.forEach((s, i) => {
         if (i < V.activeRow) return;
         V.activeRow = i;
         renderPool();
         renderTable();
-        document.getElementById('in-h-'   + i).value = s.hosts;
-        document.getElementById('in-net-' + i).value = str(s.net);
-        document.getElementById('in-px-'  + i).value = '/' + s.prefix;
-        document.getElementById('in-mk-'  + i).value = str(s.mask);
-        document.getElementById('in-f-'   + i).value = str(s.first);
-        document.getElementById('in-l-'   + i).value = str(s.last);
-        document.getElementById('in-bc-'  + i).value = str(s.bc);
+        setVal(pfx + 'h-'   + i, s.hosts);
+        setVal(pfx + 'net-' + i, str(s.net));
+        setVal(pfx + 'px-'  + i, '/' + s.prefix);
+        setVal(pfx + 'mk-'  + i, str(s.mask));
+        setVal(pfx + 'f-'   + i, str(s.first));
+        setVal(pfx + 'l-'   + i, str(s.last));
+        setVal(pfx + 'bc-'  + i, str(s.bc));
         verify(i);
       });
     }
+  });
+
+  // ── Resize/rotate listener → re-render both views ──
+  let _resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => { renderTable(); renderCards(); }, 150);
   });
   </script>
 

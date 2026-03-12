@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--
+  TEMPLATE: Theory Page (Two-Column Layout)
+  ==========================================
+  Use this template to create a theory/lessons page with sidebar TOC + main content.
+
+  Instructions:
+  1. Copy this file to your course directory as theory.html (or similar name)
+  2. Replace all TODO: markers below with actual content
+  3. This template provides a two-column layout:
+     - Left: Table of Contents sidebar (sticky, scrollable)
+     - Right: Main content with sections
+  4. The .toc-active class highlights the current section in the TOC
+  5. Use scroll-margin-top on sections for smooth anchor linking with sticky nav
+  6. The toc-practice-btn can link to your practice page
+
+  Key CSS classes from style.css:
+  - theory-section: Wraps each content section
+  - section-heading: For h2 with numbered circle badge
+  - callout: Highlighted note boxes (use .tip, .ok variants)
+  - info-box: Summary/key info boxes
+-->
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- TODO: TOPIC_TITLE — Example: "Subnetting y ANDing — CCNA 1" -->
+  <title>TODO: TOPIC_TITLE</title>
+  <!-- TODO: Update path to style.css based on your course location -->
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <!-- NOTA: ajusta ../ según la profundidad del curso. Ej: ccna/ccna1/ usa ../../ -->
+  <style>
+    /* ── Layout de dos columnas ── */
+    .page-body {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - var(--nav-h));
+      align-items: start;
+    }
+
+    /* ── Sidebar TOC ── */
+    .toc-sidebar {
+      position: sticky;
+      top: var(--nav-h);
+      height: calc(100vh - var(--nav-h));
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      background: var(--surface);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .toc-sidebar h3 {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--muted); font-weight: 700; margin-bottom: 1rem;
+    }
+    .toc-link {
+      display: block; padding: .4rem .6rem; border-radius: 6px;
+      font-size: .83rem; color: var(--muted);
+      border-left: 2px solid transparent;
+      transition: color .2s, border-color .2s, background .2s;
+      line-height: 1.4; margin-bottom: .15rem;
+    }
+    .toc-link:hover        { color: var(--text); background: rgba(255,255,255,.05); text-decoration: none; }
+    .toc-link.toc-active   { color: var(--ccna); border-color: var(--ccna); background: rgba(27,161,226,.08); }
+    .toc-link.toc-sub      { padding-left: 1.2rem; font-size: .8rem; }
+    .toc-divider           { border: none; border-top: 1px solid var(--border); margin: .75rem 0; }
+    .toc-practice-btn {
+      display: block; text-align: center;
+      background: var(--ccna); color: #fff;
+      padding: .55rem 1rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .85rem;
+      margin-top: 1.5rem; transition: opacity .2s;
+    }
+    .toc-practice-btn:hover { opacity: .85; text-decoration: none; }
+
+    /* ── Contenido principal ── */
+    .main-content { padding: 2.5rem 3rem 5rem; min-width: 0; }
+
+    /* ── Secciones ── */
+    .theory-section { margin-bottom: 3.5rem; scroll-margin-top: calc(var(--nav-h) + 1rem); }
+    .section-heading { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+    .section-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--ccna); color: #fff;
+      font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .section-num.sec0 { background: var(--muted); }
+    .section-heading h2 { font-size: 1.35rem; font-weight: 800; }
+    .theory-section p   { color: var(--muted); margin-bottom: .85rem; font-size: .95rem; line-height: 1.75; }
+    .theory-section strong { color: var(--text); }
+    .theory-section h3 { font-size: 1rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 .6rem; }
+
+    /* ── Callouts ── */
+    .callout {
+      background: rgba(88,166,255,.08); border-left: 3px solid var(--accent);
+      padding: .85rem 1.1rem; border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 1rem 0; font-size: .9rem; line-height: 1.65;
+    }
+    .callout.tip    { border-color: var(--linux); background: rgba(245,166,35,.08); }
+    .callout.ok     { border-color: var(--green); background: rgba(63,185,80,.08); }
+    .callout em     { display: block; font-size: .8rem; margin-top: .3rem; color: var(--muted); font-style: normal; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page-body { grid-template-columns: 1fr; }
+      .toc-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <!-- TODO: COURSE_NAV_BRAND — Example: "🌐 CCNA 1 — Subnetting" -->
+      <span class="nav-brand">TODO: COURSE_NAV_BRAND</span>
+      <div class="nav-pages">
+        <!-- TODO: NAV_LINKS — Add links to other pages in your course -->
+        <!-- Examples: Teoría, Práctica, Evaluación, etc. -->
+        <!-- <a href="theory.html">Teoría</a> -->
+        <!-- <a href="practice.html">Práctica</a> -->
+        <!-- Mark current page with class="active" -->
+      </div>
+      <div class="nav-divider"></div>
+      <!-- TODO: COURSE_BACK_PATH — Relative path to root index.html -->
+      <a class="back-to-catalog" href="../../index.html">← Catálogo</a>
+    </nav>
+  </header>
+
+  <div class="topic-hero">
+    <div class="breadcrumb">Catálogo / TODO: TOPIC_BREADCRUMB</div>
+    <!-- TODO: TOPIC_TITLE — Example: "Subnetting y ANDing — Teoría" -->
+    <h1>TODO: TOPIC_TITLE</h1>
+    <!-- TODO: Hero subtitle describing the content scope -->
+    <p class="hero-sub">TODO: TOPIC_DESCRIPTION</p>
+    <!-- TODO: AUTHOR_NAME — Replace with actual professor name -->
+    <span class="author-chip">✍️ Prof. TODO: AUTHOR_NAME</span>
+  </div>
+
+  <div class="page-body">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TOC SIDEBAR (Left column, sticky)
+         ═════════════════════════════════════════════════════════ -->
+    <aside class="toc-sidebar">
+      <h3>En esta página</h3>
+      <!-- TODO: NAV_LINKS — Add anchor links to each section h2 below -->
+      <!-- Use anchor: #section-1, #section-2, etc. -->
+      <!-- Mark the current section with class="toc-active" -->
+      <a class="toc-link toc-active" href="#section-1">TODO: Section 1 Title</a>
+      <a class="toc-link" href="#section-2">TODO: Section 2 Title</a>
+      <a class="toc-link" href="#section-3">TODO: Section 3 Title</a>
+
+      <hr class="toc-divider" />
+
+      <!-- TODO: Optional practice button linking to practice page -->
+      <!-- <a class="toc-practice-btn" href="practice.html">Ir a Práctica →</a> -->
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MAIN CONTENT (Right column, scrollable)
+         ═════════════════════════════════════════════════════════ -->
+    <main class="main-content">
+
+      <!-- ── Section 1 ── -->
+      <section class="theory-section" id="section-1">
+        <div class="section-heading">
+          <div class="section-num">1</div>
+          <!-- TODO: SECTION_TITLE — Replace with actual section heading -->
+          <h2>TODO: Section 1 Title</h2>
+        </div>
+        <!-- TODO: CONTENT_SECTIONS — Replace placeholder paragraphs below -->
+        <p>
+          TODO: Add your theory content here. Use paragraphs, headings (h3),
+          callouts, and info-boxes to structure the information.
+        </p>
+
+        <!-- TODO: Optional callout example -->
+        <div class="callout">
+          <strong>Nota importante:</strong> This is a callout box for important information.
+          <em>Use .callout.tip or .callout.ok for different styles.</em>
+        </div>
+
+        <h3>Subsección de ejemplo</h3>
+        <p>
+          TODO: Add content for subsections using h3 headings.
+          The layout automatically formats these with proper styling.
+        </p>
+      </section>
+
+      <!-- ── Section 2 ── -->
+      <section class="theory-section" id="section-2">
+        <div class="section-heading">
+          <div class="section-num">2</div>
+          <!-- TODO: SECTION_TITLE — Replace with actual section heading -->
+          <h2>TODO: Section 2 Title</h2>
+        </div>
+        <!-- TODO: CONTENT_SECTIONS — Replace with actual content -->
+        <p>
+          TODO: Add your theory content for section 2.
+        </p>
+      </section>
+
+      <!-- ── Section 3 ── -->
+      <section class="theory-section" id="section-3">
+        <div class="section-heading">
+          <div class="section-num">3</div>
+          <!-- TODO: SECTION_TITLE — Replace with actual section heading -->
+          <h2>TODO: Section 3 Title</h2>
+        </div>
+        <!-- TODO: CONTENT_SECTIONS — Replace with actual content -->
+        <p>
+          TODO: Add your theory content for section 3.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+  <footer>
+    <!-- TODO: Replace with your course name -->
+    <span>TODO: COURSE_TITLE</span>
+    <!-- TODO: AUTHOR_NAME — Replace with actual professor name -->
+    <span class="footer-author">✍️ Material elaborado por el <strong>Prof. TODO: AUTHOR_NAME</strong></span>
+  </footer>
+
+</body>
+</html>

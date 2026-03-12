@@ -135,6 +135,21 @@
     }
     .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: .75rem; }
 
+    .filter-select {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: .48rem .85rem;
+      border-radius: var(--radius); font-size: .9rem; outline: none;
+      cursor: pointer; transition: border-color .2s;
+    }
+    .filter-select:focus { border-color: var(--ccna); }
+    .btn-export {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: .48rem 1rem;
+      border-radius: var(--radius); font-size: .88rem;
+      cursor: pointer; transition: color .2s, border-color .2s;
+    }
+    .btn-export:hover { color: var(--text); border-color: var(--text); }
+
     /* ── Config notice ── */
     .config-notice {
       background: rgba(248,81,73,.08); border: 1px solid rgba(248,81,73,.3);
@@ -215,6 +230,15 @@
       <button class="btn-refresh" id="btnRefresh">🔄 Actualizar</button>
       <input class="filter-input" type="text" id="filterInput"
              placeholder="Filtrar por nombre…" oninput="applyFilter()" />
+      <select class="filter-select" id="filterTipo" onchange="applyFilter()">
+        <option value="">Todos los tipos</option>
+        <option value="VLSM">VLSM</option>
+        <option value="ANDing">ANDing</option>
+        <option value="Final">Evaluación Final</option>
+      </select>
+      <input class="filter-input" type="date" id="filterDesde" oninput="applyFilter()" title="Desde" style="max-width:150px" />
+      <input class="filter-input" type="date" id="filterHasta" oninput="applyFilter()" title="Hasta" style="max-width:150px" />
+      <button class="btn-export" id="btnExport" onclick="exportCSV()">⬇ CSV</button>
       <span class="status-text" id="statusText"></span>
     </div>
 
@@ -342,12 +366,47 @@
   }
 
   // ── FILTRAR ─────────────────────────────────────────────────────
+  function buildFilterPredicate() {
+    const q     = document.getElementById('filterInput').value.toLowerCase().trim();
+    const tipo  = document.getElementById('filterTipo').value.toLowerCase();
+    const desde = document.getElementById('filterDesde').value;
+    const hasta = document.getElementById('filterHasta').value;
+    return r => {
+      if (q    && !r.nombre.toLowerCase().includes(q))          return false;
+      if (tipo && !String(r.tipo).toLowerCase().includes(tipo)) return false;
+      if (desde || hasta) {
+        const ts = new Date(r.timestamp);
+        if (!isNaN(ts)) {
+          if (desde && ts < new Date(desde))                    return false;
+          if (hasta && ts > new Date(hasta + 'T23:59:59'))      return false;
+        }
+      }
+      return true;
+    };
+  }
+
   function applyFilter() {
-    const q = document.getElementById('filterInput').value.toLowerCase().trim();
-    const filtered = q
-      ? allRows.filter(r => r.nombre.toLowerCase().includes(q))
-      : allRows;
-    renderTable(sorted(filtered));
+    renderTable(sorted(allRows.filter(buildFilterPredicate())));
+  }
+
+  // ── EXPORTAR CSV ────────────────────────────────────────────────
+  function exportCSV() {
+    const filtered = allRows.filter(buildFilterPredicate());
+
+    const headers = ['Timestamp','Nombre','Tipo','Completados','Errores','Calificación'];
+    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const rows = [
+      headers.join(','),
+      ...filtered.map(r => [
+        esc(r.timestamp), esc(r.nombre), esc(r.tipo),
+        esc(r.completados), esc(r.errores), esc(r.calificacion)
+      ].join(','))
+    ];
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = `ccna1-registros-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
   }
 
   // ── ORDENAR ─────────────────────────────────────────────────────

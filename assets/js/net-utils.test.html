@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <title>net-utils Tests</title>
+  <script src="net-utils.js"></script>
+  <style>
+    body { font-family: monospace; background: #0d1117; color: #e6edf3; padding: 2rem; }
+    .pass { color: #3fb950; } .fail { color: #f85149; }
+    h1 { font-size: 1.2rem; margin-bottom: 1.5rem; }
+    .test { margin: .3rem 0; font-size: .9rem; }
+    #summary { margin-top: 1.5rem; font-size: 1.1rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>net-utils.js — Test Suite</h1>
+  <div id="results"></div>
+  <div id="summary"></div>
+  <script>
+    let pass = 0, fail = 0;
+    function test(name, actual, expected) {
+      const ok = JSON.stringify(actual) === JSON.stringify(expected);
+      if (ok) pass++; else fail++;
+      document.getElementById('results').innerHTML +=
+        `<div class="test ${ok ? 'pass' : 'fail'}">
+          ${ok ? '✓' : '✗'} ${name}
+          ${ok ? '' : `<br>&nbsp;&nbsp;expected: ${JSON.stringify(expected)}<br>&nbsp;&nbsp;got:      ${JSON.stringify(actual)}`}
+        </div>`;
+    }
+
+    // str()
+    test('str([192,168,1,1])', str([192,168,1,1]), '192.168.1.1');
+    test('str([0,0,0,0])', str([0,0,0,0]), '0.0.0.0');
+    test('str([255,255,255,255])', str([255,255,255,255]), '255.255.255.255');
+
+    // prefixToMask()
+    test('prefixToMask(24)', prefixToMask(24), [255,255,255,0]);
+    test('prefixToMask(16)', prefixToMask(16), [255,255,0,0]);
+    test('prefixToMask(8)',  prefixToMask(8),  [255,0,0,0]);
+    test('prefixToMask(30)', prefixToMask(30), [255,255,255,252]);
+    test('prefixToMask(32)', prefixToMask(32), [255,255,255,255]);
+
+    // wildcard()
+    test('wildcard(/24)', wildcard([255,255,255,0]),   [0,0,0,255]);
+    test('wildcard(/30)', wildcard([255,255,255,252]), [0,0,0,3]);
+
+    // netAddr()
+    test('netAddr([192,168,1,100], /24)', netAddr([192,168,1,100], [255,255,255,0]), [192,168,1,0]);
+    test('netAddr([10,0,0,1], /8)',       netAddr([10,0,0,1], [255,0,0,0]),         [10,0,0,0]);
+
+    // broadcast()
+    test('broadcast([192,168,1,0], /24)', broadcast([192,168,1,0], [0,0,0,255]), [192,168,1,255]);
+    test('broadcast([10,0,0,0], /8)',     broadcast([10,0,0,0], [0,255,255,255]), [10,255,255,255]);
+
+    // addOne() / subOne()
+    test('addOne([192,168,1,255])', addOne([192,168,1,255]), [192,168,2,0]);
+    test('subOne([192,168,2,0])',   subOne([192,168,2,0]),   [192,168,1,255]);
+
+    // usable()
+    test('usable(24)', usable(24), 254);
+    test('usable(30)', usable(30), 2);
+
+    // normIP()
+    test('normIP("192.168.1.1")',   normIP('192.168.1.1'),   '192.168.1.1');
+    test('normIP(" 10.0.0.1 ")',    normIP(' 10.0.0.1 '),    '10.0.0.1');
+    test('normIP("256.0.0.0")',     normIP('256.0.0.0'),      null);
+    test('normIP("192.168.1")',     normIP('192.168.1'),      null);
+    test('normIP("not an ip")',     normIP('not an ip'),      null);
+
+    document.getElementById('summary').textContent =
+      `${pass + fail} tests — ${pass} passed, ${fail} failed`;
+    document.getElementById('summary').className = fail === 0 ? 'pass' : 'fail';
+  </script>
+</body>
+</html>

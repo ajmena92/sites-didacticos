@@ -1,0 +1,62 @@
+{
+  "sections": [
+    {
+      "id": "ccna",
+      "titulo": "🌐 Redes — CCNA",
+      "cursos": [
+        {
+          "id": "ccna1",
+          "titulo": "CCNA 1",
+          "descripcion": "Introducción a redes: modelo OSI, TCP/IP, direccionamiento IP, subnetting y VLSM.",
+          "icono": "🌐",
+          "color": "ccna",
+          "url": "ccna/ccna1/index.html",
+          "nivel": "Principiante",
+          "estado": "activo"
+        },
+        {
+          "id": "ccna2",
+          "titulo": "CCNA 2",
+          "descripcion": "Switching y enrutamiento: VLANs, STP, OSPF, EIGRP y enrutamiento estático.",
+          "icono": "🔀",
+          "color": "ccna",
+          "url": "ccna/ccna2/index.html",
+          "nivel": "Intermedio",
+          "estado": "proximamente"
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "titulo": "🐍 Programación — Python",
+      "cursos": [
+        {
+          "id": "python-fundamentos",
+          "titulo": "Python — Fundamentos",
+          "descripcion": "Variables, tipos de datos, condicionales, bucles, funciones y estructuras de datos básicas.",
+          "icono": "🐍",
+          "color": "python",
+          "url": "python/fundamentos/index.html",
+          "nivel": "Principiante",
+          "estado": "proximamente"
+        }
+      ]
+    },
+    {
+      "id": "linux",
+      "titulo": "🐧 Sistemas — Linux",
+      "cursos": [
+        {
+          "id": "linux-basico",
+          "titulo": "Linux — Básico",
+          "descripcion": "Comandos esenciales, sistema de archivos, permisos, usuarios y procesos.",
+          "icono": "🐧",
+          "color": "linux",
+          "url": "linux/basico/index.html",
+          "nivel": "Principiante",
+          "estado": "proximamente"
+        }
+      ]
+    }
+  ]
+}

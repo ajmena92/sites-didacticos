@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<!--
+  TEMPLATE: Practice Page (Exercise + Quick Reference Layout)
+  ===========================================================
+  Use this template to create a practice/exercise page with a two-column layout:
+  - Left: Exercise area (cards with steps, inputs, feedback)
+  - Right: Sticky quick reference card (sticky on scroll)
+
+  Instructions:
+  1. Copy this file to your course directory as practica.html (or similar name)
+  2. Replace all TODO: markers below with actual content
+  3. This template provides:
+     - Score bar with exercise counter and "Next" button
+     - Exercise cards with steps and input fields
+     - Sticky quick reference panel on the right
+  4. Use .step, .step-body, .step-head classes for exercise structure
+  5. Use .sinput for input fields with monospace font
+  6. The quick-ref-panel sticks to the top on scroll (sticky positioning)
+
+  Key CSS classes from style.css and this template:
+  - practice-body: Main two-column grid layout
+  - score-bar: Progress/score display at top
+  - ex-card: Exercise card container
+  - step: Individual exercise step (can be locked, active, correct, wrong)
+  - quick-ref-panel: Sticky reference card (right column)
+-->
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- TODO: TOPIC_TITLE — Example: "Subnetting y ANDing — Práctica" -->
+  <title>TODO: TOPIC_TITLE</title>
+  <!-- TODO: Update path to style.css based on your course location -->
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <!-- NOTA: ajusta ../ según la profundidad del curso. Ej: ccna/ccna1/ usa ../../ -->
+  <style>
+    /* ── Layout full-width dos columnas ── */
+    .practice-body {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.75rem;
+      padding: 2rem 2.5rem 5rem;
+      align-items: start;
+    }
+
+    /* ── Panel de puntuación ── */
+    .score-bar {
+      display: flex; align-items: center; flex-wrap: wrap; gap: .85rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: .85rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .score-item { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
+    .score-item .si-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+    .score-item .si-lbl { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .score-sep { width: 1px; height: 36px; background: var(--border); }
+    .si-num.ok-color  { color: var(--green); }
+    .si-num.err-color { color: var(--red); }
+
+    .btn-next {
+      margin-left: auto;
+      background: var(--ccna); color: #fff; border: none;
+      padding: .6rem 1.4rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-next:disabled { opacity: .3; cursor: not-allowed; transform: none; }
+    .btn-next:not(:disabled):hover { opacity: .87; transform: translateY(-1px); }
+
+    /* ── Tarjeta de ejercicio ── */
+    .ex-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .ex-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(27,161,226,.1), transparent);
+      display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+    }
+    .ex-num { font-size: .8rem; color: var(--muted); margin-bottom: .2rem; }
+    .ex-type-badge {
+      font-size: .72rem; padding: .2rem .65rem;
+      border-radius: 20px; font-weight: 600; flex-shrink: 0;
+    }
+    .ex-type-badge.host { background: rgba(245,166,35,.15); color: var(--linux); border: 1px solid rgba(245,166,35,.35); }
+    .ex-type-badge.net  { background: rgba(27,161,226,.15); color: var(--ccna); border: 1px solid rgba(27,161,226,.35); }
+
+    .ex-ip-block { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .ex-ip-row { display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; margin-bottom: .3rem; }
+    .ex-ip  { font-family: monospace; font-size: 1.65rem; font-weight: 800; color: var(--ccna); }
+    .ex-pfx { font-family: monospace; font-size: 1.65rem; font-weight: 800; color: var(--accent); }
+    .ex-mask-line { font-family: monospace; font-size: .85rem; color: var(--muted); }
+    .ex-note { font-size: .82rem; color: var(--muted); margin-top: .4rem;
+               background: rgba(255,255,255,.04); padding: .4rem .7rem; border-radius: 6px; border-left: 2px solid var(--border); }
+
+    /* ── Pasos ── */
+    .steps-wrap { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: .85rem; }
+
+    .step {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; transition: border-color .25s;
+    }
+    .step.locked  { opacity: .38; pointer-events: none; }
+    .step.active  { border-color: var(--ccna); }
+    .step.correct { border-color: var(--green); }
+    .step.wrong   { border-color: var(--red); animation: shake .32s ease; }
+
+    @keyframes shake {
+      0%,100%{ transform:translateX(0) }
+      30%    { transform:translateX(-5px) }
+      70%    { transform:translateX(5px) }
+    }
+
+    .step-head {
+      display: flex; align-items: center; gap: .7rem;
+      padding: .75rem 1rem;
+      background: rgba(255,255,255,.02); border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .step.correct .step-head { background: rgba(63,185,80,.06); border-color: rgba(63,185,80,.2); }
+    .step.active  .step-head { background: rgba(27,161,226,.07); border-color: rgba(27,161,226,.2); }
+
+    .snum {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--border); color: var(--text);
+      font-size: .78rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .snum.done { background: var(--green); color: #0d1117; }
+
+    .step-title { font-weight: 700; font-size: .92rem; }
+    .step-body  { padding: .85rem 1rem; display: flex; flex-direction: column; gap: .55rem; }
+    .step-desc  { font-size: .83rem; color: var(--muted); }
+    .step-formula {
+      font-family: monospace; font-size: .82rem; color: var(--accent);
+      background: rgba(88,166,255,.09); padding: .28rem .65rem;
+      border-radius: 6px; display: inline-block;
+    }
+
+    /* ── Inputs ── */
+    .input-group { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .input-label { font-size: .8rem; color: var(--muted); width: 100px; flex-shrink: 0; }
+    .sinput {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .42rem .75rem;
+      border-radius: 6px; font-family: monospace; font-size: .95rem;
+      width: 185px; outline: none; transition: border-color .2s;
+    }
+    .sinput:focus { border-color: var(--ccna); }
+    .sinput.error { border-color: var(--red); }
+
+    /* ── Quick Reference Panel (sticky, right column) ── */
+    .quick-ref-panel {
+      position: sticky;
+      top: calc(var(--nav-h) + 1rem);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.1rem;
+      height: fit-content; max-height: calc(100vh - var(--nav-h) - 2rem);
+      overflow-y: auto;
+    }
+    .qr-title { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em;
+                color: var(--muted); font-weight: 700; margin-bottom: .85rem; }
+    .qr-item { margin-bottom: 1.1rem; }
+    .qr-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em;
+                display: block; margin-bottom: .2rem; }
+    .qr-value { font-family: monospace; font-size: .9rem; color: var(--accent); font-weight: 600; }
+    .qr-divider { border: none; border-top: 1px solid var(--border); margin: .85rem 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .practice-body { grid-template-columns: 1fr; }
+      .quick-ref-panel { position: static; margin-top: 1.5rem; }
+    }
+    @media (max-width: 768px) {
+      .practice-body { padding: 1.5rem 1.25rem 3rem; gap: 1rem; }
+      .score-bar { flex-direction: column; align-items: stretch; }
+      .btn-next { margin-left: 0; width: 100%; }
+      .sinput { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <!-- TODO: COURSE_NAV_BRAND — Example: "🌐 CCNA 1 — Subnetting" -->
+      <span class="nav-brand">TODO: COURSE_NAV_BRAND</span>
+      <div class="nav-pages">
+        <!-- TODO: NAV_LINKS — Add links to other pages in your course -->
+        <!-- Examples: Teoría, Práctica, Evaluación, etc. -->
+        <!-- <a href="theory.html">Teoría</a> -->
+        <!-- <a href="practice.html" class="active">Práctica</a> -->
+      </div>
+      <div class="nav-divider"></div>
+      <!-- TODO: COURSE_BACK_PATH — Relative path to root index.html -->
+      <a class="back-to-catalog" href="../../index.html">← Catálogo</a>
+    </nav>
+  </header>
+
+  <div class="topic-hero">
+    <div class="breadcrumb">Catálogo / TODO: TOPIC_BREADCRUMB</div>
+    <!-- TODO: TOPIC_TITLE — Example: "Subnetting y ANDing — Práctica" -->
+    <h1>TODO: TOPIC_TITLE</h1>
+    <!-- TODO: Hero subtitle describing practice scope and instructions -->
+    <p class="hero-sub">TODO: PRACTICE_DESCRIPTION</p>
+    <!-- TODO: AUTHOR_NAME — Replace with actual professor name -->
+    <span class="author-chip">✍️ Prof. TODO: AUTHOR_NAME</span>
+  </div>
+
+  <div class="practice-body">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         EXERCISE AREA (Left column, main content)
+         ═════════════════════════════════════════════════════════ -->
+    <main>
+
+      <!-- Score and progress bar -->
+      <div class="score-bar">
+        <div class="score-item">
+          <div class="si-num ok-color">TODO: 0</div>
+          <div class="si-lbl">Correctas</div>
+        </div>
+        <div class="score-sep"></div>
+        <div class="score-item">
+          <div class="si-num err-color">TODO: 0</div>
+          <div class="si-lbl">Errores</div>
+        </div>
+        <div class="score-sep"></div>
+        <div class="score-item">
+          <div class="si-num">TODO: 1/5</div>
+          <div class="si-lbl">Ejercicio</div>
+        </div>
+        <!-- TODO: Add onclick handler to button or skip if not needed -->
+        <button class="btn-next" onclick="TODO: nextExercise()">Siguiente →</button>
+      </div>
+
+      <!-- TODO: EXERCISE_CARDS — Replace with actual exercise content -->
+      <!-- Each exercise is a card with header + IP block + steps -->
+
+      <div class="ex-card">
+        <div class="ex-header">
+          <div>
+            <div class="ex-num">Ejercicio 1</div>
+            <!-- TODO: Change badge type (host/net) and label as needed -->
+            <span class="ex-type-badge host">Host</span>
+          </div>
+        </div>
+
+        <!-- IP Information Block -->
+        <div class="ex-ip-block">
+          <div class="ex-ip-row">
+            <span class="ex-ip">TODO: 192.168.1.130</span>
+            <span class="ex-pfx">/ TODO: 25</span>
+          </div>
+          <div class="ex-mask-line">TODO: Mask: 255.255.255.128</div>
+          <div class="ex-note">TODO: Instructions or context for this exercise</div>
+        </div>
+
+        <!-- Exercise Steps -->
+        <div class="steps-wrap">
+
+          <!-- Step 1 -->
+          <div class="step active">
+            <div class="step-head">
+              <div class="snum">1</div>
+              <div class="step-title">TODO: Step 1 Title</div>
+            </div>
+            <div class="step-body">
+              <div class="step-desc">TODO: Step description and instructions</div>
+              <div class="input-group">
+                <!-- TODO: Add inputs as needed -->
+                <label class="input-label">TODO: Label</label>
+                <input type="text" class="sinput" placeholder="TODO: Placeholder" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 (locked until previous step completed) -->
+          <div class="step locked">
+            <div class="step-head">
+              <div class="snum">2</div>
+              <div class="step-title">TODO: Step 2 Title</div>
+            </div>
+            <div class="step-body">
+              <div class="step-desc">TODO: Step 2 description</div>
+            </div>
+          </div>
+
+          <!-- Step 3 (locked until previous step completed) -->
+          <div class="step locked">
+            <div class="step-head">
+              <div class="snum">3</div>
+              <div class="step-title">TODO: Step 3 Title</div>
+            </div>
+            <div class="step-body">
+              <div class="step-desc">TODO: Step 3 description</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         QUICK REFERENCE (Right column, sticky)
+         ═════════════════════════════════════════════════════════ -->
+    <aside class="quick-ref-panel">
+      <div class="qr-title">Referencia Rápida</div>
+
+      <!-- TODO: Add reference items relevant to your practice -->
+      <!-- Example structure for reference cards: -->
+
+      <div class="qr-item">
+        <span class="qr-label">Máscara /25</span>
+        <span class="qr-value">255.255.255.128</span>
+      </div>
+
+      <div class="qr-item">
+        <span class="qr-label">Wildcard /25</span>
+        <span class="qr-value">0.0.0.127</span>
+      </div>
+
+      <hr class="qr-divider" />
+
+      <div class="qr-item">
+        <span class="qr-label">Hosts por subred</span>
+        <span class="qr-value">126</span>
+      </div>
+
+      <div class="qr-item">
+        <span class="qr-label">Rango host</span>
+        <span class="qr-value">.1 a .126</span>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <footer>
+    <!-- TODO: Replace with your course name -->
+    <span>TODO: COURSE_TITLE</span>
+    <!-- TODO: AUTHOR_NAME — Replace with actual professor name -->
+    <span class="footer-author">✍️ Material elaborado por el <strong>Prof. TODO: AUTHOR_NAME</strong></span>
+  </footer>
+
+</body>
+</html>
