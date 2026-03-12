@@ -247,6 +247,10 @@
       transition: opacity .2s; width: 100%; margin-top: .5rem;
     }
     .btn-send-form:hover { opacity: .88; }
+    .submit-ind { font-size: .82rem; display: block; margin-top: .5rem; }
+    .submit-ind.pending { color: var(--muted); }
+    .submit-ind.ok      { color: var(--green); }
+    .submit-ind.err     { color: var(--red); }
 
     /* ── Right panel ── */
     .right-panel { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -415,9 +419,9 @@
             <button class="btn-repeat" id="btnRepetir">🔄 Repetir evaluación</button>
           </div>
           <div class="save-confirm" id="saveConfirm">✓ Resultado guardado en este dispositivo.</div>
-          <button class="btn-send-form" id="btnEnviar" onclick="sendToForm()">
-            📤 Enviar al profesor
-          </button>
+          <span id="submitIndicator" class="submit-ind"></span>
+          <button id="btnFallback" class="btn-send-form" style="display:none"
+                  onclick="sendToForm()">📤 Reenviar al profesor</button>
         </div>
       </div>
 
@@ -467,6 +471,7 @@
   // ── CONFIGURACIÓN DEL PROFESOR ───────────────────────────────────
   // Reemplaza FORM_ID y los entry.XXXXXXX con los de tu Google Form
   const FORM_CONFIG = {
+    scriptUrl:   'https://script.google.com/macros/s/AKfycbzzdEibQEN9nRjZKBU7CBR5fk1UbE4bdqWzFcXxZanX1DtfzBlw09dIyTljbiWRJ9hfKw/exec',
     id: '1FAIpQLSexKLoZIJHyCZHHxKz7mMvzIW4dSO2R2TamV1_-ksNpqAn0GQ',
     nombre:      'entry.335584076',
     fecha:       'entry.433021297',
@@ -488,6 +493,30 @@
       p('errores',     data.errores),
       p('calificacion',data.calificacion),
     ].join('&') + '&usp=pp_url';
+  }
+
+  async function autoSubmit(data) {
+    const indicator = document.getElementById('submitIndicator');
+    if (indicator) { indicator.textContent = '⏳ Registrando…'; indicator.className = 'submit-ind pending'; }
+    if (FORM_CONFIG.scriptUrl === 'PASTE_SCRIPT_URL_HERE') {
+      if (indicator) { indicator.textContent = '⚠ Script no configurado — usa el botón de reenvío'; indicator.className = 'submit-ind err'; }
+      document.getElementById('btnFallback').style.display = 'block';
+      return;
+    }
+    try {
+      const res = await fetch(FORM_CONFIG.scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.ok && indicator) {
+        indicator.textContent = '✓ Registrado automáticamente';
+        indicator.className = 'submit-ind ok';
+      } else throw new Error(json.error || 'Error desconocido');
+    } catch(err) {
+      if (indicator) { indicator.textContent = '⚠ No se pudo registrar — usa el botón'; indicator.className = 'submit-ind err'; }
+      document.getElementById('btnFallback').style.display = 'block';
+    }
   }
 
   function sendToForm() {
@@ -850,6 +879,15 @@
         calificacion: calif,
       }));
     } catch(e) {}
+
+    autoSubmit({
+      nombre:      S.nombre,
+      fecha:       new Date().toLocaleDateString('es-CR'),
+      tipo:        'Evaluación Final — Subnetting/ANDing',
+      completados: S.done + '/' + S.totalEx,
+      errores:     S.totalWrong,
+      calificacion: calif,
+    });
   }
 
   // ════════════════════════════════════

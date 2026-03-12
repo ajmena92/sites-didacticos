@@ -10,7 +10,8 @@
       "Bash(cd /home/dev/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0/lib/brainstorm-server && npm install 2>&1 | tail -5 && echo \"DONE\")",
       "Bash(curl -s http://localhost:58223 > /dev/null 2>&1 && echo \"Server running\" || echo \"Server down\")",
       "Bash(git add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(tree -L 3 -I 'node_modules|.git' /mnt/c/Dev/sites-didacticos 2>/dev/null || find /mnt/c/Dev/sites-didacticos -type d -not -path '*/\\\\.*' | head -30)"
     ]
   }
 }

@@ -10,6 +10,49 @@
     .vlsm-body { padding: 2rem 2.5rem 5rem; }
     @media (max-width: 700px) { .vlsm-body { padding: 1.25rem 1rem 4rem; } }
 
+    /* ── Modal de inicio ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 2.25rem;
+      width: 100%; max-width: 480px;
+    }
+    .modal-box h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: .4rem; }
+    .modal-box p  { color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem; line-height: 1.6; }
+    .modal-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .65rem .9rem;
+      border-radius: 6px; font-size: 1rem; outline: none;
+      transition: border-color .2s; box-sizing: border-box;
+    }
+    .modal-input:focus { border-color: var(--ccna); }
+    .saved-name-row {
+      margin-top: 1rem; padding: .65rem .85rem;
+      background: rgba(63,185,80,.08); border: 1px solid rgba(63,185,80,.25);
+      border-radius: 6px; font-size: .82rem; color: var(--muted);
+      display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    }
+    .saved-name-row strong { color: var(--text); }
+    .btn-use-saved {
+      background: none; border: 1px solid var(--green); color: var(--green);
+      padding: .25rem .65rem; border-radius: 4px; font-size: .78rem; cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-use-saved:hover { background: rgba(63,185,80,.12); }
+    .btn-start {
+      display: block; width: 100%; margin-top: 1.25rem;
+      background: var(--ccna); color: #fff; border: none;
+      padding: .75rem 1rem; border-radius: var(--radius);
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: opacity .2s; text-align: center;
+    }
+    .btn-start:hover { opacity: .88; }
+    .btn-start:disabled { opacity: .35; cursor: not-allowed; }
+
     /* ── Controles superiores ── */
     .vlsm-controls {
       display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
@@ -89,7 +132,6 @@
     .vlsm-wrap {
       overflow-x: auto;
       border: 1px solid var(--border); border-radius: var(--radius);
-      /* Indicador visual de scroll */
       background:
         linear-gradient(to right, var(--bg) 20px, transparent 20px),
         linear-gradient(to left,  var(--bg) 20px, transparent 20px) right,
@@ -192,27 +234,21 @@
     .done-banner h3 { color: var(--green); font-size: 1.3rem; margin-bottom: .5rem; }
     .done-banner p  { color: var(--muted); font-size: .9rem; }
 
-    @keyframes shake {
-      0%,100%{ transform:translateX(0) }
-      30%    { transform:translateX(-4px) }
-      70%    { transform:translateX(4px) }
+    /* ── Historial de ejercicios ── */
+    .hist-title {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--muted); margin: .85rem 0 .4rem; text-align: left;
     }
-    .shake { animation: shake .32s ease; }
-
-    /* ── Campo nombre estudiante ── */
-    .nombre-row {
-      display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
-      padding: .75rem 1.1rem; border-bottom: 1px solid var(--border);
+    .hist-list { max-width: 440px; margin: 0 auto; }
+    .hist-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .4rem .65rem; border-radius: 6px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      margin-bottom: .35rem; font-size: .8rem; gap: .75rem;
     }
-    .nombre-input {
-      flex: 1; min-width: 180px; max-width: 340px;
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text); padding: .4rem .75rem;
-      border-radius: 6px; font-size: .9rem; outline: none;
-      transition: border-color .2s;
-    }
-    .nombre-input:focus { border-color: var(--ccna); }
-    .nombre-input.input-error { border-color: var(--red); }
+    .hi-lbl  { color: var(--text); font-weight: 700; }
+    .hi-err  { color: var(--muted); font-size: .75rem; }
+    .hi-date { color: var(--muted); font-size: .72rem; white-space: nowrap; }
 
     /* ── Botón enviar al profesor ── */
     .btn-send-form {
@@ -223,9 +259,39 @@
     }
     .btn-send-form:hover { opacity: .88; }
     .done-hint { font-size: .78rem; color: var(--muted); margin-top: .5rem; }
+    .submit-ind { font-size: .82rem; display: block; margin-top: .5rem; }
+    .submit-ind.pending { color: var(--muted); }
+    .submit-ind.ok      { color: var(--green); }
+    .submit-ind.err     { color: var(--red); }
+
+    @keyframes shake {
+      0%,100%{ transform:translateX(0) }
+      30%    { transform:translateX(-4px) }
+      70%    { transform:translateX(4px) }
+    }
+    .shake { animation: shake .32s ease; }
   </style>
 </head>
 <body>
+
+  <!-- ── MODAL DE INICIO ── -->
+  <div class="modal-overlay" id="modalStart">
+    <div class="modal-box">
+      <h2>🗂️ Práctica VLSM</h2>
+      <p>
+        Ingresa tu nombre para registrar tus ejercicios.
+        El historial de los últimos 3 se guarda en este dispositivo.
+      </p>
+      <input class="modal-input" type="text" id="inputNombre"
+             placeholder="Tu nombre completo" maxlength="80"
+             autocomplete="off" autocorrect="off" spellcheck="false" />
+      <div id="savedNameRow" style="display:none" class="saved-name-row">
+        <span>Nombre guardado: <strong id="savedNameText"></strong></span>
+        <button class="btn-use-saved" id="btnUseSaved">Usar este nombre</button>
+      </div>
+      <button class="btn-start" id="btnStart" disabled>Comenzar →</button>
+    </div>
+  </div>
 
   <!-- ── NAVEGACIÓN ── -->
   <header>
@@ -265,15 +331,6 @@
       <span id="lvlBadge" class="level-badge intermedio">Intermedio</span>
     </div>
 
-    <!-- Campo nombre estudiante -->
-    <div class="info-panel" style="margin-bottom:.75rem">
-      <div class="nombre-row">
-        <label class="base-label" for="estudianteNombre">Tu nombre</label>
-        <input id="estudianteNombre" class="nombre-input"
-               placeholder="Escribe tu nombre completo" maxlength="80" />
-      </div>
-    </div>
-
     <!-- Panel: red base + pool de hosts -->
     <div class="info-panel">
       <div class="base-row">
@@ -309,11 +366,11 @@
     <!-- Banner final -->
     <div class="done-banner" id="doneBanner">
       <h3>🎉 ¡Esquema completo!</h3>
-      <p id="doneStats">Completaste todas las subredes correctamente.</p>
-      <button class="btn-send-form" onclick="sendVlsmToForm()">
-        📤 Enviar al profesor
-      </button>
-      <p class="done-hint">Se abrirá Google Forms pre-llenado. Solo presiona Enviar.</p>
+      <p id="doneStats"></p>
+      <div class="hist-list" id="histList"></div>
+      <span id="submitIndicator" class="submit-ind"></span>
+      <button id="btnFallback" class="btn-send-form" style="display:none"
+              onclick="sendVlsmToForm()">📤 Reenviar al profesor</button>
     </div>
 
   </div>
@@ -325,8 +382,8 @@
 
   <script>
   // ── CONFIGURACIÓN DEL PROFESOR ───────────────────────────────────
-  // Reemplaza FORM_ID y los entry.XXXXXXX con los de tu Google Form
   const FORM_CONFIG = {
+    scriptUrl:   'https://script.google.com/macros/s/AKfycbzzdEibQEN9nRjZKBU7CBR5fk1UbE4bdqWzFcXxZanX1DtfzBlw09dIyTljbiWRJ9hfKw/exec',
     id: '1FAIpQLSexKLoZIJHyCZHHxKz7mMvzIW4dSO2R2TamV1_-ksNpqAn0GQ',
     nombre:      'entry.335584076',
     fecha:       'entry.433021297',
@@ -350,22 +407,42 @@
     ].join('&') + '&usp=pp_url';
   }
 
-  function sendVlsmToForm() {
-    const nombreInput = document.getElementById('estudianteNombre');
-    const nombre = nombreInput.value.trim();
-    if (!nombre) {
-      nombreInput.classList.add('input-error');
-      nombreInput.focus();
+  async function autoSubmit(data) {
+    const indicator = document.getElementById('submitIndicator');
+    if (indicator) { indicator.textContent = '⏳ Registrando…'; indicator.className = 'submit-ind pending'; }
+    if (FORM_CONFIG.scriptUrl === 'PASTE_SCRIPT_URL_HERE') {
+      if (indicator) { indicator.textContent = '⚠ Script no configurado — usa el botón de reenvío'; indicator.className = 'submit-ind err'; }
+      document.getElementById('btnFallback').style.display = 'block';
       return;
     }
-    const lvl   = document.getElementById('lvlSelect').value;
-    const total = V.subnets.length;
+    try {
+      const res = await fetch(FORM_CONFIG.scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.ok && indicator) {
+        indicator.textContent = '✓ Registrado automáticamente';
+        indicator.className = 'submit-ind ok';
+      } else throw new Error(json.error || 'Error desconocido');
+    } catch(err) {
+      if (indicator) { indicator.textContent = '⚠ No se pudo registrar — usa el botón'; indicator.className = 'submit-ind err'; }
+      document.getElementById('btnFallback').style.display = 'block';
+    }
+  }
+
+  function sendVlsmToForm() {
+    const h = V.historial;
+    if (h.length === 0) return;
+    const totalErrores = h.reduce((sum, e) => sum + e.errores, 0);
+    const tipos    = h.map(e => e.label).join(', ');
+    const detalle  = h.map((e, i) => `Ej${i+1}: ${e.label} — ${e.errores} err (${e.fecha})`).join(' | ');
     const url = buildFormUrl({
-      nombre,
+      nombre:      V.nombre,
       fecha:       new Date().toLocaleDateString('es-CR'),
-      tipo:        'VLSM — ' + LEVELS[lvl].label,
-      completados: total + '/' + total,
-      errores:     V.totalErrors,
+      tipo:        'VLSM — ' + tipos,
+      completados: detalle,
+      errores:     totalErrores,
       calificacion: 100,
     });
     window.open(url, '_blank');
@@ -437,12 +514,14 @@
   //  ESTADO GLOBAL
   // ═══════════════════════════════════════════════════════
   const V = {
-    subnets:     [],   // [{hosts, prefix, mask[], net[], first[], last[], bc[], wan}]
-    hostsGiven:  [],   // hosts en orden aleatorio para los chips
-    baseNet:     '',   // string de la red base (ej. "172.20.0.0/16")
+    subnets:     [],
+    hostsGiven:  [],
+    baseNet:     '',
     activeRow:   0,
     done:        false,
-    totalErrors: 0,    // contador de errores acumulados en todo el ejercicio
+    totalErrors: 0,
+    nombre:      '',
+    historial:   [],   // últimos 3 ejercicios completados
   };
 
   // ═══════════════════════════════════════════════════════
@@ -452,33 +531,27 @@
     const lvl = document.getElementById('lvlSelect').value;
     const cfg = LEVELS[lvl];
 
-    // Actualizar badge
     const badge = document.getElementById('lvlBadge');
     badge.textContent = cfg.label;
     badge.className = 'level-badge ' + cfg.cls;
 
-    // Generar hosts LAN aleatorios dentro de cada rango
     const lanHosts = cfg.lanRanges.map(([lo,hi]) => ri(lo,hi));
-    // WAN siempre 2 hosts cada una
     const wanHosts = Array(cfg.wan).fill(2);
-
-    // Ordenar LAN de mayor a menor, WAN van al final
     lanHosts.sort((a,b) => b-a);
     const allSorted = [...lanHosts, ...wanHosts];
 
-    // Calcular subredes VLSM secuencialmente
     const base = cfg.base();
     let cur = [...base.ip];
     V.baseNet = str(base.ip) + '/' + base.prefix;
     document.getElementById('baseNetDisplay').textContent = V.baseNet;
 
     V.subnets = allSorted.map((h, idx) => {
-      const bits   = Math.ceil(Math.log2(h + 2));
-      const p      = 32 - bits;
-      const m      = prefixToMask(p);
-      const wc     = wildcard(m);
-      const net    = netAddr(cur, m);
-      const bc     = broadcast(net, wc);
+      const bits = Math.ceil(Math.log2(h + 2));
+      const p    = 32 - bits;
+      const m    = prefixToMask(p);
+      const wc   = wildcard(m);
+      const net  = netAddr(cur, m);
+      const bc   = broadcast(net, wc);
       cur = addOne(bc);
       return {
         hosts:  h,
@@ -492,9 +565,7 @@
       };
     });
 
-    // Pool desordenado para los chips
-    V.hostsGiven = [...allSorted].sort(() => Math.random() - .5);
-
+    V.hostsGiven  = [...allSorted].sort(() => Math.random() - .5);
     V.activeRow   = 0;
     V.done        = false;
     V.totalErrors = 0;
@@ -511,15 +582,14 @@
     const container = document.getElementById('poolChips');
     container.innerHTML = '';
 
-    // Contar cuántos de cada valor han sido consumidos (filas completadas)
     const consumedCount = {};
     V.subnets.slice(0, V.activeRow).forEach(s => {
       consumedCount[s.hosts] = (consumedCount[s.hosts] || 0) + 1;
     });
 
-    const usedLeft = {...consumedCount};
+    const usedLeft  = {...consumedCount};
     const nextHosts = V.done ? null : V.subnets[V.activeRow]?.hosts;
-    let nextMarked = false;
+    let nextMarked  = false;
 
     V.hostsGiven.forEach((h, i) => {
       const chip = document.createElement('span');
@@ -556,7 +626,6 @@
       const wanTag = s.wan ? '<span class="wan-label">WAN</span>' : '';
 
       if (i < V.activeRow) {
-        // Fila completada — valores correctos, readonly
         tr.innerHTML = `
           <td class="rnum">${i+1}${wanTag}</td>
           <td><input class="ti ti-h ok" value="${s.hosts}" readonly /></td>
@@ -569,7 +638,6 @@
           <td><span class="tag-ok">✓</span></td>`;
 
       } else if (i === V.activeRow) {
-        // Fila activa — inputs editables
         tr.innerHTML = `
           <td class="rnum">${i+1}${wanTag}</td>
           <td><input class="ti ti-h"  id="in-h-${i}"   placeholder="n" /></td>
@@ -581,7 +649,6 @@
           <td><input class="ti ti-ip" id="in-bc-${i}"  placeholder="x.x.x.x" /></td>
           <td><button class="btn-verify" onclick="verify(${i})">Verificar</button></td>`;
 
-        // Enter en último campo = verificar; foco en primer input
         setTimeout(() => {
           document.getElementById('in-bc-' + i)
             ?.addEventListener('keydown', e => { if(e.key==='Enter') verify(i); });
@@ -589,7 +656,6 @@
         }, 30);
 
       } else {
-        // Fila bloqueada
         tr.innerHTML = `
           <td class="rnum">${i+1}${wanTag}</td>
           <td><input class="ti ti-h"  placeholder="n"       disabled /></td>
@@ -604,6 +670,27 @@
 
       tbody.appendChild(tr);
     });
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  RENDER HISTORIAL
+  // ═══════════════════════════════════════════════════════
+  function renderHistorial() {
+    const container = document.getElementById('histList');
+    const btn = document.getElementById('btnEnviar');
+    if (!container || V.historial.length === 0) return;
+
+    container.innerHTML =
+      `<div class="hist-title">Últimos ejercicios guardados (${V.historial.length}/3)</div>` +
+      V.historial.map((e, i) => `
+        <div class="hist-item">
+          <span class="hi-lbl">#${i+1} ${e.label}</span>
+          <span class="hi-err">${e.errores} error${e.errores !== 1 ? 'es' : ''}</span>
+          <span class="hi-date">${e.fecha}</span>
+        </div>
+      `).join('');
+
+    btn.textContent = `📤 Enviar al profesor (${V.historial.length} ej.)`;
   }
 
   // ═══════════════════════════════════════════════════════
@@ -626,47 +713,59 @@
 
     if (inH !== s.hosts)
       errors.push(`Hosts: debes asignar el mayor pendiente (${s.hosts})`);
-
     if (inNet !== str(s.net)) {
       const hint = i === 0
         ? `${str(s.net)} (red base del ejercicio)`
         : `${str(s.net)} (Broadcast anterior + 1)`;
       errors.push(`Dir. de Red: debe ser ${hint}`);
     }
-
     if (inPx !== s.prefix)
       errors.push(`Prefijo: para ${s.hosts} hosts el mínimo es /${s.prefix}  →  2^${32-s.prefix}−2 = ${usable} hosts útiles`);
-
     if (inMk !== str(s.mask))
       errors.push(`Máscara: /${s.prefix} corresponde a ${str(s.mask)}`);
-
     if (inF !== str(s.first))
       errors.push(`Primer host: ${str(s.first)}  (Dir. de Red + 1)`);
-
     if (inL !== str(s.last))
       errors.push(`Último host: ${str(s.last)}  (Broadcast − 1)`);
-
     if (inBc !== str(s.bc))
       errors.push(`Broadcast: ${str(s.bc)}  (Dir. de Red + ${Math.pow(2, 32-s.prefix)} − 1)`);
 
-    // Eliminar feedback anterior de esta fila
     document.getElementById('fb-' + i)?.remove();
 
     if (errors.length === 0) {
-      // ✓ Correcto → avanzar
       V.activeRow++;
       if (V.activeRow >= V.subnets.length) {
         V.done = true;
         const lvl   = document.getElementById('lvlSelect').value;
         const total = V.subnets.length;
+
+        // Guardar en historial
+        const entry = {
+          label:   LEVELS[lvl].label,
+          errores: V.totalErrors,
+          total,
+          fecha: new Date().toLocaleDateString('es-CR'),
+        };
+        V.historial.unshift(entry);
+        if (V.historial.length > 3) V.historial.pop();
+        try { localStorage.setItem('vlsm_historial', JSON.stringify(V.historial)); } catch(e) {}
+
         document.getElementById('doneStats').textContent =
           `Nivel: ${LEVELS[lvl].label} · Filas: ${total}/${total} · Intentos fallidos: ${V.totalErrors} · Calificación: 100/100`;
+        renderHistorial();
         document.getElementById('doneBanner').style.display = 'block';
+        autoSubmit({
+          nombre:      V.nombre,
+          fecha:       entry.fecha,
+          tipo:        'VLSM — ' + entry.label,
+          completados: total + '/' + total,
+          errores:     V.totalErrors,
+          calificacion: 100,
+        });
       }
       renderPool();
       renderTable();
     } else {
-      // ✗ Error → shake + fila de feedback
       V.totalErrors++;
       const activeRow = document.getElementById('row-' + i);
       activeRow?.classList.add('shake');
@@ -681,20 +780,58 @@
   }
 
   // ═══════════════════════════════════════════════════════
+  //  MODAL
+  // ═══════════════════════════════════════════════════════
+  function initModal() {
+    const input    = document.getElementById('inputNombre');
+    const btnStart = document.getElementById('btnStart');
+    const savedRow = document.getElementById('savedNameRow');
+    const savedTxt = document.getElementById('savedNameText');
+    const btnUse   = document.getElementById('btnUseSaved');
+
+    // Cargar nombre e historial guardados
+    try {
+      const saved = localStorage.getItem('vlsm_nombre');
+      if (saved && saved.trim()) {
+        savedTxt.textContent = saved;
+        savedRow.style.display = 'flex';
+        btnUse.addEventListener('click', () => {
+          input.value = saved;
+          btnStart.disabled = false;
+        });
+      }
+      const hist = localStorage.getItem('vlsm_historial');
+      if (hist) V.historial = JSON.parse(hist);
+    } catch(e) {}
+
+    input.addEventListener('input', () => {
+      btnStart.disabled = input.value.trim().length < 2;
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
+    });
+
+    btnStart.addEventListener('click', () => {
+      const nombre = input.value.trim();
+      if (!nombre) return;
+      V.nombre = nombre;
+      try { localStorage.setItem('vlsm_nombre', nombre); } catch(e) {}
+      document.getElementById('modalStart').style.display = 'none';
+      newExercise();
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════
   //  INICIO
   // ═══════════════════════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', () => {
-    newExercise();
-    document.getElementById('estudianteNombre')
-      .addEventListener('input', function() { this.classList.remove('input-error'); });
-  });
+  document.addEventListener('DOMContentLoaded', () => { initModal(); });
 
   // ── Ctrl + Shift + Enter → resolver todo el esquema ──
   document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.shiftKey && e.key === 'Enter') {
       e.preventDefault();
       V.subnets.forEach((s, i) => {
-        if (i < V.activeRow) return; // ya completada
+        if (i < V.activeRow) return;
         V.activeRow = i;
         renderPool();
         renderTable();

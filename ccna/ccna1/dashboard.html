@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Docente — CCNA 1</title>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    /* ── Layout ── */
+    .dash-body {
+      padding: 2rem 2.5rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    @media (max-width: 700px) { .dash-body { padding: 1.25rem 1rem 4rem; } }
+
+    /* ── Modal de clave ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.8); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 2.25rem;
+      width: 100%; max-width: 400px;
+    }
+    .modal-box h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: .4rem; }
+    .modal-box p  { color: var(--muted); font-size: .88rem; margin-bottom: 1.25rem; line-height: 1.6; }
+    .modal-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .65rem .9rem;
+      border-radius: 6px; font-size: 1rem; outline: none;
+      transition: border-color .2s; box-sizing: border-box; letter-spacing: .08em;
+    }
+    .modal-input:focus { border-color: var(--ccna); }
+    .modal-error { font-size: .82rem; color: var(--red); margin-top: .45rem; display: none; }
+    .modal-error.show { display: block; }
+    .btn-login {
+      display: block; width: 100%; margin-top: 1rem;
+      background: var(--ccna); color: #fff; border: none;
+      padding: .7rem 1rem; border-radius: var(--radius);
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-login:hover { opacity: .88; }
+    .btn-login:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* ── Resumen superior ── */
+    .summary-row {
+      display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem 1.5rem;
+      min-width: 140px; flex: 1;
+    }
+    .sc-num { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--ccna); }
+    .sc-lbl { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: .25rem; }
+
+    /* ── Barra de acciones ── */
+    .action-bar {
+      display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .btn-refresh {
+      background: var(--ccna); color: #fff; border: none;
+      padding: .5rem 1.2rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-refresh:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-refresh:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .filter-input {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: .48rem .85rem;
+      border-radius: var(--radius); font-size: .9rem; outline: none;
+      flex: 1; min-width: 180px; max-width: 280px;
+      transition: border-color .2s;
+    }
+    .filter-input:focus { border-color: var(--ccna); }
+    .status-text { font-size: .82rem; color: var(--muted); margin-left: auto; }
+
+    /* ── Tabla ── */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background:
+        linear-gradient(to right, var(--bg) 20px, transparent 20px),
+        linear-gradient(to left,  var(--bg) 20px, transparent 20px) right,
+        radial-gradient(ellipse at left,  rgba(0,0,0,.18), transparent 70%) left,
+        radial-gradient(ellipse at right, rgba(0,0,0,.18), transparent 70%) right;
+      background-repeat: no-repeat;
+      background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+      background-attachment: local, local, scroll, scroll;
+    }
+    .dash-table {
+      border-collapse: collapse; width: 100%;
+      font-size: .85rem; min-width: 700px;
+    }
+    .dash-table th {
+      background: var(--surface2); color: var(--muted);
+      padding: .65rem .9rem; border-bottom: 2px solid var(--border);
+      border-right: 1px solid var(--border);
+      text-align: left; font-size: .7rem; text-transform: uppercase;
+      letter-spacing: .06em; white-space: nowrap;
+      cursor: pointer; user-select: none;
+      position: sticky; top: 0; z-index: 1;
+      transition: color .15s;
+    }
+    .dash-table th:hover { color: var(--text); }
+    .dash-table th.sorted { color: var(--ccna); }
+    .dash-table th::after { content: ''; margin-left: .35rem; font-size: .65rem; }
+    .dash-table th.asc::after  { content: '▲'; }
+    .dash-table th.desc::after { content: '▼'; }
+    .dash-table td {
+      padding: .5rem .9rem; border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .dash-table tr:last-child td { border-bottom: none; }
+    .dash-table tr:hover td { background: rgba(255,255,255,.03); }
+    .dash-table td.num { font-family: monospace; text-align: right; color: var(--muted); }
+    .score-cell { font-weight: 700; font-family: monospace; }
+    .score-high { color: var(--green); }
+    .score-mid  { color: var(--linux); }
+    .score-low  { color: var(--red); }
+    .ts-cell { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .tipo-cell { font-size: .78rem; color: var(--muted); }
+
+    /* ── Estado vacío / cargando ── */
+    .empty-state {
+      text-align: center; padding: 3rem 1rem;
+      color: var(--muted); font-size: .95rem;
+    }
+    .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: .75rem; }
+
+    /* ── Config notice ── */
+    .config-notice {
+      background: rgba(248,81,73,.08); border: 1px solid rgba(248,81,73,.3);
+      border-radius: var(--radius); padding: .85rem 1.1rem;
+      font-size: .85rem; color: var(--red); margin-bottom: 1.5rem;
+      display: none;
+    }
+    .config-notice.show { display: block; }
+    .config-notice code { background: rgba(248,81,73,.12); padding: .1rem .35rem; border-radius: 4px; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+  <!-- ── MODAL DE CLAVE ── -->
+  <div class="modal-overlay" id="modalKey">
+    <div class="modal-box">
+      <h2>🔐 Dashboard Docente</h2>
+      <p>Ingresa la clave para acceder a los registros de los estudiantes.</p>
+      <input class="modal-input" type="password" id="inputKey"
+             placeholder="Clave del docente" maxlength="80"
+             autocomplete="off" autocorrect="off" />
+      <div class="modal-error" id="keyError">Clave incorrecta o sin conexión.</div>
+      <button class="btn-login" id="btnLogin" disabled>Acceder →</button>
+    </div>
+  </div>
+
+  <!-- ── NAVEGACIÓN ── -->
+  <header>
+    <nav>
+      <span class="nav-brand">🌐 CCNA 1 — Subnetting</span>
+      <div class="nav-pages">
+        <a href="subnetting.html">Teoría</a>
+        <a href="subnetting-practica.html">ANDing</a>
+        <a href="subnetting-vlsm.html">VLSM</a>
+        <a href="subnetting-practica-final.html">Evaluación Final</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── HERO ── -->
+  <div class="topic-hero">
+    <div class="breadcrumb">CCNA 1 / Subnetting — Dashboard Docente</div>
+    <h1>📊 Dashboard Docente</h1>
+    <p class="hero-sub">
+      Visualizamos los registros de actividad de los estudiantes en tiempo real.
+      Los datos provienen del Google Sheet conectado al Apps Script.
+    </p>
+    <span class="author-chip">✍️ Prof. Andrés Mena Abarca</span>
+  </div>
+
+  <!-- ── CUERPO ── -->
+  <div class="dash-body" id="dashContent" style="display:none">
+
+    <div class="config-notice" id="configNotice">
+      ⚠ El <code>scriptUrl</code> no está configurado. Abre este archivo HTML y reemplaza
+      <code>PASTE_SCRIPT_URL_HERE</code> con la URL real del Apps Script web app.
+    </div>
+
+    <!-- Resumen -->
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="sc-num" id="scTotal">—</div>
+        <div class="sc-lbl">Registros</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-num" id="scPromedio">—</div>
+        <div class="sc-lbl">Promedio calif.</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-num" id="scTopEstudiante" style="font-size:1rem; line-height:1.3; padding-top:.25rem">—</div>
+        <div class="sc-lbl">Más intentos</div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="action-bar">
+      <button class="btn-refresh" id="btnRefresh">🔄 Actualizar</button>
+      <input class="filter-input" type="text" id="filterInput"
+             placeholder="Filtrar por nombre…" oninput="applyFilter()" />
+      <span class="status-text" id="statusText"></span>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th data-col="timestamp" class="sorted desc">Fecha/Hora</th>
+            <th data-col="nombre">Estudiante</th>
+            <th data-col="tipo">Tipo</th>
+            <th data-col="completados">Completados</th>
+            <th data-col="errores">Errores</th>
+            <th data-col="calificacion">Calificación</th>
+          </tr>
+        </thead>
+        <tbody id="dashBody">
+          <tr><td colspan="6"><div class="empty-state"><span class="icon">⏳</span>Cargando datos…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>CCNA 1 — Subnetting (Dashboard Docente)</span>
+    <span class="footer-author">✍️ Material elaborado por el <strong>Prof. Andrés Mena Abarca</strong></span>
+  </footer>
+
+  <script>
+  // ── CONFIGURACIÓN ───────────────────────────────────────────────
+  // Cambiar a la URL real del Apps Script web app
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzdEibQEN9nRjZKBU7CBR5fk1UbE4bdqWzFcXxZanX1DtfzBlw09dIyTljbiWRJ9hfKw/exec';
+  // ────────────────────────────────────────────────────────────────
+
+  let currentKey  = '';
+  let allRows     = [];
+  let sortCol     = 'timestamp';
+  let sortDir     = 'desc';  // 'asc' | 'desc'
+
+  // ── MODAL DE CLAVE ──────────────────────────────────────────────
+  const inputKey  = document.getElementById('inputKey');
+  const btnLogin  = document.getElementById('btnLogin');
+  const keyError  = document.getElementById('keyError');
+
+  inputKey.addEventListener('input', () => {
+    btnLogin.disabled = inputKey.value.trim().length < 1;
+    keyError.classList.remove('show');
+  });
+  inputKey.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !btnLogin.disabled) btnLogin.click();
+  });
+  btnLogin.addEventListener('click', async () => {
+    btnLogin.disabled = true;
+    btnLogin.textContent = 'Verificando…';
+    keyError.classList.remove('show');
+
+    if (SCRIPT_URL === 'PASTE_SCRIPT_URL_HERE') {
+      document.getElementById('configNotice').classList.add('show');
+      document.getElementById('modalKey').style.display = 'none';
+      document.getElementById('dashContent').style.display = 'block';
+      document.getElementById('dashBody').innerHTML =
+        `<tr><td colspan="6"><div class="empty-state"><span class="icon">⚙️</span>Configura el scriptUrl primero.</div></td></tr>`;
+      updateSummary([]);
+      return;
+    }
+
+    const ok = await loadData(inputKey.value.trim());
+    if (ok) {
+      currentKey = inputKey.value.trim();
+      document.getElementById('modalKey').style.display = 'none';
+      document.getElementById('dashContent').style.display = 'block';
+    } else {
+      keyError.classList.add('show');
+      btnLogin.disabled = false;
+      btnLogin.textContent = 'Acceder →';
+    }
+  });
+
+  // ── CARGA DE DATOS ──────────────────────────────────────────────
+  async function loadData(key) {
+    try {
+      const url = `${SCRIPT_URL}?key=${encodeURIComponent(key)}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      if (!json.ok) return false;
+      allRows = json.rows;
+      applyFilter();
+      updateSummary(allRows);
+      document.getElementById('statusText').textContent =
+        `Última actualización: ${new Date().toLocaleTimeString('es-CR')}`;
+      return true;
+    } catch(err) {
+      return false;
+    }
+  }
+
+  // ── ACTUALIZAR ──────────────────────────────────────────────────
+  document.getElementById('btnRefresh').addEventListener('click', async () => {
+    const btn = document.getElementById('btnRefresh');
+    btn.disabled = true; btn.textContent = '⏳ Cargando…';
+    await loadData(currentKey);
+    btn.disabled = false; btn.textContent = '🔄 Actualizar';
+  });
+
+  // ── RESUMEN ─────────────────────────────────────────────────────
+  function updateSummary(rows) {
+    document.getElementById('scTotal').textContent = rows.length;
+
+    if (rows.length === 0) {
+      document.getElementById('scPromedio').textContent = '—';
+      document.getElementById('scTopEstudiante').textContent = '—';
+      return;
+    }
+
+    const califs = rows.map(r => parseFloat(r.calificacion) || 0);
+    const prom = califs.reduce((a, b) => a + b, 0) / califs.length;
+    document.getElementById('scPromedio').textContent = prom.toFixed(1);
+
+    const conteo = {};
+    rows.forEach(r => { conteo[r.nombre] = (conteo[r.nombre] || 0) + 1; });
+    const top = Object.entries(conteo).sort((a,b) => b[1]-a[1])[0];
+    document.getElementById('scTopEstudiante').textContent =
+      top ? `${top[0]} (${top[1]})` : '—';
+  }
+
+  // ── FILTRAR ─────────────────────────────────────────────────────
+  function applyFilter() {
+    const q = document.getElementById('filterInput').value.toLowerCase().trim();
+    const filtered = q
+      ? allRows.filter(r => r.nombre.toLowerCase().includes(q))
+      : allRows;
+    renderTable(sorted(filtered));
+  }
+
+  // ── ORDENAR ─────────────────────────────────────────────────────
+  function sorted(rows) {
+    return [...rows].sort((a, b) => {
+      let va = a[sortCol], vb = b[sortCol];
+      const na = parseFloat(va), nb = parseFloat(vb);
+      if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
+      else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  document.querySelectorAll('.dash-table th').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortCol = col;
+        sortDir = 'asc';
+      }
+      document.querySelectorAll('.dash-table th').forEach(h => {
+        h.classList.remove('sorted','asc','desc');
+      });
+      th.classList.add('sorted', sortDir);
+      applyFilter();
+    });
+  });
+
+  // ── RENDER TABLA ────────────────────────────────────────────────
+  function formatTimestamp(val) {
+    if (!val) return '—';
+    const d = new Date(val);
+    if (isNaN(d)) return String(val);
+    return d.toLocaleString('es-CR', { dateStyle:'short', timeStyle:'short' });
+  }
+
+  function scoreClass(val) {
+    const n = parseFloat(val);
+    if (isNaN(n)) return '';
+    if (n >= 80) return 'score-high';
+    if (n >= 60) return 'score-mid';
+    return 'score-low';
+  }
+
+  function renderTable(rows) {
+    const tbody = document.getElementById('dashBody');
+    if (rows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="icon">📭</span>Sin registros.</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td class="ts-cell">${formatTimestamp(r.timestamp)}</td>
+        <td>${escHtml(r.nombre)}</td>
+        <td class="tipo-cell">${escHtml(r.tipo)}</td>
+        <td class="num">${escHtml(r.completados)}</td>
+        <td class="num">${r.errores ?? '—'}</td>
+        <td class="score-cell ${scoreClass(r.calificacion)}">${r.calificacion ?? '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── INIT ────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    inputKey.focus();
+  });
+  </script>
+</body>
+</html>
