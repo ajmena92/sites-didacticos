@@ -1,0 +1,36 @@
+{
+  "docente": {
+    "nombre": "Ing. Andrés Mena Abarca",
+    "institucion": "CTP Platanares"
+  },
+  "grupos": [
+    { "id": "10-1", "nombre": "10-1 Redes", "turno": "mañana" },
+    { "id": "10-2", "nombre": "10-2 Redes", "turno": "tarde" },
+    { "id": "11-1", "nombre": "11-1 Redes", "turno": "mañana" }
+  ],
+  "cursos": {
+    "ccna1": { "nombre": "CCNA1 — ITN", "color_accent": "#00b4d8" },
+    "ccna2": { "nombre": "CCNA2 — SRWE", "color_accent": "#0077b6" },
+    "python": { "nombre": "Python Fundamentos", "color_accent": "#f7c948" },
+    "linux": { "nombre": "Linux Básico", "color_accent": "#e85d04" }
+  },
+  "entregas": [
+    {
+      "id": "comandos-modulo2",
+      "curso": "ccna1",
+      "modulo": "modulo2",
+      "tipo": "tarea",
+      "titulo": "Tarea 1 — Comandos Básicos Switch",
+      "grupos_habilitados": ["10-1", "10-2", "11-1"],
+      "activa": true,
+      "fecha_apertura": "2026-03-01T07:00:00",
+      "fecha_cierre": "2026-03-28T23:59:00",
+      "puntos": 40,
+      "google_form_id": "PENDIENTE_FASE2",
+      "parametros": {
+        "mostrar_respuestas": true,
+        "exportar_pdf": true
+      }
+    }
+  ]
+}

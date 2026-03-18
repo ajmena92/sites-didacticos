@@ -1,0 +1,92 @@
+{
+  "id": "comandos-modulo2",
+  "titulo": "Tarea 1 — Comandos Básicos Switch",
+  "subtitulo": "ITN — MÓDULO 2 · TAREA 1",
+  "contexto": "El técnico del CTP Platanares está configurando un switch nuevo. Acaba de encenderlo y necesita realizar la configuración inicial.",
+  "curso": "ccna1",
+  "tipo": "tarea",
+  "modos_referencia": [
+    { "prompt": "Switch>", "modo": "EXEC de usuario", "acceso": "Inicio de sesión" },
+    { "prompt": "Switch#", "modo": "EXEC privilegiado", "acceso": "enable" },
+    { "prompt": "Switch(config)#", "modo": "Configuración global", "acceso": "configure terminal" },
+    { "prompt": "Switch(config-line)#", "modo": "Configuración de línea", "acceso": "line console 0 / line vty 0 15" },
+    { "prompt": "Switch(config-if)#", "modo": "Configuración de interfaz", "acceso": "interface [tipo] [num]" }
+  ],
+  "secciones": {
+    "fillInBlank": {
+      "puntos": 20,
+      "titulo": "Complete el Comando",
+      "items": [
+        { "id": 1, "prompt": "Switch> ", "desc": "Ingresa al modo EXEC privilegiado.", "respuestas_validas": ["enable"] },
+        { "id": 2, "prompt": "Switch# ", "desc": "Ingresa al modo de configuración global.", "respuestas_validas": ["configure terminal", "conf t", "conf terminal"] },
+        { "id": 3, "prompt": "Switch(config)# ", "desc": "Asigna un nombre de host único al dispositivo.", "respuestas_validas": ["hostname"] },
+        { "id": 4, "prompt": "SW-CTP(config)# ", "desc": "Contraseña encriptada para el modo EXEC privilegiado.", "post": " Cisco2025#", "respuestas_validas": ["enable secret"] },
+        { "id": 5, "prompt": "SW-CTP(config)# ", "desc": "Accede al modo de configuración del puerto de consola.", "respuestas_validas": ["line console 0", "line con 0"] },
+        { "id": 6, "prompt": "SW-CTP(config)# ", "desc": "Encripta las contraseñas en texto plano del archivo de configuración.", "respuestas_validas": ["service password-encryption"] },
+        { "id": 7, "prompt": "SW-CTP# ", "desc": "Guarda la configuración activa en la NVRAM (startup-config).", "respuestas_validas": ["copy running-config startup-config", "copy run start", "wr", "write"] },
+        { "id": 8, "prompt": "SW-CTP# ", "desc": "Borra la configuración guardada en la NVRAM.", "respuestas_validas": ["erase startup-config", "erase start"] },
+        { "id": 9, "prompt": "SW-CTP(config-if)# ", "desc": "Habilita (activa) una interfaz administrativamente apagada.", "respuestas_validas": ["no shutdown", "no shut"] },
+        { "id": 10, "prompt": "SW-CTP# ", "desc": "Muestra la configuración activa en la RAM del dispositivo.", "respuestas_validas": ["show running-config", "show run"] }
+      ]
+    },
+    "matching": {
+      "puntos": 10,
+      "titulo": "Relacione Columnas",
+      "pares": [
+        { "id": "m1", "comando": "end", "definicion": "Sale de cualquier subconfiguración y regresa directamente al modo EXEC privilegiado" },
+        { "id": "m2", "comando": "banner motd #", "definicion": "Crea un mensaje de aviso del día que aparece al conectarse al dispositivo" },
+        { "id": "m3", "comando": "reload", "definicion": "Reinicia el dispositivo; cambios sin guardar en running-config se perderán" },
+        { "id": "m4", "comando": "line vty 0 15", "definicion": "Accede al modo de configuración de líneas virtuales para Telnet/SSH" },
+        { "id": "m5", "comando": "ip address [IP] [mask]", "definicion": "Asigna una dirección IP y máscara de subred a una interfaz de red" }
+      ]
+    },
+    "ordering": {
+      "puntos": 5,
+      "titulo": "Ordene la Secuencia",
+      "contexto": "Secuencia correcta para configurar la interfaz SVI (VLAN 1) en un switch Cisco:",
+      "pasos": [
+        { "orden": 1, "label": "Switch# configure terminal" },
+        { "orden": 2, "label": "Switch(config)# interface vlan 1" },
+        { "orden": 3, "label": "Switch(config-if)# ip address 192.168.1.20 255.255.255.0" },
+        { "orden": 4, "label": "Switch(config-if)# no shutdown" },
+        { "orden": 5, "label": "Switch(config-if)# end" }
+      ]
+    },
+    "multipleChoice": {
+      "puntos": 5,
+      "titulo": "Preguntas de Escenario",
+      "preguntas": [
+        {
+          "id": "q1",
+          "texto": "El técnico conecta su laptop al switch con un cable de consola y abre PuTTY. ¿En qué modo IOS se encuentra al conectarse por primera vez?",
+          "opciones": ["EXEC privilegiado — Switch#", "EXEC de usuario — Switch>", "Configuración global — Switch(config)#", "Configuración de interfaz — Switch(config-if)#"],
+          "correcta": 1
+        },
+        {
+          "id": "q2",
+          "texto": "Ejecuta show running-config y ve la contraseña de consola en texto plano. ¿Qué comando debe usar para solucionar esto?",
+          "opciones": ["enable secret [contraseña]", "password encryption enable", "service password-encryption", "encrypt all passwords"],
+          "correcta": 2
+        },
+        {
+          "id": "q3",
+          "texto": "Aplicó cambios erróneos. La startup-config NO fue modificada. ¿Cuál es la forma más rápida de deshacer todos los cambios?",
+          "opciones": ["Ejecutar erase startup-config y apagar el switch", "Ejecutar reload para reiniciar el dispositivo", "Ejecutar copy startup-config running-config y luego reload", "Desconectar el cable de consola y reconectarse"],
+          "correcta": 1
+        },
+        {
+          "id": "q4",
+          "texto": "El técnico teclea Switch# interface vlan 1 y obtiene % Invalid input detected. ¿Por qué ocurrió este error?",
+          "opciones": ["La VLAN 1 no existe en el switch", "El switch no soporta interfaces virtuales", "El comando interface debe ejecutarse desde el modo de configuración global", "Falta escribir VLAN en mayúsculas"],
+          "correcta": 2
+        },
+        {
+          "id": "q5",
+          "texto": "¿Cuál es la diferencia entre startup-config y running-config?",
+          "opciones": ["Son idénticos; se sincronizan automáticamente en tiempo real", "startup-config está en RAM (volátil); running-config está en NVRAM (no volátil)", "running-config está en RAM (volátil); startup-config está en NVRAM y se carga al reiniciar", "startup-config contiene solo contraseñas; running-config contiene toda la configuración"],
+          "correcta": 2
+        }
+      ]
+    }
+  }
+}
