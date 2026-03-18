@@ -1,5 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import { isLocked } from '../../stores/score.js';
 
   let { fechaApertura, fechaCierre } = $props();
 
@@ -28,7 +29,7 @@
       progress = 100;
       urgency = 'danger';
       document.documentElement.setAttribute('data-clock', 'danger');
-      window.dispatchEvent(new CustomEvent('deadline-reached'));
+      isLocked.set(true);
       clearInterval(interval);
       return;
     }

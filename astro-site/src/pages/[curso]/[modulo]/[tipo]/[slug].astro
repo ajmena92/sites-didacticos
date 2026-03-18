@@ -45,6 +45,7 @@ const ej = ejercicio as any;
   puntos={entrega.puntos}
   grupos={grupos}
   exportarPdf={entrega.parametros.exportar_pdf}
+  mostrarProgreso={entrega.parametros.mostrar_progreso ?? true}
 >
   {ej?.contexto && (
     <div class="card contexto">
@@ -76,6 +77,7 @@ const ej = ejercicio as any;
       items={ej.secciones.fillInBlank.items}
       puntos={ej.secciones.fillInBlank.puntos}
       mostrarRespuestas={entrega.parametros.mostrar_respuestas}
+      entregaId={entrega.id}
     />
   )}
 
@@ -84,6 +86,7 @@ const ej = ejercicio as any;
       client:visible
       pares={ej.secciones.matching.pares}
       puntos={ej.secciones.matching.puntos}
+      entregaId={entrega.id}
     />
   )}
 
@@ -93,6 +96,7 @@ const ej = ejercicio as any;
       pasos={ej.secciones.ordering.pasos}
       contexto={ej.secciones.ordering.contexto}
       puntos={ej.secciones.ordering.puntos}
+      entregaId={entrega.id}
     />
   )}
 
@@ -102,6 +106,7 @@ const ej = ejercicio as any;
       preguntas={ej.secciones.multipleChoice.preguntas}
       puntos={ej.secciones.multipleChoice.puntos}
       mostrarRespuestas={entrega.parametros.mostrar_respuestas}
+      entregaId={entrega.id}
     />
   )}
 
@@ -110,6 +115,8 @@ const ej = ejercicio as any;
     totalPuntos={entrega.puntos}
     exportarPdf={entrega.parametros.exportar_pdf}
     tituloTarea={entrega.titulo}
+    entregaId={entrega.id}
+    scriptUrl={entrega.google_script_url ?? ''}
   />
 </TareaLayout>
 

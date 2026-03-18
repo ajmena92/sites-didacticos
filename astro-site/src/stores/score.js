@@ -15,3 +15,18 @@ export const totalScore = computed(sectionScores, (scores) =>
 export function updateSection(section, points) {
   sectionScores.set({ ...sectionScores.get(), [section]: points });
 }
+
+export const studentStore = atom({ nombre: '', grupo: '', fecha: '' });
+
+export const sectionProgress = atom({
+  fillInBlank: false,
+  matching: false,
+  ordering: false,
+  multipleChoice: false,
+});
+
+export const isLocked = atom(false);
+
+export function markVerified(section, value = true) {
+  sectionProgress.set({ ...sectionProgress.get(), [section]: value });
+}

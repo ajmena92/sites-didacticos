@@ -4,15 +4,44 @@
     "institucion": "CTP Platanares"
   },
   "grupos": [
-    { "id": "10-1", "nombre": "10-1 Redes", "turno": "mañana" },
-    { "id": "10-2", "nombre": "10-2 Redes", "turno": "tarde" },
-    { "id": "11-1", "nombre": "11-1 Redes", "turno": "mañana" }
+    {
+      "id": "10-1",
+      "nombre": "10-1 Redes",
+      "turno": "mañana"
+    },
+    {
+      "id": "10-2",
+      "nombre": "10-2 Redes",
+      "turno": "tarde"
+    },
+    {
+      "id": "11-2",
+      "nombre": "11-3 Redes",
+      "turno": "mañana"
+    },
+    {
+      "id": "11-4",
+      "nombre": "11-4 Redes",
+      "turno": "mañana"
+    }
   ],
   "cursos": {
-    "ccna1": { "nombre": "CCNA1 — ITN", "color_accent": "#00b4d8" },
-    "ccna2": { "nombre": "CCNA2 — SRWE", "color_accent": "#0077b6" },
-    "python": { "nombre": "Python Fundamentos", "color_accent": "#f7c948" },
-    "linux": { "nombre": "Linux Básico", "color_accent": "#e85d04" }
+    "ccna1": {
+      "nombre": "CCNA1 — ITN",
+      "color_accent": "#00b4d8"
+    },
+    "ccna2": {
+      "nombre": "CCNA2 — SRWE",
+      "color_accent": "#0077b6"
+    },
+    "python": {
+      "nombre": "Python Fundamentos",
+      "color_accent": "#f7c948"
+    },
+    "linux": {
+      "nombre": "Linux Básico",
+      "color_accent": "#e85d04"
+    }
   },
   "entregas": [
     {
@@ -21,15 +50,20 @@
       "modulo": "modulo2",
       "tipo": "tarea",
       "titulo": "Tarea 1 — Comandos Básicos Switch",
-      "grupos_habilitados": ["10-1", "10-2", "11-1"],
+      "grupos_habilitados": [
+        "11-2",
+        "11-3"
+      ],
       "activa": true,
       "fecha_apertura": "2026-03-18T00:00:00",
       "fecha_cierre": "2026-03-26T07:00:00",
       "puntos": 40,
-      "google_form_id": "PENDIENTE_FASE2",
+      "google_script_url": "https://script.google.com/macros/s/AKfycbwc0mvRvRMA2wXuczGg0p_6JZjpA7j5e807ZbKHzwVRONYn-cNjgZ7ARXRsBlGlo7q6/exec",
       "parametros": {
         "mostrar_respuestas": true,
-        "exportar_pdf": true
+        "exportar_pdf": true,
+        "mostrar_progreso": true,
+        "permitir_reintento": true
       }
     }
   ]

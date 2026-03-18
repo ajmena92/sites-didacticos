@@ -1,8 +1,11 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import CountdownClock from '../components/ui/CountdownClock.svelte';
-import StudentPanel from '../components/ui/StudentPanel.svelte';
+import StudentGate from '../components/ui/StudentGate.svelte';
 import ScoreBadge from '../components/ui/ScoreBadge.svelte';
+import ProgressBar from '../components/ui/ProgressBar.svelte';
+import ResumeBanner from '../components/ui/ResumeBanner.svelte';
+import SectionNav from '../components/ui/SectionNav.svelte';
 
 interface Props {
   titulo: string;
@@ -14,9 +17,15 @@ interface Props {
   puntos: number;
   grupos: { id: string; nombre: string; turno: string }[];
   exportarPdf?: boolean;
+  mostrarProgreso?: boolean;
 }
 
-const { titulo, subtitulo, curso, entregaId, fechaApertura, fechaCierre, puntos, grupos, exportarPdf = false } = Astro.props;
+const {
+  titulo, subtitulo, curso, entregaId,
+  fechaApertura, fechaCierre, puntos, grupos,
+  exportarPdf = false,
+  mostrarProgreso = true,
+} = Astro.props;
 ---
 
 <BaseLayout title={titulo} course={curso} type="tarea" exportarPdf={exportarPdf}>
@@ -30,11 +39,16 @@ const { titulo, subtitulo, curso, entregaId, fechaApertura, fechaCierre, puntos,
   </header>
 
   <CountdownClock client:load fechaApertura={fechaApertura} fechaCierre={fechaCierre} />
-  <StudentPanel client:load grupos={grupos} entregaId={entregaId} />
+  <StudentGate client:load grupos={grupos} entregaId={entregaId} />
 
-  <main>
-    <slot />
-  </main>
+  <div id="exercises-wrap" style="display:none">
+    <ResumeBanner client:load entregaId={entregaId} />
+    {mostrarProgreso && <ProgressBar client:load />}
+    <SectionNav client:load />
+    <main>
+      <slot />
+    </main>
+  </div>
 </BaseLayout>
 
 <style>

@@ -1,16 +1,38 @@
 <script>
-  import { onMount } from 'svelte';
-  import { updateSection } from '../../stores/score.js';
+  import { onMount, onDestroy } from 'svelte';
+  import { updateSection, isLocked, markVerified } from '../../stores/score.js';
 
-  let { preguntas = [], puntos = 5, mostrarRespuestas = true } = $props();
+  let { preguntas = [], puntos = 5, mostrarRespuestas = true, entregaId = '' } = $props();
+
+  const SK = `respuestas_v1_${entregaId}_multipleChoice`;
 
   let selections = $state(Array(preguntas.length).fill(null));
   let results    = $state(null);
   let verified   = $state(false);
-  let locked     = $state(false);
+  let locked     = $state(isLocked.get());
+
+  const unsubLock = isLocked.subscribe(v => { locked = v; });
+  onDestroy(unsubLock);
+
+  $effect(() => {
+    if (typeof localStorage !== 'undefined' && entregaId) {
+      localStorage.setItem(SK, JSON.stringify({ selections, verified, results }));
+    }
+  });
 
   onMount(() => {
-    window.addEventListener('deadline-reached', () => { locked = true; });
+    if (!entregaId) return;
+    const raw = localStorage.getItem(SK);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    selections = d.selections ?? Array(preguntas.length).fill(null);
+    verified   = d.verified  ?? false;
+    results    = d.results   ?? null;
+    if (verified) {
+      const correct = (results ?? []).filter(Boolean).length;
+      updateSection('multipleChoice', Math.round((correct / preguntas.length) * puntos));
+      markVerified('multipleChoice');
+    }
   });
 
   function check() {
@@ -18,10 +40,13 @@
     results = preguntas.map((p, i) => selections[i] === p.correcta);
     const correct = results.filter(Boolean).length;
     updateSection('multipleChoice', Math.round((correct / preguntas.length) * puntos));
+    markVerified('multipleChoice');
     verified = true;
   }
 
   function reset() {
+    if (typeof localStorage !== 'undefined' && entregaId) localStorage.removeItem(SK);
+    markVerified('multipleChoice', false);
     selections = Array(preguntas.length).fill(null);
     results    = null;
     verified   = false;
@@ -29,7 +54,7 @@
   }
 </script>
 
-<section class="ejercicio card">
+<section class="ejercicio card" id="sec-choice">
   <header class="ej-header">
     <h2 class="ej-title">Sección 04 — Preguntas de Escenario</h2>
     <span class="ej-pts">{puntos} pts</span>

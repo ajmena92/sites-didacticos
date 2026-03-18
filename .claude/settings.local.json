@@ -45,7 +45,12 @@
       "Bash(bash -c 'source ~/.nvm/nvm.sh && nvm use 22 && npm run build 2>&1')",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(''''entregas:'''', [e[''''id''''] for e in d[''''entregas'''']]\\); print\\(''''cursos:'''', list\\(d[''''cursos''''].keys\\(\\)\\)\\)\")",
       "Bash(git merge:*)",
-      "Bash(source ~/.nvm/nvm.sh)"
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(find /mnt/c/dev/sites-didacticos/astro-site/src/components -type f -name *.astro -o -name *.svelte -o -name *.ts -o -name *.js)",
+      "Bash(find /mnt/c/dev/sites-didacticos/astro-site/src/pages -name *tarea* -o -name *slug*)",
+      "Bash(npx --yes astro build)",
+      "Bash(command -v node22)",
+      "Bash(curl:*)"
     ]
   }
 }

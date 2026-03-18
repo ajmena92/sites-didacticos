@@ -1,16 +1,42 @@
 <script>
-  import { onMount } from 'svelte';
-  import { updateSection } from '../../stores/score.js';
+  import { onMount, onDestroy } from 'svelte';
+  import { updateSection, isLocked, markVerified } from '../../stores/score.js';
 
-  let { items = [], puntos = 20, mostrarRespuestas = true } = $props();
+  let { items = [], puntos = 20, mostrarRespuestas = true, entregaId = '' } = $props();
+
+  const SK = `respuestas_v1_${entregaId}_fillInBlank`;
 
   let answers  = $state(Array(items.length).fill(''));
   let results  = $state(Array(items.length).fill(null));
   let verified = $state(false);
-  let locked   = $state(false);
+  let locked   = $state(isLocked.get());
+
+  const unsubLock = isLocked.subscribe(v => { locked = v; });
+  onDestroy(unsubLock);
+
+  function calcScore() {
+    const correct = results.filter(Boolean).length;
+    return Math.round((correct / items.length) * puntos);
+  }
+
+  $effect(() => {
+    if (typeof localStorage !== 'undefined' && entregaId) {
+      localStorage.setItem(SK, JSON.stringify({ answers, verified, results }));
+    }
+  });
 
   onMount(() => {
-    window.addEventListener('deadline-reached', () => { locked = true; });
+    if (!entregaId) return;
+    const raw = localStorage.getItem(SK);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    answers  = d.answers  ?? answers;
+    verified = d.verified ?? false;
+    results  = d.results  ?? Array(items.length).fill(null);
+    if (verified) {
+      updateSection('fillInBlank', calcScore());
+      markVerified('fillInBlank');
+    }
   });
 
   function check() {
@@ -23,10 +49,13 @@
       return ok;
     });
     updateSection('fillInBlank', Math.round((correct / items.length) * puntos));
+    markVerified('fillInBlank');
     verified = true;
   }
 
   function reset() {
+    if (typeof localStorage !== 'undefined' && entregaId) localStorage.removeItem(SK);
+    markVerified('fillInBlank', false);
     answers  = Array(items.length).fill('');
     results  = Array(items.length).fill(null);
     verified = false;
@@ -34,7 +63,7 @@
   }
 </script>
 
-<section class="ejercicio card">
+<section class="ejercicio card" id="sec-fill">
   <header class="ej-header">
     <h2 class="ej-title">Sección 01 — Complete el Comando</h2>
     <span class="ej-pts">{puntos} pts</span>
