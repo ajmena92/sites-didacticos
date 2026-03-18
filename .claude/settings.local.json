@@ -21,7 +21,31 @@
       "Bash(git -C /mnt/c/dev/sites-didacticos log --oneline)",
       "Bash(find /mnt/c/dev/sites-didacticos -name tarea_comandos* -o -name tareas_I*)",
       "Bash(cat /mnt/c/dev/sites-didacticos/.github/workflows/*.yml)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm --version)",
+      "Bash(node:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git worktree:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx astro:*)",
+      "Bash(nvm --version)",
+      "Read(//home/dev/.nvm/versions/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)",
+      "Bash(bash)",
+      "Bash(npm info:*)",
+      "Bash(python3 -c \"import json,sys; p=json.load\\(sys.stdin\\); print\\(list\\(p.get\\(''''exports'''',{}\\).keys\\(\\)\\)[:20]\\)\")",
+      "Bash(bash -c 'export NVM_DIR=\"\"$HOME/.nvm\"\" && [ -s \"\"$NVM_DIR/nvm.sh\"\" ] && . \"\"$NVM_DIR/nvm.sh\"\" && nvm use 22 && npm run build 2>&1')",
+      "Bash(bash -c 'export NVM_DIR=\"\"$HOME/.nvm\"\" && [ -s \"\"$NVM_DIR/nvm.sh\"\" ] && . \"\"$NVM_DIR/nvm.sh\"\" && nvm use 22 && node -e \"\"const p=require\\(\\\\\"\"./node_modules/astro/package.json\\\\\"\"\\); console.log\\(p.version\\)\"\"')",
+      "Bash(source /home/andres/.nvm/nvm.sh)",
+      "Bash(nvm use:*)",
+      "Bash(npm run:*)",
+      "Bash(. ~/.nvm/nvm.sh)",
+      "Bash(bash -c 'source ~/.nvm/nvm.sh && nvm use 22 && npm run build 2>&1')",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(''''entregas:'''', [e[''''id''''] for e in d[''''entregas'''']]\\); print\\(''''cursos:'''', list\\(d[''''cursos''''].keys\\(\\)\\)\\)\")",
+      "Bash(git merge:*)",
+      "Bash(source ~/.nvm/nvm.sh)"
     ]
   }
 }

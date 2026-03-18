@@ -273,6 +273,19 @@
       text-decoration: none;
     }
 
+    .keyword-link {
+      color: #b9dbff;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: rgba(88,166,255,.45);
+      text-underline-offset: .16em;
+    }
+
+    .keyword-link:hover {
+      color: #ffffff;
+      text-decoration-color: rgba(88,166,255,.85);
+    }
+
     .ipv6-section {
       margin-top: 2rem;
       scroll-margin-top: calc(var(--nav-h) + 1rem);
@@ -671,6 +684,120 @@
       line-height: 1.7;
     }
 
+    .gallery-route {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .85rem;
+      margin-bottom: 1rem;
+    }
+
+    .gallery-route-step {
+      padding: .9rem .95rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.08), transparent 46%),
+        rgba(255,255,255,.03);
+    }
+
+    .gallery-route-step strong {
+      display: block;
+      color: var(--text);
+      font-size: .92rem;
+      margin-bottom: .22rem;
+    }
+
+    .gallery-route-step span {
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.62;
+    }
+
+    .gallery-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-bottom: 1rem;
+    }
+
+    .gallery-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .4rem .75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: .8rem;
+      line-height: 1.2;
+    }
+
+    .gallery-legend i {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .gallery-legend .lg-read { background: #58a6ff; }
+    .gallery-legend .lg-type { background: #3fb950; }
+    .gallery-legend .lg-flow { background: #f5a623; }
+    .gallery-legend .lg-practice { background: #ff7b72; }
+
+    .gallery-shelf + .gallery-shelf {
+      margin-top: 1.2rem;
+    }
+
+    .gallery-shelf-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: .8rem;
+    }
+
+    .gallery-shelf-copy {
+      min-width: 0;
+      max-width: 880px;
+    }
+
+    .gallery-shelf-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      margin-bottom: .28rem;
+      padding: .24rem .56rem;
+      border-radius: 999px;
+      border: 1px solid rgba(88,166,255,.22);
+      background: rgba(88,166,255,.1);
+      color: #b9dbff;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .gallery-shelf-copy h3 {
+      margin: 0 0 .2rem;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .gallery-shelf-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.68;
+    }
+
+    .gallery-shelf-count {
+      color: #9fb0c4;
+      font-size: .78rem;
+      white-space: nowrap;
+    }
+
     .image-card {
       position: relative;
       display: flex;
@@ -793,6 +920,179 @@
       display: inline-flex;
       align-items: center;
       gap: .35rem;
+    }
+
+    .resource-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      margin-top: .1rem;
+    }
+
+    .resource-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .24rem .58rem;
+      border-radius: 999px;
+      border: 1px solid rgba(88,166,255,.18);
+      background: rgba(88,166,255,.08);
+      color: #b9dbff;
+      font-size: .72rem;
+      text-decoration: none;
+    }
+
+    .resource-link:hover {
+      color: #ffffff;
+      border-color: rgba(88,166,255,.4);
+      text-decoration: none;
+    }
+
+    .image-card.html-resource::after {
+      content: 'Abrir ficha';
+    }
+
+    .study-board {
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+      padding: 1rem;
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.14), transparent 35%),
+        linear-gradient(180deg, #0d1627, #08111d);
+      cursor: zoom-in;
+    }
+
+    .study-board:focus-visible {
+      outline: 3px solid rgba(88,166,255,.55);
+      outline-offset: -3px;
+    }
+
+    .study-board-kicker {
+      align-self: flex-start;
+      padding: .25rem .62rem;
+      border-radius: 999px;
+      border: 1px solid rgba(88,166,255,.24);
+      background: rgba(88,166,255,.12);
+      color: #b9dbff;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .study-board h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.08rem;
+      line-height: 1.25;
+    }
+
+    .study-board p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.68;
+    }
+
+    .study-board-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+
+    .study-board-box {
+      padding: .8rem .85rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+    }
+
+    .study-board-box strong {
+      display: block;
+      color: var(--text);
+      font-size: .88rem;
+      margin-bottom: .2rem;
+    }
+
+    .study-board-box span {
+      color: var(--muted);
+      font-size: .8rem;
+      line-height: 1.6;
+    }
+
+    .study-board-note {
+      padding: .8rem .85rem;
+      border-radius: 14px;
+      border: 1px solid rgba(63,185,80,.24);
+      background: rgba(63,185,80,.08);
+      color: #cfe9d3;
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
+    .study-board-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      align-items: center;
+      color: #dbeafe;
+      font-size: .8rem;
+      line-height: 1.5;
+    }
+
+    .study-board-flow span {
+      display: inline-flex;
+      align-items: center;
+      padding: .34rem .65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+    }
+
+    .study-board-list {
+      margin: 0;
+      padding-left: 1rem;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.65;
+    }
+
+    .study-board-list li + li {
+      margin-top: .18rem;
+    }
+
+    .study-board-code {
+      margin: 0;
+      padding: .82rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(4,9,17,.72);
+      color: #dbeafe;
+      font-family: Consolas, Monaco, monospace;
+      font-size: .8rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .study-board-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      margin-top: auto;
+    }
+
+    .study-board-footer span {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .28rem .65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: #9fb0c4;
+      font-size: .76rem;
     }
 
     .gallery-note {
@@ -1578,6 +1878,15 @@
       border-radius: 0;
     }
 
+    .lightbox-stage .study-board {
+      max-width: 1040px;
+      min-height: auto;
+      margin: 0 auto;
+      border-radius: 18px;
+      border: 1px solid rgba(88,166,255,.16);
+      box-shadow: 0 18px 40px rgba(0,0,0,.24);
+    }
+
     .lightbox-caption {
       color: #cbd5e1;
       font-size: .9rem;
@@ -1697,6 +2006,10 @@
       .lightbox-stage {
         padding: .55rem;
       }
+
+      .study-board-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media print {
@@ -1809,8 +2122,8 @@
         </div>
         <div class="hero-stats">
           <div class="hero-stat">
-            <strong>7</strong>
-            <span>laminas clave en la galeria</span>
+            <strong>10</strong>
+            <span>recursos clave en la galeria</span>
           </div>
           <div class="hero-stat">
             <strong>9</strong>
@@ -1873,17 +2186,19 @@
           <div class="gallery-head-copy">
             <span class="gallery-kicker">Biblioteca del tema</span>
             <h2>Biblioteca visual maestra</h2>
-            <p>Todo lo visual del módulo se concentra aquí para evitar repetir diagramas en cada sección. Cada lámina se abre en grande con lightbox y funciona como apoyo directo para teoría, repaso y práctica.</p>
+            <p>Todo lo visual del módulo se concentra aquí para evitar repetir diagramas en cada sección. Dejamos como SVG solo los diagramas que realmente ganan con forma y zoom, y pasamos a HTML las fichas con más texto para que se lean mejor y no se desborden.</p>
             <div class="gallery-stats">
-              <span class="gallery-stat"><strong>7</strong> laminas esenciales</span>
-              <span class="gallery-stat"><strong>1</strong> biblioteca central</span>
-              <span class="gallery-stat"><strong>100%</strong> ampliables</span>
+              <span class="gallery-stat"><strong>10</strong> recursos esenciales</span>
+              <span class="gallery-stat"><strong>4</strong> diagramas SVG</span>
+              <span class="gallery-stat"><strong>6</strong> fichas HTML ampliables</span>
             </div>
             <div class="gallery-tags">
               <span class="gallery-tag">Lectura</span>
               <span class="gallery-tag">Clasificacion</span>
               <span class="gallery-tag">Vecindad</span>
               <span class="gallery-tag">Cisco IOS</span>
+              <span class="gallery-tag">Fichas HTML</span>
+              <span class="gallery-tag">Diagnostico</span>
             </div>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#imagenes">Escuchar sección</button>
@@ -1892,102 +2207,393 @@
           <div class="gallery-banner">
             <div>
               <strong>Cómo usar esta biblioteca</strong>
-              <p>Revisa una lámina antes de cada bloque teórico o cuando una pregunta de práctica te pida recordar un patrón, un rango o una secuencia.</p>
+              <p>Revisa un recurso antes de cada bloque teórico o cuando una pregunta de práctica te pida recordar un patrón, un rango o una secuencia.</p>
             </div>
             <div>
               <strong>Criterio visual</strong>
-              <span>Cada tarjeta resume una idea grande y evita texto excesivo dentro de la imagen para mantener la lectura limpia.</span>
+              <span>Los diagramas se quedan como SVG. Las ideas con más texto pasan a fichas HTML para mantener la lectura limpia y adaptable.</span>
             </div>
           </div>
           <p class="gallery-note">
-            Usa esta galería como referencia rápida mientras estudias o resuelves la práctica. Las láminas fueron unificadas en español y ajustadas para evitar recortes o solapes.
+            Usa esta galería como referencia rápida mientras estudias o resuelves la práctica. Ahora quedó organizada por etapas de aprendizaje para que primero leamos, luego clasifiquemos y al final configuremos o diagnostiquemos.
           </p>
-          <div class="image-grid">
-            <figure class="image-card featured">
-              <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 1: anatomia IPv6" data-image-caption="Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen." />
-              <figcaption>
-                <span class="image-label">Lectura base</span>
-                <strong>Lamina 1: anatomia IPv6</strong>
-                <span class="image-copy">Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">Base del tema</span>
-                  <span class="image-meta">Abrir en grande</span>
-                </div>
-              </figcaption>
-            </figure>
-            <figure class="image-card">
-              <img src="../../assets/images/ipv6/compression-guide.svg" alt="Guia visual de compresion correcta e incorrecta en IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 2: compresion correcta" data-image-caption="Reglas de compresion, una direccion valida y un error tipico con doble dos puntos." />
-              <figcaption>
-                <span class="image-label">Compresion</span>
-                <strong>Lamina 2: compresion correcta</strong>
-                <span class="image-copy">Reglas de compresion, una direccion valida y el error tipico con <code>::</code>.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">Error comun</span>
-                  <span class="image-meta">Reglas clave</span>
-                </div>
-              </figcaption>
-            </figure>
-            <figure class="image-card">
-              <img src="../../assets/images/ipv6/prefix-allocation.svg" alt="Lamina de prefijo 64, asignacion global y registro AAAA" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 3: prefijos y asignacion" data-image-caption="Relacion entre /64, camino IANA a operador y el papel del registro AAAA." />
-              <figcaption>
-                <span class="image-label">Prefijos</span>
-                <strong>Lamina 3: prefijos y asignacion</strong>
-                <span class="image-copy"><code>/64</code>, ruta IANA a operador y el papel del registro <code>AAAA</code>.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">Red e interfaz</span>
-                  <span class="image-meta">Asignacion global</span>
-                </div>
-              </figcaption>
-            </figure>
-            <figure class="image-card">
-              <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 4: mapa de tipos" data-image-caption="GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos." />
-              <figcaption>
-                <span class="image-label">Clasificacion</span>
-                <strong>Lamina 4: mapa de tipos</strong>
-                <span class="image-copy">GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">Tipos IPv6</span>
-                  <span class="image-meta">Rangos utiles</span>
-                </div>
-              </figcaption>
-            </figure>
-            <figure class="image-card">
-              <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 5: multicast y nodo solicitado" data-image-caption="Construccion de la multicast de nodo solicitado y su papel en la vecindad IPv6." />
-              <figcaption>
-                <span class="image-label">Vecindad</span>
-                <strong>Lamina 5: multicast y nodo solicitado</strong>
-                <span class="image-copy">La transformacion desde una unicast hacia <code>FF02::1:FFxx:xxxx</code>.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">NDP</span>
-                  <span class="image-meta">Nodo solicitado</span>
-                </div>
-              </figcaption>
-            </figure>
-            <figure class="image-card">
-              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 6: flujo SLAAC" data-image-caption="Equipo, router, RS, RA y los datos que permiten formar la GUA." />
-              <figcaption>
-                <span class="image-label">Autoconfiguracion</span>
-                <strong>Lamina 6: flujo SLAAC</strong>
-                <span class="image-copy">Equipo, router, RS, RA y los datos que permiten formar la GUA.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">RS y RA</span>
-                  <span class="image-meta">SLAAC</span>
-                </div>
-              </figcaption>
-            </figure>
-            <figure class="image-card">
-              <img src="../../assets/images/ipv6/ios-sequence.svg" alt="Secuencia minima de comandos Cisco IOS para IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 7: Cisco IOS" data-image-caption="Secuencia minima y recordatorio del comando critico ipv6 unicast-routing." />
-              <figcaption>
-                <span class="image-label">Operacion</span>
-                <strong>Lamina 7: Cisco IOS</strong>
-                <span class="image-copy">Secuencia minima y recordatorio del comando critico <code>ipv6 unicast-routing</code>.</span>
-                <div class="image-meta-row">
-                  <span class="image-meta">Router</span>
-                  <span class="image-meta">Checklist minima</span>
-                </div>
-              </figcaption>
-            </figure>
+          <div class="gallery-route">
+            <article class="gallery-route-step">
+              <strong>1. Ver estructura</strong>
+              <span>Primero ubicamos hextetos, prefijo, ID de interfaz y reglas de compresión.</span>
+            </article>
+            <article class="gallery-route-step">
+              <strong>2. Reconocer patrones</strong>
+              <span>Después conectamos <code>/64</code>, <code>AAAA</code>, delegación global y comparación con IPv4.</span>
+            </article>
+            <article class="gallery-route-step">
+              <strong>3. Clasificar y leer</strong>
+              <span>Luego distinguimos GUA, LLA, ULA, multicast, nodo solicitado y anycast.</span>
+            </article>
+            <article class="gallery-route-step">
+              <strong>4. Configurar y corregir</strong>
+              <span>Terminamos con SLAAC, Cisco IOS y un chequeo visual para detectar fallos rápidos.</span>
+            </article>
           </div>
+          <div class="gallery-legend" aria-label="Leyenda visual de la biblioteca">
+            <span><i class="lg-read"></i>Lectura y estructura</span>
+            <span><i class="lg-type"></i>Clasificación y tipos</span>
+            <span><i class="lg-flow"></i>Flujo y operación</span>
+            <span><i class="lg-practice"></i>Apoyo para práctica y diagnóstico</span>
+          </div>
+
+          <section class="gallery-shelf" aria-labelledby="galleryShelfRead">
+            <div class="gallery-shelf-head">
+              <div class="gallery-shelf-copy">
+                <span class="gallery-shelf-kicker">Etapa 1</span>
+                <h3 id="galleryShelfRead">Leer, comprimir y reconocer la forma</h3>
+                <p>Aquí reunimos los recursos que conviene mirar antes de entrar a clasificación o a práctica escrita.</p>
+              </div>
+              <span class="gallery-shelf-count">4 recursos</span>
+            </div>
+            <div class="image-grid">
+              <figure class="image-card featured">
+                <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 1: anatomia IPv6" data-image-caption="Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen." />
+                <figcaption>
+                  <span class="image-label">Lectura base</span>
+                  <strong>Lamina 1: anatomia IPv6</strong>
+                  <span class="image-copy">Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#lectura">Ir a lectura</a>
+                    <a class="resource-link" href="#practice">Usar en práctica</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Base del tema</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card html-resource">
+                <div class="study-board" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ampliar ficha de compresion correcta" data-zoomable-html="true" data-html-title="Ficha 2: compresion correcta" data-html-caption="Reglas de compresion, validacion rapida y error comun con doble dos puntos.">
+                  <span class="study-board-kicker">Compresion</span>
+                  <h3>Ficha 2: compresión correcta</h3>
+                  <p>La abreviación funciona mejor como ficha HTML porque combina reglas cortas, validación rápida y un ejemplo típico de error.</p>
+                  <div class="study-board-grid">
+                    <div class="study-board-box">
+                      <strong>Regla 1</strong>
+                      <span>Quitamos ceros a la izquierda dentro de cada hexteto.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Regla 2</strong>
+                      <span>Usamos <code>::</code> solo una vez para la corrida de <code>0000</code>.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Validación</strong>
+                      <span>Al expandir, siempre debemos volver a 8 hextetos.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Error común</strong>
+                      <span>Si aparece <code>::</code> dos veces, la dirección ya no se puede reconstruir de forma única.</span>
+                    </div>
+                  </div>
+                  <div class="study-board-note">Antes de pasar a <code>/64</code>, conviene dominar expansión y abreviación sin memorizar ejemplos sueltos.</div>
+                  <div class="study-board-footer">
+                    <span>Base de lectura</span>
+                    <span>Reglas claras</span>
+                    <span>Abrir en grande</span>
+                  </div>
+                </div>
+                <figcaption>
+                  <span class="image-label">Ficha HTML</span>
+                  <strong>Ficha 2: compresión correcta</strong>
+                  <span class="image-copy">Reglas de compresión, validación rápida y el error típico con <code>::</code>.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#lectura">Ir a lectura</a>
+                    <a class="resource-link" href="#quick-review">Repasar luego</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Lectura guiada</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card html-resource">
+                <div class="study-board" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ampliar ficha de prefijos y asignacion" data-zoomable-html="true" data-html-title="Ficha 3: prefijos y asignacion" data-html-caption="Relacion entre /64, prefijo e interfaz, asignacion global y registro AAAA.">
+                  <span class="study-board-kicker">Prefijos</span>
+                  <h3>Ficha 3: prefijos y asignación</h3>
+                  <p>Esta parte gana claridad en HTML porque mezcla un concepto operativo, una cadena de delegación y un dato DNS.</p>
+                  <div class="study-board-grid">
+                    <div class="study-board-box">
+                      <strong>/64</strong>
+                      <span>Separa 64 bits de red y 64 bits de interfaz para <code>SLAAC</code>.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>AAAA</strong>
+                      <span>Es el registro DNS usado para publicar una dirección IPv6.</span>
+                    </div>
+                  </div>
+                  <div class="study-board-flow">
+                    <span>IANA</span>
+                    <span>RIR</span>
+                    <span>Operador</span>
+                    <span>Cliente</span>
+                  </div>
+                  <div class="study-board-note">La ruta de asignación explica de dónde salen las <code>GUA</code> y por qué <code>AAAA</code> aparece en exámenes y laboratorios.</div>
+                  <div class="study-board-footer">
+                    <span>Prefijo</span>
+                    <span>DNS</span>
+                    <span>Asignación global</span>
+                  </div>
+                </div>
+                <figcaption>
+                  <span class="image-label">Ficha HTML</span>
+                  <strong>Ficha 3: prefijos y asignación</strong>
+                  <span class="image-copy"><code>/64</code>, ruta IANA a operador y el papel del registro <code>AAAA</code>.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#lectura">Ir a lectura</a>
+                    <a class="resource-link" href="#slaac">Conectar con SLAAC</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Red e interfaz</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card html-resource">
+                <div class="study-board" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ampliar ficha de comparacion IPv4 e IPv6" data-zoomable-html="true" data-html-title="Ficha 4: comparacion IPv4 e IPv6" data-html-caption="Comparacion rapida para no mezclar conceptos de formato, broadcast y escalabilidad.">
+                  <span class="study-board-kicker">Comparacion</span>
+                  <h3>Ficha 4: IPv4 frente a IPv6</h3>
+                  <p>Esta comparación ayuda a separar ideas viejas de IPv4 antes de memorizar reglas nuevas de IPv6.</p>
+                  <div class="study-board-grid">
+                    <div class="study-board-box">
+                      <strong>IPv4</strong>
+                      <span>32 bits, punto decimal y dependencia fuerte de broadcast.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>IPv6</strong>
+                      <span>128 bits, hextetos con <code>:</code> y trabajo más fino con multicast.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Lectura</strong>
+                      <span>En IPv6 conviene pensar en prefijo e interfaz, no solo en una IP aislada.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Escalabilidad</strong>
+                      <span>IPv6 reduce la presión sobre traducciones y abre espacio de direccionamiento mucho mayor.</span>
+                    </div>
+                  </div>
+                  <div class="study-board-note">Úsala cuando un grupo todavía mezcle broadcast, notación decimal o conceptos de subredes IPv4.</div>
+                  <div class="study-board-footer">
+                    <span>Contraste conceptual</span>
+                    <span>Antes de clasificar</span>
+                  </div>
+                </div>
+                <figcaption>
+                  <span class="image-label">Ficha HTML</span>
+                  <strong>Ficha 4: IPv4 frente a IPv6</strong>
+                  <span class="image-copy">Comparación rápida para separar formato, alcance y lógica de difusión.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#lectura">Ir a lectura</a>
+                    <a class="resource-link" href="#tipos">Seguir con tipos</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Antes de clasificar</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="gallery-shelf" aria-labelledby="galleryShelfTypes">
+            <div class="gallery-shelf-head">
+              <div class="gallery-shelf-copy">
+                <span class="gallery-shelf-kicker">Etapa 2</span>
+                <h3 id="galleryShelfTypes">Clasificar tipos y reconocer rangos</h3>
+                <p>Este tramo sirve para distinguir familias, grupos y patrones sin depender solo de memoria textual.</p>
+              </div>
+              <span class="gallery-shelf-count">3 recursos</span>
+            </div>
+            <div class="image-grid">
+              <figure class="image-card">
+                <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 5: mapa de tipos" data-image-caption="GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos." />
+                <figcaption>
+                  <span class="image-label">Clasificacion</span>
+                  <strong>Lamina 5: mapa de tipos</strong>
+                  <span class="image-copy">GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#tipos">Ir a tipos</a>
+                    <a class="resource-link" href="#memory">Memorizar rangos</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Tipos IPv6</span>
+                    <span class="image-meta">Rangos utiles</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card html-resource">
+                <div class="study-board" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ampliar ficha de rangos clave IPv6" data-zoomable-html="true" data-html-title="Ficha 6: rangos clave IPv6" data-html-caption="Rangos clave que conviene reconocer de un vistazo antes del examen o la practica.">
+                  <span class="study-board-kicker">Rangos</span>
+                  <h3>Ficha 6: rangos clave que sí conviene reconocer</h3>
+                  <div class="study-board-grid">
+                    <div class="study-board-box">
+                      <strong>GUA</strong>
+                      <span><code>2000::/3</code> para direccionamiento global y enrutable.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>LLA</strong>
+                      <span><code>FE80::/10</code> para el mismo enlace y vecindad.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>ULA</strong>
+                      <span><code>FC00::/7</code> para uso interno sin depender de una GUA.</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Multicast</strong>
+                      <span><code>FF00::/12</code> y grupos conocidos como <code>FF02::1</code> y <code>FF02::2</code>.</span>
+                    </div>
+                  </div>
+                  <div class="study-board-note">Esta ficha sirve como pared visual de repaso: si reconocemos el prefijo, reducimos mucho el error al clasificar.</div>
+                  <div class="study-board-footer">
+                    <span>Rangos de examen</span>
+                    <span>Repaso rápido</span>
+                  </div>
+                </div>
+                <figcaption>
+                  <span class="image-label">Ficha HTML</span>
+                  <strong>Ficha 6: rangos clave IPv6</strong>
+                  <span class="image-copy">Los prefijos que más conviene reconocer de un vistazo antes del examen.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#tipos">Ir a tipos</a>
+                    <a class="resource-link" href="#quick-review">Repasar luego</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Memoria útil</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card">
+                <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 7: multicast y nodo solicitado" data-image-caption="Construccion de la multicast de nodo solicitado y su papel en la vecindad IPv6." />
+                <figcaption>
+                  <span class="image-label">Vecindad</span>
+                  <strong>Lamina 7: multicast y nodo solicitado</strong>
+                  <span class="image-copy">La transformacion desde una unicast hacia <code>FF02::1:FFxx:xxxx</code>.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#tipos">Ir a tipos</a>
+                    <a class="resource-link" href="#slaac">Conectar con vecindad</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">NDP</span>
+                    <span class="image-meta">Nodo solicitado</span>
+                  </div>
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="gallery-shelf" aria-labelledby="galleryShelfOps">
+            <div class="gallery-shelf-head">
+              <div class="gallery-shelf-copy">
+                <span class="gallery-shelf-kicker">Etapa 3</span>
+                <h3 id="galleryShelfOps">Configurar, verificar y diagnosticar</h3>
+                <p>La última parte ya está pensada para cuando el estudiante debe explicar el flujo o corregir un laboratorio.</p>
+              </div>
+              <span class="gallery-shelf-count">3 recursos</span>
+            </div>
+            <div class="image-grid">
+              <figure class="image-card">
+                <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 8: flujo SLAAC" data-image-caption="Equipo, router, RS, RA y los datos que permiten formar la GUA." />
+                <figcaption>
+                  <span class="image-label">Autoconfiguracion</span>
+                  <strong>Lamina 8: flujo SLAAC</strong>
+                  <span class="image-copy">Equipo, router, RS, RA y los datos que permiten formar la GUA.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#slaac">Ir a SLAAC</a>
+                    <a class="resource-link" href="#practice">Aplicar en práctica</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">RS y RA</span>
+                    <span class="image-meta">SLAAC</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card html-resource">
+                <div class="study-board" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ampliar ficha de Cisco IOS minimo" data-zoomable-html="true" data-html-title="Ficha 9: Cisco IOS minimo" data-html-caption="Secuencia minima, comando critico y verificacion base en Cisco IOS.">
+                  <span class="study-board-kicker">Operacion</span>
+                  <h3>Ficha 9: Cisco IOS mínimo</h3>
+                  <p>La secuencia mínima también funciona mejor como ficha HTML: se lee más rápido, escala bien y evita meter demasiado texto dentro de una imagen.</p>
+                  <pre class="study-board-code">R1&gt; enable
+R1# configure terminal
+R1(config)# ipv6 unicast-routing
+R1(config)# interface g0/0
+R1(config-if)# ipv6 address 2001:DB8:1::1/64
+R1(config-if)# no shutdown</pre>
+                  <ul class="study-board-list">
+                    <li>Primero habilitamos el enrutamiento IPv6 global.</li>
+                    <li>Después configuramos la interfaz y levantamos el puerto.</li>
+                    <li>Si algo falla, revisamos LLA, prefijo y estado de la interfaz.</li>
+                  </ul>
+                  <div class="study-board-footer">
+                    <span>Secuencia mínima</span>
+                    <span>Comando crítico</span>
+                    <span>Abrir en grande</span>
+                  </div>
+                </div>
+                <figcaption>
+                  <span class="image-label">Ficha HTML</span>
+                  <strong>Ficha 9: Cisco IOS mínimo</strong>
+                  <span class="image-copy">Secuencia mínima y recordatorio del comando crítico <code>ipv6 unicast-routing</code>.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#ios">Ir a IOS</a>
+                    <a class="resource-link" href="#practice">Aplicar en práctica</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Router</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+              <figure class="image-card html-resource">
+                <div class="study-board" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Ampliar ficha de diagnostico rapido IPv6" data-zoomable-html="true" data-html-title="Ficha 10: diagnostico rapido IPv6" data-html-caption="Chequeo visual corto para detectar fallos comunmente vistos en laboratorios IPv6.">
+                  <span class="study-board-kicker">Diagnostico</span>
+                  <h3>Ficha 10: diagnóstico rápido</h3>
+                  <p>Cuando la práctica se traba, esta ficha ayuda a preguntar en el orden correcto y evita revisar todo al azar.</p>
+                  <div class="study-board-grid">
+                    <div class="study-board-box">
+                      <strong>Paso 1</strong>
+                      <span>¿La interfaz está arriba y con dirección IPv6 correcta?</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Paso 2</strong>
+                      <span>¿Existe <code>LLA</code> y el host recibió información del router?</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Paso 3</strong>
+                      <span>¿El escenario trabaja con <code>/64</code> y el prefijo correcto?</span>
+                    </div>
+                    <div class="study-board-box">
+                      <strong>Paso 4</strong>
+                      <span>¿Está activo <code>ipv6 unicast-routing</code> en el router?</span>
+                    </div>
+                  </div>
+                  <div class="study-board-note">Es el apoyo visual más útil para el momento en que la clase pregunta: “profe, no me funciona”.</div>
+                  <div class="study-board-footer">
+                    <span>Corrección rápida</span>
+                    <span>Laboratorio</span>
+                  </div>
+                </div>
+                <figcaption>
+                  <span class="image-label">Ficha HTML</span>
+                  <strong>Ficha 10: diagnóstico rápido</strong>
+                  <span class="image-copy">Chequeo visual corto para encontrar fallos de prefijo, LLA, RA o configuración.</span>
+                  <div class="resource-links">
+                    <a class="resource-link" href="#ios">Ir a IOS</a>
+                    <a class="resource-link" href="#practice">Usar en práctica</a>
+                  </div>
+                  <div class="image-meta-row">
+                    <span class="image-meta">Soporte de laboratorio</span>
+                    <span class="image-meta">Abrir en grande</span>
+                  </div>
+                </figcaption>
+              </figure>
+            </div>
+          </section>
         </div>
       </div>
     </section>
@@ -2018,11 +2624,11 @@
             </article>
             <article class="overview-card">
               <strong>/64</strong>
-              <span>Es el prefijo clave para SLAAC porque deja otros 64 bits para el ID de interfaz.</span>
+              <span>Es el prefijo clave para <a class="keyword-link" href="#slaac">SLAAC</a> porque deja otros 64 bits para el ID de interfaz.</span>
             </article>
             <article class="overview-card">
               <strong>AAAA</strong>
-              <span>El DNS publica direcciones IPv6 globales en registros <code>AAAA</code>.</span>
+              <span>El DNS publica direcciones IPv6 globales en registros <code>AAAA</code> ligados a <a class="keyword-link" href="#tipos">GUA</a>.</span>
             </article>
           </div>
 
@@ -2033,7 +2639,7 @@
                 <li><span class="keyword">1 hexteto = 16 bits</span> y <span class="keyword">8 hextetos = 128 bits</span>.</li>
                 <li>Los grupos se separan con <code>:</code> y el prefijo se expresa con <code>/n</code>.</li>
                 <li>Primero quitamos ceros a la izquierda; después comprimimos si conviene.</li>
-                <li>La compresión con <code>::</code> solo puede aparecer una vez.</li>
+                <li>La compresión con <code>::</code> solo puede aparecer una vez y luego se conecta con <a class="keyword-link" href="#slaac">/64 y SLAAC</a>.</li>
               </ul>
             </article>
             <article class="concept-card">
@@ -2065,14 +2671,14 @@
             <article class="lab-card">
               <h3>Asignación global y DNS AAAA</h3>
               <ul>
-                <li>Las GUA se mueven dentro de <code>2000::/3</code>.</li>
+                <li>Las <a class="keyword-link" href="#tipos">GUA</a> se mueven dentro de <code>2000::/3</code>.</li>
                 <li>La IANA delega bloques a los RIR; luego pasan a operadores y clientes.</li>
-                <li>Cuando buscamos IPv6 público en DNS, el registro que nos interesa es <code>AAAA</code>.</li>
+                <li>Cuando buscamos IPv6 público en DNS, el registro que nos interesa es <a class="keyword-link" href="#memory"><code>AAAA</code></a>.</li>
               </ul>
             </article>
           </div>
 
-          <p class="teaching-note">Consulta las láminas 1, 2 y 3 de la galería para reforzar anatomía, compresión y prefijos sin cargar esta sección con más diagramas.</p>
+          <p class="teaching-note">Consulta la <a class="keyword-link" href="#imagenes">biblioteca visual</a> para reforzar anatomía, compresión y prefijos sin cargar esta sección con más diagramas.</p>
         </div>
       </div>
     </section>
@@ -2089,7 +2695,7 @@
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            GUA = pública y enrutable. LLA = mismo enlace. ULA = uso local. Multicast = grupos. Anycast = misma dirección, responde el nodo más cercano.
+            <a class="keyword-link" href="#memory">GUA</a> = pública y enrutable. <a class="keyword-link" href="#memory">LLA</a> = mismo enlace. ULA = uso local. Multicast = grupos. Anycast = misma dirección, responde el nodo más cercano.
           </div>
 
           <article class="diagram-card" style="margin-top:1rem">
@@ -2154,7 +2760,7 @@
             <article class="type-card lla" data-type-family="unicast">
               <h3>Enlace local (LLA)</h3>
               <p><code>FE80::/10</code></p>
-              <p>Existe por enlace, no se enruta globalmente y participa en vecindad y descubrimiento.</p>
+              <p>Existe por enlace, no se enruta globalmente y participa en <a class="keyword-link" href="#slaac">vecindad y descubrimiento</a>.</p>
               <span class="type-pill">Mismo enlace</span>
             </article>
             <article class="type-card ula" data-type-family="unicast">
@@ -2183,7 +2789,7 @@
             <article class="type-card multi" data-type-family="multicast">
               <h3>Grupos que sí memorizamos</h3>
               <p><code>FF02::1</code>, <code>FF02::2</code>, <code>FF02::5</code>, <code>FF02::A</code>, <code>FF02::1:FF00::/104</code></p>
-              <p>Todos los nodos, todos los routers, OSPFv3, EIGRP para IPv6 y nodo solicitado.</p>
+              <p>Todos los nodos, todos los routers, OSPFv3, EIGRP para IPv6 y <a class="keyword-link" href="#slaac">nodo solicitado</a>.</p>
               <span class="type-pill">Grupos clave</span>
             </article>
             <article class="type-card misc" data-type-family="anycast">
@@ -2199,7 +2805,7 @@
               <ul>
                 <li><strong>Multicast</strong>: una dirección llega a muchos receptores del grupo.</li>
                 <li><strong>Anycast</strong>: varios nodos anuncian la misma dirección, pero responde el más cercano.</li>
-                <li><strong>Nodo solicitado</strong>: es multicast y sale de una unicast.</li>
+                <li><strong>Nodo solicitado</strong>: es multicast y sale de una unicast; luego aparece otra vez en <a class="keyword-link" href="#slaac">vecindad</a>.</li>
               </ul>
             </article>
             <article class="concept-card">
@@ -2213,7 +2819,7 @@
             </article>
           </div>
 
-          <p class="teaching-note">Consulta las láminas 4 y 5 de la galería para reforzar el mapa visual de tipos y la lógica de nodo solicitado.</p>
+          <p class="teaching-note">Consulta la <a class="keyword-link" href="#imagenes">biblioteca visual</a> para reforzar el mapa de tipos y la lógica de nodo solicitado.</p>
         </div>
       </div>
     </section>
@@ -2230,7 +2836,7 @@
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            El host envía RS, el router responde con RA, el prefijo suele ser <code>/64</code> y el equipo completa su ID de interfaz para formar la GUA.
+            El host envía RS, el router responde con RA, el prefijo suele ser <a class="keyword-link" href="#lectura"><code>/64</code></a> y el equipo completa su ID de interfaz para formar la <a class="keyword-link" href="#tipos">GUA</a>.
           </div>
 
           <div class="concept-grid">
@@ -2239,7 +2845,7 @@
               <ul>
                 <li><span class="keyword">RS</span> lo envía el host para descubrir routers IPv6.</li>
                 <li><span class="keyword">RA</span> lo envía el router para anunciar la red.</li>
-                <li>Con ese RA, el host forma su GUA y aprende cómo salir de la LAN.</li>
+                <li>Con ese RA, el host forma su <a class="keyword-link" href="#tipos">GUA</a> y aprende cómo salir de la LAN.</li>
               </ul>
             </article>
             <article class="concept-card">
@@ -2253,8 +2859,8 @@
             <article class="concept-card">
               <h3>Relación con vecindad</h3>
               <ul>
-                <li>La LLA sigue siendo clave porque todo empieza en el mismo enlace.</li>
-                <li>La multicast de nodo solicitado participa en resolución de vecinos.</li>
+                <li>La <a class="keyword-link" href="#tipos">LLA</a> sigue siendo clave porque todo empieza en el mismo enlace.</li>
+                <li>La multicast de <a class="keyword-link" href="#tipos">nodo solicitado</a> participa en resolución de vecinos.</li>
                 <li>IPv6 evita el broadcast clásico y usa grupos más específicos.</li>
               </ul>
             </article>
@@ -2264,13 +2870,13 @@
             <h3>Secuencia mental que conviene repetir</h3>
             <ol>
               <li>Identificamos el prefijo anunciado.</li>
-              <li>Comprobamos que el escenario usa <code>/64</code>.</li>
+              <li>Comprobamos que el escenario usa <a class="keyword-link" href="#lectura"><code>/64</code></a>.</li>
               <li>Relacionamos RS con descubrimiento y RA con información de red.</li>
-              <li>Recordamos que la vecindad usa nodo solicitado en lugar de broadcast.</li>
+              <li>Recordamos que la vecindad usa <a class="keyword-link" href="#tipos">nodo solicitado</a> en lugar de broadcast.</li>
             </ol>
           </article>
 
-          <p class="teaching-note">Consulta la lámina 6 de la galería para ver el flujo RS → RA → GUA sin duplicar diagramas aquí.</p>
+          <p class="teaching-note">Consulta la <a class="keyword-link" href="#imagenes">biblioteca visual</a> para ver el flujo RS → RA → GUA sin duplicar diagramas aquí.</p>
         </div>
       </div>
     </section>
@@ -2287,7 +2893,7 @@
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            Si el host no sale de la LAN, primero revisamos <code>ipv6 unicast-routing</code>, la dirección de la interfaz y el estado de la interfaz.
+            Si el host no sale de la LAN, primero revisamos <code>ipv6 unicast-routing</code>, la dirección de la interfaz, la <a class="keyword-link" href="#tipos">LLA</a> y el estado de la interfaz.
           </div>
 
           <div class="lab-grid">
@@ -2312,12 +2918,12 @@
                 <li>¿Está activo <code>ipv6 unicast-routing</code>?</li>
                 <li>¿La interfaz tiene dirección IPv6 correcta?</li>
                 <li>¿La interfaz está levantada?</li>
-                <li>¿El host tiene LLA y aprendió el prefijo correcto?</li>
+                <li>¿El host tiene <a class="keyword-link" href="#tipos">LLA</a> y aprendió el <a class="keyword-link" href="#slaac">prefijo correcto</a>?</li>
               </ul>
             </article>
           </div>
 
-          <p class="teaching-note">Consulta la lámina 7 de la galería para fijar visualmente la secuencia mínima de Cisco IOS.</p>
+          <p class="teaching-note">Consulta la <a class="keyword-link" href="#imagenes">biblioteca visual</a> para fijar visualmente la secuencia mínima de Cisco IOS.</p>
         </div>
       </div>
     </section>
@@ -2335,11 +2941,11 @@
           <div class="glossary-grid">
             <article class="glossary-card">
               <h3>GUA</h3>
-              <p>Unicast global. Rango: <code>2000::/3</code>.</p>
+              <p>Unicast global. Rango: <code>2000::/3</code>. Ver <a class="keyword-link" href="#tipos">clasificación</a>.</p>
             </article>
             <article class="glossary-card">
               <h3>LLA</h3>
-              <p>Dirección de enlace local. Rango: <code>FE80::/10</code>.</p>
+              <p>Dirección de enlace local. Rango: <code>FE80::/10</code>. Ver <a class="keyword-link" href="#slaac">vecindad</a>.</p>
             </article>
             <article class="glossary-card">
               <h3>ULA</h3>
@@ -2347,15 +2953,15 @@
             </article>
             <article class="glossary-card">
               <h3>SLAAC</h3>
-              <p>Autoconfiguración sin estado apoyada en RA y prefijos <code>/64</code>.</p>
+              <p>Autoconfiguración sin estado apoyada en RA y prefijos <a class="keyword-link" href="#lectura"><code>/64</code></a>.</p>
             </article>
             <article class="glossary-card">
               <h3>RS y RA</h3>
-              <p>RS lo envía el host; RA lo responde el router con la información de red.</p>
+              <p>RS lo envía el host; RA lo responde el router con la información de red. Ver <a class="keyword-link" href="#slaac">flujo</a>.</p>
             </article>
             <article class="glossary-card">
               <h3>Nodo solicitado y anycast</h3>
-              <p>La multicast de nodo solicitado resuelve vecindad; anycast entrega al nodo más cercano.</p>
+              <p>La multicast de nodo solicitado resuelve vecindad; anycast entrega al nodo más cercano. Ver <a class="keyword-link" href="#tipos">tipos</a>.</p>
             </article>
           </div>
 

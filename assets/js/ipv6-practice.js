@@ -735,6 +735,7 @@
     els.lightboxClose = document.querySelector('[data-close-lightbox]');
     els.typeFilterStatus = document.getElementById('typeFilterStatus');
     els.zoomableImages = Array.from(document.querySelectorAll('[data-zoomable-image]'));
+    els.zoomableHtmlCards = Array.from(document.querySelectorAll('[data-zoomable-html]'));
     els.zoomableSvgs = Array.from(document.querySelectorAll('.svg-wrap'));
     els.typeFilterNodes = Array.from(document.querySelectorAll('[data-type-filter]'));
   }
@@ -798,6 +799,18 @@
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           openImageLightbox(image);
+        }
+      });
+    });
+
+    els.zoomableHtmlCards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        openHtmlLightbox(card);
+      });
+      card.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openHtmlLightbox(card);
         }
       });
     });
@@ -1603,6 +1616,29 @@
     }
     if (els.lightboxCaption) {
       els.lightboxCaption.textContent = caption;
+    }
+
+    openLightbox();
+  }
+
+  function openHtmlLightbox(card) {
+    if (!els.imageLightbox || !els.lightboxVisual) return;
+
+    const clone = card.cloneNode(true);
+    clone.removeAttribute('tabindex');
+    clone.removeAttribute('role');
+    clone.removeAttribute('aria-haspopup');
+    clone.removeAttribute('aria-label');
+    clone.removeAttribute('data-zoomable-html');
+
+    els.lightboxVisual.innerHTML = '';
+    els.lightboxVisual.appendChild(clone);
+
+    if (els.lightboxTitle) {
+      els.lightboxTitle.textContent = card.dataset.htmlTitle || 'Ficha ampliada';
+    }
+    if (els.lightboxCaption) {
+      els.lightboxCaption.textContent = card.dataset.htmlCaption || 'Vista ampliada de la ficha.';
     }
 
     openLightbox();

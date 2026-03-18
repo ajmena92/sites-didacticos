@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarea Interactiva — Comandos IOS y Salidas Show | CCNA 1</title>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=Orbitron:wght@500;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --task-bg: #071017;
+      --task-surface: #0e1823;
+      --task-surface-2: #132131;
+      --task-border: rgba(126, 231, 255, .14);
+      --task-text: #e6f7ff;
+      --task-muted: #9ab6c8;
+      --task-cyan: #54d7ff;
+      --task-blue: #3b82f6;
+      --task-green: #58e38d;
+      --task-amber: #ffbd59;
+      --task-red: #ff7b72;
+      --task-violet: #9b8cff;
+      --task-radius: 20px;
+    }
+
+    .task-page {
+      --nav-h: 74px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(84,215,255,.1), transparent 30%),
+        radial-gradient(circle at 100% 100%, rgba(59,130,246,.1), transparent 28%),
+        linear-gradient(180deg, #06111b 0%, #09131d 100%);
+      color: var(--task-text);
+      font-family: 'Exo 2', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .task-page.modal-open,
+    .task-page.scroll-lock {
+      overflow: hidden;
+    }
+
+    .task-page::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(transparent 0%, rgba(84,215,255,.025) 50%, transparent 100%),
+        repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,.015) 3px, rgba(255,255,255,.015) 4px);
+      opacity: .6;
+      z-index: 0;
+    }
+
+    .task-page header,
+    .task-page main,
+    .task-page footer,
+    .task-page .modal-overlay,
+    .task-page .lightbox {
+      position: relative;
+      z-index: 1;
+    }
+
+    .task-nav {
+      min-height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .95rem 1.4rem;
+      border-bottom: 1px solid var(--task-border);
+      background: rgba(5,12,20,.88);
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+    }
+
+    .task-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: var(--task-text);
+    }
+
+    .task-brand-chip {
+      padding: .25rem .65rem;
+      border-radius: 999px;
+      background: rgba(84,215,255,.12);
+      border: 1px solid rgba(84,215,255,.22);
+      color: #b9f0ff;
+      font-size: .68rem;
+      text-transform: uppercase;
+    }
+
+    .task-nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+    }
+
+    .task-nav-links a,
+    .anchor-chip,
+    .mini-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .38rem .84rem;
+      border-radius: 999px;
+      border: 1px solid var(--task-border);
+      background: rgba(255,255,255,.03);
+      color: var(--task-muted);
+      text-decoration: none;
+      font-size: .82rem;
+    }
+
+    .task-nav-links a:hover,
+    .anchor-chip:hover,
+    .mini-link:hover,
+    .resource-link:hover,
+    .keyword-link:hover {
+      color: var(--task-text);
+      border-color: rgba(84,215,255,.35);
+      text-decoration: none;
+    }
+
+    .task-hero {
+      padding: 3rem 2.2rem 2.4rem;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(84,215,255,.12), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(155,140,255,.12), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.02), transparent),
+        rgba(255,255,255,.015);
+      border-bottom: 1px solid rgba(84,215,255,.1);
+    }
+
+    .hero-shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, .95fr);
+      gap: 1.2rem;
+      align-items: stretch;
+    }
+
+    .hero-topline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin-bottom: .95rem;
+      align-items: center;
+    }
+
+    .hero-badge,
+    .hero-breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .34rem .78rem;
+      border-radius: 999px;
+      border: 1px solid rgba(84,215,255,.18);
+      background: rgba(84,215,255,.1);
+      color: #c0f4ff;
+      font-size: .76rem;
+      letter-spacing: .03em;
+    }
+
+    .hero-breadcrumb {
+      background: rgba(255,255,255,.03);
+      color: var(--task-muted);
+      border-color: rgba(255,255,255,.07);
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      margin-bottom: 1rem;
+      max-width: 960px;
+    }
+
+    .hero-sub {
+      max-width: 860px;
+      color: var(--task-muted);
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+
+    .hero-sub strong,
+    .hero-sub code {
+      color: var(--task-text);
+    }
+
+    .task-page code {
+      color: #bff4ff;
+      background: rgba(84,215,255,.1);
+      border-radius: 8px;
+      padding: .08rem .34rem;
+    }
+
+    .hero-meta,
+    .anchor-row,
+    .toolbar-actions,
+    .chip-row,
+    .module-action-row,
+    .question-tools,
+    .resource-links,
+    .tool-status,
+    .gallery-tags,
+    .gallery-stats,
+    .legend-row,
+    .flash-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    .hero-meta {
+      margin-top: 1rem;
+    }
+
+    .hero-alert {
+      margin-top: 1rem;
+      padding: .92rem 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(255,189,89,.24);
+      background:
+        linear-gradient(135deg, rgba(255,189,89,.12), rgba(255,255,255,.02)),
+        rgba(255,189,89,.06);
+      color: #ffe7b7;
+      font-size: .9rem;
+      line-height: 1.72;
+    }
+
+    .hero-alert strong {
+      color: #fff4cc;
+    }
+
+    .hero-chip,
+    .tool-chip,
+    .status-chip,
+    .gallery-tag,
+    .gallery-stat,
+    .legend-chip,
+    .resource-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .4rem .82rem;
+      border-radius: 999px;
+      border: 1px solid var(--task-border);
+      background: rgba(255,255,255,.035);
+      color: var(--task-muted);
+      font-size: .8rem;
+      text-decoration: none;
+    }
+
+    .hero-chip strong,
+    .gallery-stat strong {
+      color: var(--task-text);
+      font-weight: 800;
+    }
+
+    .author-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .46rem .88rem;
+      border-radius: 999px;
+      border: 1px solid rgba(88,227,141,.18);
+      background: rgba(88,227,141,.1);
+      color: #d8ffe7;
+      font-size: .8rem;
+    }
+
+    .hero-panel,
+    .section-shell,
+    .tool-panel,
+    .flash-card,
+    .stat-card,
+    .practice-module,
+    .report-card,
+    .visual-card,
+    .table-card,
+    .concept-card,
+    .goal-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--task-border);
+      border-radius: var(--task-radius);
+      box-shadow: 0 18px 40px rgba(0,0,0,.16);
+    }
+
+    .hero-panel {
+      padding: 1.2rem 1.2rem 1.15rem;
+      background:
+        radial-gradient(circle at top right, rgba(84,215,255,.14), transparent 35%),
+        linear-gradient(180deg, rgba(14,24,35,.96), rgba(10,18,28,.94));
+    }
+
+    .hero-panel h2 {
+      color: #b9f0ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .5rem;
+    }
+
+    .hero-panel p {
+      color: var(--task-muted);
+      font-size: .88rem;
+      line-height: 1.72;
+      margin-bottom: 1rem;
+    }
+
+    .hero-list {
+      display: grid;
+      gap: .72rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-list-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: .8rem;
+      align-items: start;
+      padding: .76rem .82rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+    }
+
+    .hero-list-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(84,215,255,.14);
+      color: #c0f4ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .hero-list-item strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .9rem;
+      margin-bottom: .14rem;
+    }
+
+    .hero-list-item span {
+      color: var(--task-muted);
+      font-size: .82rem;
+      line-height: 1.66;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .7rem;
+    }
+
+    .hero-stat {
+      padding: .78rem .8rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.025);
+    }
+
+    .hero-stat strong {
+      display: block;
+      color: var(--task-text);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-bottom: .24rem;
+    }
+
+    .hero-stat span {
+      color: var(--task-muted);
+      font-size: .77rem;
+      line-height: 1.56;
+    }
+
+    .phase-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .phase-pill {
+      padding: .9rem .95rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.025);
+    }
+
+    .phase-pill strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .9rem;
+      margin-bottom: .18rem;
+    }
+
+    .phase-pill span {
+      color: var(--task-muted);
+      font-size: .82rem;
+      line-height: 1.62;
+    }
+
+    .phase-pill.primary {
+      border-color: rgba(84,215,255,.24);
+      background: rgba(84,215,255,.08);
+    }
+
+    .expect-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .9rem;
+      margin-top: 1rem;
+    }
+
+    .expect-card {
+      padding: .95rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.025);
+    }
+
+    .expect-card strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .92rem;
+      margin-bottom: .24rem;
+    }
+
+    .expect-card span {
+      color: var(--task-muted);
+      font-size: .84rem;
+      line-height: 1.68;
+    }
+
+    .task-main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 2rem 2rem 5rem;
+    }
+
+    .task-section {
+      margin-top: 2rem;
+      scroll-margin-top: calc(var(--nav-h) + 1rem);
+    }
+
+    .section-shell {
+      overflow: hidden;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.05rem 1.2rem;
+      border-bottom: 1px solid rgba(84,215,255,.1);
+      background: linear-gradient(90deg, rgba(84,215,255,.12), transparent);
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: .02em;
+      margin-bottom: .25rem;
+    }
+
+    .section-head p {
+      color: var(--task-muted);
+      font-size: .9rem;
+      line-height: 1.7;
+      max-width: 860px;
+    }
+
+    .section-body {
+      padding: 1.2rem;
+    }
+
+    .tool-panel {
+      padding: 1.1rem 1.15rem;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .tool-panel p,
+    .goal-card span,
+    .visual-card p,
+    .table-card p,
+    .concept-card p,
+    .flash-card p,
+    .practice-module p,
+    .report-note,
+    .report-card p {
+      color: var(--task-muted);
+      font-size: .88rem;
+      line-height: 1.72;
+    }
+
+    .btn-tool,
+    .btn-review,
+    .btn-start,
+    .btn-inline {
+      background: linear-gradient(135deg, var(--task-cyan), var(--task-blue));
+      color: #071017;
+      border: none;
+      border-radius: 999px;
+      padding: .68rem 1rem;
+      font-size: .88rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .16s ease, opacity .2s;
+    }
+
+    .btn-inline {
+      padding: .36rem .72rem;
+      font-size: .78rem;
+    }
+
+    .btn-tool.secondary,
+    .btn-inline.secondary {
+      background: rgba(255,255,255,.03);
+      color: var(--task-text);
+      border: 1px solid var(--task-border);
+    }
+
+    .btn-tool:hover,
+    .btn-review:hover,
+    .btn-start:hover,
+    .btn-inline:hover {
+      transform: translateY(-1px);
+      opacity: .92;
+    }
+
+    .btn-tool.is-active {
+      background: linear-gradient(135deg, var(--task-green), #7cf0b8);
+      color: #081318;
+    }
+
+    .btn-tool:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .goal-grid,
+    .stats-grid,
+    .flash-grid,
+    .quick-ref-grid,
+    .visual-grid,
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .goal-card,
+    .stat-card,
+    .flash-card,
+    .table-card,
+    .visual-card,
+    .concept-card {
+      padding: 1rem 1.08rem;
+    }
+
+    .goal-card strong,
+    .stat-card strong {
+      display: block;
+      color: var(--task-text);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.14rem;
+      margin-bottom: .22rem;
+    }
+
+    .dua-summary {
+      display: none;
+      margin-bottom: 1rem;
+      padding: .92rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(88,227,141,.22);
+      background: rgba(88,227,141,.08);
+      color: var(--task-muted);
+      font-size: .88rem;
+      line-height: 1.7;
+    }
+
+    .dua-summary strong {
+      display: block;
+      color: #ccffe1;
+      margin-bottom: .35rem;
+    }
+
+    .easy-mode .dua-summary {
+      display: block;
+    }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .progress-chip {
+      padding: .88rem .95rem;
+      border-radius: 14px;
+      border: 1px solid var(--task-border);
+      background: rgba(255,255,255,.025);
+    }
+
+    .progress-chip.done {
+      border-color: rgba(88,227,141,.28);
+      background: rgba(88,227,141,.08);
+    }
+
+    .progress-chip strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .9rem;
+      margin-bottom: .22rem;
+    }
+
+    .progress-chip span {
+      color: var(--task-muted);
+      font-size: .8rem;
+      line-height: 1.65;
+    }
+
+    .visual-banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(220px, .85fr);
+      gap: 1rem;
+      padding: 1rem 1.05rem;
+      border-radius: 16px;
+      border: 1px solid rgba(84,215,255,.16);
+      background:
+        radial-gradient(circle at top right, rgba(84,215,255,.1), transparent 36%),
+        linear-gradient(135deg, rgba(84,215,255,.08), rgba(255,255,255,.015));
+      margin-bottom: 1rem;
+    }
+
+    .visual-banner strong {
+      display: block;
+      color: var(--task-text);
+      margin-bottom: .25rem;
+      font-size: .94rem;
+    }
+
+    .visual-route {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .85rem;
+      margin-bottom: 1rem;
+    }
+
+    .route-step {
+      padding: .9rem .95rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+
+    .route-step strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .9rem;
+      margin-bottom: .2rem;
+    }
+
+    .route-step span {
+      color: var(--task-muted);
+      font-size: .82rem;
+      line-height: 1.62;
+    }
+
+    .legend-chip {
+      background: rgba(255,255,255,.02);
+    }
+
+    .legend-chip i {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .legend-read { background: var(--task-cyan); }
+    .legend-show { background: var(--task-violet); }
+    .legend-switch { background: var(--task-amber); }
+    .legend-fix { background: var(--task-green); }
+
+    .visual-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .visual-card::after {
+      content: 'Ampliar';
+      position: absolute;
+      top: .82rem;
+      right: .82rem;
+      z-index: 2;
+      padding: .28rem .58rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(4,10,18,.8);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .visual-board {
+      min-height: 320px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      cursor: zoom-in;
+      background:
+        radial-gradient(circle at top left, rgba(84,215,255,.14), transparent 36%),
+        linear-gradient(180deg, rgba(16,29,43,.96), rgba(8,15,24,.96));
+    }
+
+    .visual-board:focus-visible,
+    .svg-wrap:focus-visible {
+      outline: 3px solid rgba(84,215,255,.55);
+      outline-offset: -3px;
+    }
+
+    .board-kicker {
+      align-self: flex-start;
+      padding: .24rem .58rem;
+      border-radius: 999px;
+      border: 1px solid rgba(84,215,255,.22);
+      background: rgba(84,215,255,.1);
+      color: #b9f0ff;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .visual-card h3,
+    .table-card h3,
+    .concept-card h3,
+    .practice-module h3,
+    .flash-card h3,
+    .report-card h2,
+    .tool-panel h3 {
+      color: var(--task-text);
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: .46rem;
+    }
+
+    .board-grid,
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+
+    .board-box,
+    .metric-box {
+      padding: .8rem .82rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+    }
+
+    .board-box strong,
+    .metric-box strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .88rem;
+      margin-bottom: .18rem;
+    }
+
+    .board-box span,
+    .metric-box span {
+      color: var(--task-muted);
+      font-size: .8rem;
+      line-height: 1.6;
+    }
+
+    .board-code,
+    .output-box,
+    .ref-code {
+      margin: 0;
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(84,215,255,.22);
+      background:
+        linear-gradient(180deg, rgba(4,10,18,.96), rgba(7,14,22,.94)),
+        rgba(4,10,18,.9);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+      color: #e5fbff;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .8rem;
+      line-height: 1.72;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .board-note {
+      padding: .78rem .84rem;
+      border-radius: 14px;
+      border: 1px solid rgba(88,227,141,.22);
+      background: rgba(88,227,141,.08);
+      color: #d7ffe6;
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
+    .board-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      margin-top: auto;
+    }
+
+    .board-footer span {
+      display: inline-flex;
+      align-items: center;
+      padding: .28rem .64rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: #b0c4d3;
+      font-size: .76rem;
+    }
+
+    .svg-wrap {
+      margin: 0;
+      padding: .8rem;
+      border: 1px solid rgba(84,215,255,.12);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at top left, rgba(84,215,255,.08), transparent 42%),
+        linear-gradient(180deg, rgba(10,19,30,.94), rgba(7,12,20,.96));
+      cursor: zoom-in;
+    }
+
+    .svg-wrap svg,
+    .lightbox-stage svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .keyword-link {
+      color: #c3f2ff;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: rgba(84,215,255,.38);
+      text-underline-offset: .15em;
+    }
+
+    .quick-ref-grid {
+      margin-bottom: 1rem;
+    }
+
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+      font-size: .84rem;
+    }
+
+    .ref-table-wrap {
+      overflow-x: auto;
+      margin-top: .85rem;
+      border: 1px solid rgba(84,215,255,.12);
+      border-radius: 16px;
+    }
+
+    .ref-table th,
+    .ref-table td {
+      padding: .66rem .75rem;
+      border-bottom: 1px solid rgba(84,215,255,.09);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .ref-table th {
+      background: rgba(84,215,255,.07);
+      color: var(--task-text);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .ref-table td {
+      color: var(--task-muted);
+    }
+
+    .ref-table td code {
+      color: #c0f4ff;
+      background: rgba(84,215,255,.08);
+      border-radius: 6px;
+      padding: .08rem .34rem;
+    }
+
+    .flash-top,
+    .tool-row,
+    .module-top,
+    .report-top,
+    .question-status-row,
+    .question-actions,
+    .module-kpis {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .flash-answer {
+      display: none;
+      margin-top: .8rem;
+      padding-top: .8rem;
+      border-top: 1px solid rgba(84,215,255,.1);
+      color: #d7ffe6;
+      font-size: .88rem;
+      line-height: 1.65;
+    }
+
+    .flash-answer.show {
+      display: block;
+    }
+
+    #practiceMount {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .practice-module {
+      padding: 1rem 1.08rem;
+    }
+
+    .module-badge {
+      padding: .28rem .8rem;
+      border-radius: 999px;
+      border: 1px solid var(--task-border);
+      color: var(--task-muted);
+      font-size: .76rem;
+    }
+
+    .module-badge.level-inicial {
+      border-color: rgba(255,123,114,.28);
+      color: #ffd9d6;
+    }
+
+    .module-badge.level-intermedio {
+      border-color: rgba(255,189,89,.28);
+      color: #ffe3aa;
+    }
+
+    .module-badge.level-avanzado {
+      border-color: rgba(88,227,141,.3);
+      color: #d7ffe6;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .question-card {
+      padding: 1.08rem;
+      border-radius: 18px;
+      border: 1px solid rgba(84,215,255,.1);
+      background: rgba(7,16,24,.72);
+    }
+
+    .question-card.correct {
+      border-color: rgba(88,227,141,.28);
+      background: rgba(88,227,141,.07);
+    }
+
+    .question-card.wrong {
+      border-color: rgba(255,123,114,.26);
+      background: rgba(255,123,114,.07);
+    }
+
+    .question-card.retry {
+      border-color: rgba(255,189,89,.28);
+      background: rgba(255,189,89,.08);
+    }
+
+    .question-head {
+      display: flex;
+      gap: .8rem;
+      align-items: flex-start;
+    }
+
+    .question-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .question-status-row {
+      align-items: flex-start;
+      gap: .8rem;
+    }
+
+    .question-state {
+      display: inline-flex;
+      align-items: center;
+      padding: .32rem .72rem;
+      border-radius: 999px;
+      border: 1px solid var(--task-border);
+      color: var(--task-muted);
+      font-size: .75rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .question-state.is-pending {
+      background: rgba(255,255,255,.03);
+    }
+
+    .question-state.is-retry {
+      background: rgba(255,189,89,.1);
+      border-color: rgba(255,189,89,.24);
+      color: #ffe3aa;
+    }
+
+    .question-state.is-correct {
+      background: rgba(88,227,141,.1);
+      border-color: rgba(88,227,141,.24);
+      color: #d7ffe6;
+    }
+
+    .question-state.is-wrong {
+      background: rgba(255,123,114,.1);
+      border-color: rgba(255,123,114,.24);
+      color: #ffd9d6;
+    }
+
+    .question-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(84,215,255,.14);
+      color: var(--task-text);
+      font-family: 'Orbitron', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .question-head p {
+      color: var(--task-text);
+      font-size: .93rem;
+      line-height: 1.66;
+      margin: 0;
+    }
+
+    .question-lead {
+      margin: .7rem 0 .9rem 2.35rem;
+    }
+
+    .question-lead .output-box {
+      font-size: .78rem;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: .55rem;
+      margin-top: .9rem;
+      margin-left: 2.35rem;
+    }
+
+    .choice-label {
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+      padding: .64rem .78rem;
+      border: 1px solid rgba(84,215,255,.1);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+      background: rgba(255,255,255,.02);
+    }
+
+    .choice-label:hover {
+      border-color: rgba(84,215,255,.32);
+      background: rgba(84,215,255,.06);
+    }
+
+    .choice-label span {
+      color: var(--task-muted);
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+
+    .choice-label input {
+      margin-top: .14rem;
+    }
+
+    .text-answer,
+    .order-grid,
+    .hint-box,
+    .question-feedback {
+      margin-left: 2.35rem;
+      margin-top: .86rem;
+    }
+
+    .text-input,
+    .modal-input,
+    .order-label select {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 12px;
+      border: 1px solid rgba(84,215,255,.14);
+      background: rgba(4,10,18,.82);
+      color: var(--task-text);
+      padding: .75rem .86rem;
+      font-size: .92rem;
+      outline: none;
+    }
+
+    .text-input:focus,
+    .modal-input:focus,
+    .order-label select:focus {
+      border-color: rgba(84,215,255,.4);
+    }
+
+    .text-input {
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: .01em;
+      background:
+        linear-gradient(180deg, rgba(4,10,18,.96), rgba(7,14,22,.94)),
+        rgba(4,10,18,.9);
+      color: #e5fbff;
+    }
+
+    .order-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .75rem;
+    }
+
+    .order-label {
+      display: grid;
+      gap: .34rem;
+      color: var(--task-muted);
+      font-size: .82rem;
+    }
+
+    .hint-box {
+      padding: .76rem .84rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,189,89,.22);
+      background: rgba(255,189,89,.1);
+      color: #ffdd9a;
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
+    .question-feedback {
+      padding: .76rem .84rem;
+      border-radius: 12px;
+      font-size: .84rem;
+      line-height: 1.68;
+    }
+
+    .question-feedback.ok {
+      border: 1px solid rgba(88,227,141,.24);
+      background: rgba(88,227,141,.08);
+      color: #d7ffe6;
+    }
+
+    .question-feedback.warn {
+      border: 1px solid rgba(255,189,89,.24);
+      background: rgba(255,189,89,.08);
+      color: #ffe3aa;
+    }
+
+    .question-feedback.err {
+      border: 1px solid rgba(255,123,114,.22);
+      background: rgba(255,123,114,.08);
+      color: #ffd9d6;
+    }
+
+    .question-feedback .detail {
+      display: block;
+      margin-top: .28rem;
+      color: var(--task-muted);
+    }
+
+    .question-feedback strong {
+      display: block;
+      margin-bottom: .22rem;
+      color: inherit;
+    }
+
+    .question-actions {
+      margin-left: 2.35rem;
+      margin-top: .86rem;
+      align-items: center;
+    }
+
+    .question-attempt {
+      color: var(--task-muted);
+      font-size: .82rem;
+    }
+
+    .module-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .module-status {
+      color: var(--task-muted);
+      font-size: .82rem;
+    }
+
+    .report-shell {
+      display: none;
+    }
+
+    .report-shell.ready {
+      display: block;
+    }
+
+    .report-card {
+      padding: 1.28rem 1.32rem;
+      background:
+        radial-gradient(circle at top right, rgba(84,215,255,.08), transparent 24%),
+        linear-gradient(180deg, rgba(12,20,31,.98), rgba(10,18,28,.96));
+    }
+
+    .report-top {
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(84,215,255,.1);
+    }
+
+    .report-kpis {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    .report-kpi {
+      padding: .36rem .78rem;
+      border-radius: 999px;
+      border: 1px solid var(--task-border);
+      color: var(--task-muted);
+      font-size: .82rem;
+    }
+
+    .report-kpi strong {
+      color: var(--task-text);
+    }
+
+    .report-highlight {
+      margin-top: 1rem;
+      padding: 1rem 1.05rem;
+      border-radius: 18px;
+      border: 1px solid rgba(84,215,255,.14);
+      background: rgba(84,215,255,.06);
+    }
+
+    .report-highlight strong {
+      display: block;
+      color: var(--task-text);
+      font-size: .98rem;
+      margin-bottom: .24rem;
+    }
+
+    .report-highlight span {
+      color: var(--task-muted);
+      font-size: .88rem;
+      line-height: 1.68;
+    }
+
+    .report-module {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(84,215,255,.1);
+    }
+
+    .report-table-wrap {
+      overflow-x: auto;
+      margin-top: .8rem;
+      border: 1px solid rgba(84,215,255,.12);
+      border-radius: 16px;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+      font-size: .84rem;
+    }
+
+    .report-table th,
+    .report-table td {
+      padding: .62rem .7rem;
+      border-bottom: 1px solid rgba(84,215,255,.1);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .report-table th {
+      background: rgba(84,215,255,.06);
+      color: var(--task-text);
+      font-size: .72rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .result-ok {
+      color: #c9ffe1;
+      font-weight: 800;
+    }
+
+    .result-bad {
+      color: #ffd4d0;
+      font-weight: 800;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(1,4,8,.88);
+      backdrop-filter: blur(10px);
+    }
+
+    .lightbox.is-open {
+      display: flex;
+    }
+
+    .lightbox-dialog {
+      width: min(1160px, 100%);
+      max-height: 92vh;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .lightbox-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #e9f7ff;
+    }
+
+    .lightbox-close {
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: #fff;
+      border-radius: 999px;
+      padding: .44rem .85rem;
+      cursor: pointer;
+      font-size: .84rem;
+      font-weight: 700;
+    }
+
+    .lightbox-stage {
+      padding: .95rem;
+      border-radius: 22px;
+      border: 1px solid rgba(84,215,255,.14);
+      background: rgba(9,17,28,.9);
+      box-shadow: 0 24px 60px rgba(0,0,0,.4);
+    }
+
+    .lightbox-visual {
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-stage .visual-board,
+    .lightbox-stage img,
+    .lightbox-stage svg {
+      width: 100%;
+      max-height: 72vh;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .lightbox-stage .visual-board {
+      max-width: 1040px;
+      min-height: auto;
+      border-radius: 20px;
+      border: 1px solid rgba(84,215,255,.14);
+      cursor: default;
+    }
+
+    .lightbox-caption {
+      text-align: center;
+      color: #cde6f3;
+      font-size: .9rem;
+      line-height: 1.68;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(2,6,10,.84);
+      backdrop-filter: blur(8px);
+      z-index: 1200;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 560px;
+      max-height: calc(100vh - 2rem);
+      margin: auto 0;
+      overflow-y: auto;
+      padding: 2rem 2.05rem;
+      border-radius: 22px;
+      border: 1px solid rgba(84,215,255,.18);
+      background:
+        radial-gradient(circle at top right, rgba(84,215,255,.1), transparent 30%),
+        linear-gradient(180deg, rgba(14,24,35,.98), rgba(10,18,28,.96));
+      box-shadow: 0 24px 60px rgba(0,0,0,.35);
+      animation: modal-rise .24s ease-out;
+    }
+
+    @keyframes modal-rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-box h2 {
+      color: var(--task-text);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.28rem;
+      margin-bottom: .42rem;
+    }
+
+    .modal-box p {
+      color: var(--task-muted);
+      font-size: .9rem;
+      line-height: 1.72;
+      margin-bottom: 1.2rem;
+    }
+
+    .modal-alert {
+      margin-bottom: 1rem;
+      padding: .95rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,189,89,.26);
+      background: rgba(255,189,89,.1);
+      color: #ffe3aa;
+      font-size: .88rem;
+      line-height: 1.7;
+    }
+
+    .modal-alert strong {
+      color: #fff3c7;
+    }
+
+    .modal-grid {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .modal-label {
+      display: grid;
+      gap: .34rem;
+      color: var(--task-muted);
+      font-size: .84rem;
+    }
+
+    .saved-name-row {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: .8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding: .74rem .84rem;
+      border-radius: 12px;
+      border: 1px solid rgba(88,227,141,.22);
+      background: rgba(88,227,141,.08);
+      color: var(--task-muted);
+      font-size: .82rem;
+    }
+
+    .saved-name-row.show {
+      display: flex;
+    }
+
+    .saved-name-row strong {
+      color: var(--task-text);
+    }
+
+    .btn-use-saved {
+      background: transparent;
+      color: #d7ffe6;
+      border: 1px solid rgba(88,227,141,.4);
+      border-radius: 10px;
+      padding: .35rem .74rem;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .task-footer {
+      padding: 1.8rem 1.4rem 2.4rem;
+      border-top: 1px solid rgba(84,215,255,.1);
+      color: var(--task-muted);
+      font-size: .86rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .task-footer strong {
+      color: var(--task-text);
+    }
+
+    .dua-contrast {
+      --task-bg: #000;
+      --task-surface: #0a0a0a;
+      --task-surface-2: #141414;
+      --task-border: rgba(255,255,255,.5);
+      --task-text: #fff;
+      --task-muted: #f5f5f5;
+      --task-cyan: #00f0ff;
+      --task-blue: #8ab4ff;
+      --task-green: #7dff7d;
+      --task-amber: #ffd76e;
+      --task-red: #ff9c9c;
+      --task-violet: #ceb7ff;
+    }
+
+    .practice-only .task-section:not(#roadmap):not(#quick-review):not(#practice):not(#reportShell) {
+      display: none;
+    }
+
+    @media print {
+      body.print-report {
+        background: #fff !important;
+        color: #000 !important;
+      }
+
+      body.print-report header,
+      body.print-report .task-hero,
+      body.print-report .task-main > section:not(.report-shell),
+      body.print-report footer,
+      body.print-report #studentModal {
+        display: none !important;
+      }
+
+      body.print-report .report-shell {
+        display: block !important;
+        margin: 0;
+      }
+
+      body.print-report .report-card,
+      body.print-report .report-table th,
+      body.print-report .report-table td,
+      body.print-report .report-module {
+        color: #000 !important;
+        background: #fff !important;
+        border-color: #ddd !important;
+      }
+
+      body.print-report .task-main {
+        max-width: none;
+        padding: 0;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-shell,
+      .tool-grid,
+      .visual-banner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .task-hero {
+        padding: 2.3rem 1.1rem 1.9rem;
+      }
+
+      .task-main {
+        padding: 1.35rem .9rem 4rem;
+      }
+
+      .hero-stats,
+      .phase-strip,
+      .expect-grid,
+      .board-grid,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .choice-list,
+      .text-answer,
+      .order-grid,
+      .hint-box,
+      .question-feedback,
+      .question-actions,
+      .question-lead {
+        margin-left: 0;
+      }
+
+      .question-status-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .lightbox {
+        padding: .75rem;
+      }
+
+      .lightbox-stage {
+        padding: .6rem;
+      }
+
+      .task-nav {
+        padding: .85rem .95rem;
+      }
+    }
+  </style>
+</head>
+<body class="task-page">
+  <header>
+    <nav class="task-nav">
+      <div class="task-brand">
+        <span>🖧 CCNA 1</span>
+        <span class="task-brand-chip">Capítulos 1 al 7</span>
+      </div>
+      <div class="task-nav-links">
+        <a href="#roadmap">Mapa</a>
+        <a href="#visuales">Visuales</a>
+        <a href="#referencia">Referencia</a>
+        <a href="#quick-review">Repaso</a>
+        <a href="#practice">Práctica</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="task-hero" id="heroIntro">
+    <div class="hero-shell">
+      <div>
+        <div class="hero-topline">
+          <span class="hero-badge">Tarea privada por URL directa</span>
+          <span class="hero-breadcrumb">CCNA 1 / capítulos 1 al 7 / comandos IOS / salidas show</span>
+        </div>
+        <h1 class="hero-title">Tarea Interactiva de Comandos IOS, Salidas <code>show</code> y Diagnóstico Inicial</h1>
+        <p class="hero-sub">
+          Esta actividad es una <strong>tarea evaluativa individual</strong> con repaso fuerte acumulativo de
+          <strong>CCNA 1 capítulos 1 al 7</strong>. El énfasis está en <strong>comandos IOS</strong>, modos de operación,
+          configuración básica, seguridad inicial del dispositivo, interpretación de salidas <code>show</code>,
+          switching básico, direccionamiento elemental y diagnóstico con criterio técnico.
+        </p>
+        <div class="hero-alert">
+          <strong>Entrega obligatoria:</strong> esta tarea debe resolverse y entregarse con <strong>nombre completo</strong>, <strong>sección</strong>, <strong>fecha</strong> y <strong>PDF final</strong>. Primero repasamos; después evaluamos.
+        </div>
+        <div class="hero-meta">
+          <span class="hero-chip"><strong>3 indicadores</strong> conceptos, salidas y secuencias</span>
+          <span class="hero-chip"><strong>Aplicado</strong> escenarios con datos variables</span>
+          <span class="author-chip">✍️ Prof. Andrés Mena Abarca</span>
+        </div>
+        <div class="anchor-row" style="margin-top:1rem">
+          <a class="anchor-chip" href="#roadmap">Mapa del tema</a>
+          <a class="anchor-chip" href="#visuales">Biblioteca visual</a>
+          <a class="anchor-chip" href="#referencia">Referencia rápida</a>
+          <a class="anchor-chip" href="#quick-review">Repaso rápido</a>
+          <a class="anchor-chip" href="#practice">Práctica intensiva</a>
+        </div>
+      </div>
+      <aside class="hero-panel" aria-label="Ruta compacta de la tarea">
+        <h2>Qué se espera en esta entrega</h2>
+        <p>Debemos demostrar que reconocemos conceptos y comandos, interpretamos salidas <code>show</code> y aplicamos secuencias correctas de configuración y diagnóstico.</p>
+        <div class="hero-list">
+          <div class="hero-list-item">
+            <div class="hero-list-num">01</div>
+            <div>
+              <strong>Reconocer</strong>
+              <span>Prompts, modos IOS, comandos esenciales, dispositivos, medios y conceptos base.</span>
+            </div>
+          </div>
+          <div class="hero-list-item">
+            <div class="hero-list-num">02</div>
+            <div>
+              <strong>Interpretar</strong>
+              <span>Salidas <code>show</code>, estados de interfaces, configuración activa y evidencia técnica.</span>
+            </div>
+          </div>
+          <div class="hero-list-item">
+            <div class="hero-list-num">03</div>
+            <div>
+              <strong>Aplicar y entregar</strong>
+              <span>Secuencias correctas, corrección de errores comunes y reporte PDF final de entrega.</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>30</strong>
+            <span>preguntas distribuidas en 3 indicadores</span>
+          </div>
+          <div class="hero-stat">
+            <strong>7</strong>
+            <span>recursos visuales ampliables</span>
+          </div>
+          <div class="hero-stat">
+            <strong>1</strong>
+            <span>PDF final por estudiante</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main class="task-main">
+    <section class="task-section" id="roadmap">
+      <div class="tool-panel">
+        <div>
+          <h3>Controles de lectura</h3>
+          <div class="toolbar-actions" aria-live="polite">
+            <button class="btn-tool secondary" id="btnContrast" type="button" aria-pressed="false">Contraste alto</button>
+            <button class="btn-tool secondary" id="btnEasyMode" type="button" aria-pressed="false">Modo fácil</button>
+            <button class="btn-tool secondary" id="btnPracticeMode" type="button" aria-pressed="false">Solo práctica</button>
+            <button class="btn-tool secondary" id="btnFontDown" type="button">A-</button>
+            <button class="btn-tool secondary" id="btnFontUp" type="button">A+</button>
+            <button class="btn-tool secondary" id="btnStopAudio" type="button">Detener audio</button>
+            <button class="btn-tool secondary" type="button" data-speak-target="#heroIntro">Escuchar portada</button>
+            <span class="status-chip" id="contrastChip">Contraste normal</span>
+            <span class="status-chip" id="easyChip">Modo fácil oculto</span>
+            <span class="status-chip" id="modeChip">Vista completa</span>
+            <span class="status-chip" id="fontChip">Escala 100%</span>
+            <span class="status-chip" id="audioChip">Audio detenido</span>
+          </div>
+        </div>
+        <div class="phase-strip" aria-label="Secuencia de trabajo">
+          <div class="phase-pill primary">
+            <strong>1. Repaso fuerte</strong>
+            <span>Activamos capítulos 1 al 7 con apoyos visuales, referencia guiada y tarjetas de repaso.</span>
+          </div>
+          <div class="phase-pill">
+            <strong>2. Evaluación aplicada</strong>
+            <span>Respondemos por indicador, verificamos cada pregunta y usamos una sola corrección cuando sea necesaria.</span>
+          </div>
+          <div class="phase-pill">
+            <strong>3. Reporte y entrega</strong>
+            <span>Cerramos la tarea con resultado por indicador, nivel alcanzado y PDF formal de entrega.</span>
+          </div>
+        </div>
+        <div class="expect-grid">
+          <article class="expect-card">
+            <strong>Qué se espera</strong>
+            <span>Responder con base en evidencia técnica, no por memoria aislada. El prompt, la salida y el modo importan.</span>
+          </article>
+          <article class="expect-card">
+            <strong>Qué debemos cuidar</strong>
+            <span>Modo IOS correcto, secuencia lógica, lectura de <code>show</code>, seguridad básica y verificación antes de concluir.</span>
+          </article>
+          <article class="expect-card">
+            <strong>Qué se entrega</strong>
+            <span>Trabajo individual con nombre completo, sección, fecha y PDF final generado desde el reporte de desempeño.</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-section" id="visuales">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>Repaso Fuerte Acumulativo — Apoyos Visuales</h2>
+            <p>Este repaso prepara la evaluación formal con foco en capítulos 1 al 7: conceptos básicos de red, IOS, salidas <code>show</code>, switching inicial y diagnóstico elemental.</p>
+          </div>
+          <button class="btn-tool secondary" type="button" data-speak-target="#visuales">Escuchar sección</button>
+        </div>
+        <div class="section-body">
+          <div class="visual-grid">
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 1: mapa de modos IOS" data-html-caption="Escalera visual para ubicar prompt, modo actual y siguiente comando.">
+                <span class="board-kicker">Prompts</span>
+                <h3>Lámina 1: mapa de modos IOS</h3>
+                <div class="svg-wrap">
+                  <svg viewBox="0 0 760 280" role="img" aria-label="Mapa de modos IOS">
+                    <rect x="16" y="16" width="728" height="248" rx="20" fill="#0a1320" stroke="#28465f" />
+                    <rect x="58" y="52" width="180" height="48" rx="14" fill="rgba(84,215,255,.15)" stroke="#54d7ff" />
+                    <text x="148" y="81" fill="#ecf8ff" font-size="16" font-family="Share Tech Mono" text-anchor="middle">Switch&gt;</text>
+                    <text x="148" y="102" fill="#9ab6c8" font-size="11.5" font-family="Exo 2" text-anchor="middle">EXEC de usuario</text>
+                    <line x1="238" y1="76" x2="330" y2="76" stroke="#54d7ff" stroke-width="3" />
+                    <text x="284" y="67" fill="#b9f0ff" font-size="11.5" font-family="Exo 2" text-anchor="middle">enable</text>
+                    <rect x="330" y="52" width="180" height="48" rx="14" fill="rgba(88,227,141,.14)" stroke="#58e38d" />
+                    <text x="420" y="81" fill="#ecf8ff" font-size="16" font-family="Share Tech Mono" text-anchor="middle">Switch#</text>
+                    <text x="420" y="102" fill="#9ab6c8" font-size="11.5" font-family="Exo 2" text-anchor="middle">EXEC privilegiado</text>
+                    <line x1="420" y1="100" x2="420" y2="136" stroke="#58e38d" stroke-width="3" />
+                    <text x="500" y="129" fill="#d7ffe6" font-size="11.5" font-family="Exo 2">configure terminal</text>
+                    <rect x="330" y="150" width="180" height="48" rx="14" fill="rgba(155,140,255,.14)" stroke="#9b8cff" />
+                    <text x="420" y="179" fill="#ecf8ff" font-size="16" font-family="Share Tech Mono" text-anchor="middle">Switch(config)#</text>
+                    <text x="420" y="200" fill="#9ab6c8" font-size="11.5" font-family="Exo 2" text-anchor="middle">Configuración global</text>
+                    <line x1="330" y1="174" x2="230" y2="174" stroke="#9b8cff" stroke-width="3" />
+                    <line x1="510" y1="174" x2="610" y2="174" stroke="#9b8cff" stroke-width="3" />
+                    <rect x="70" y="150" width="160" height="48" rx="14" fill="rgba(255,189,89,.14)" stroke="#ffbd59" />
+                    <text x="150" y="179" fill="#ecf8ff" font-size="15" font-family="Share Tech Mono" text-anchor="middle">Switch(config-line)#</text>
+                    <text x="150" y="200" fill="#9ab6c8" font-size="11" font-family="Exo 2" text-anchor="middle">line console / line vty</text>
+                    <rect x="530" y="150" width="170" height="48" rx="14" fill="rgba(255,123,114,.14)" stroke="#ff7b72" />
+                    <text x="615" y="179" fill="#ecf8ff" font-size="15" font-family="Share Tech Mono" text-anchor="middle">Switch(config-if)#</text>
+                    <text x="615" y="200" fill="#9ab6c8" font-size="11" font-family="Exo 2" text-anchor="middle">interface vlan / puerto</text>
+                  </svg>
+                </div>
+                <div class="board-footer">
+                  <span>Modos y prompts</span>
+                  <span>Ampliar</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 2: secuencia mínima de configuración" data-html-caption="Ruta breve para levantar configuración inicial del switch y dejarla guardada.">
+                <span class="board-kicker">Configuración</span>
+                <h3>Lámina 2: secuencia mínima de configuración</h3>
+                <pre class="board-code">Switch&gt; enable
+Switch# configure terminal
+Switch(config)# hostname SW-LAB-07
+SW-LAB-07(config)# enable secret Clase2026!
+SW-LAB-07(config)# line console 0
+SW-LAB-07(config-line)# password Consola2026
+SW-LAB-07(config-line)# login
+SW-LAB-07(config)# service password-encryption
+SW-LAB-07# copy running-config startup-config</pre>
+                <div class="board-note">Esta secuencia resume lo que más se evalúa: modo correcto, seguridad mínima y guardado final.</div>
+                <div class="board-footer">
+                  <span>Configuración base</span>
+                  <span>Comandos clave</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 3: running-config frente a startup-config" data-html-caption="Comparación visual para no mezclar configuración activa y guardada.">
+                <span class="board-kicker">Memoria</span>
+                <h3>Lámina 3: <code>running-config</code> frente a <code>startup-config</code></h3>
+                <div class="metric-grid">
+                  <div class="metric-box">
+                    <strong>running-config</strong>
+                    <span>Vive en RAM. Es la configuración activa del momento.</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>startup-config</strong>
+                    <span>Vive en NVRAM. Es la configuración que carga al reiniciar.</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>Comando de consulta</strong>
+                    <span><code>show running-config</code> y <code>show startup-config</code>.</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>Comando crítico</strong>
+                    <span><code>copy running-config startup-config</code> guarda el trabajo activo.</span>
+                  </div>
+                </div>
+                <div class="board-note">Si el switch se reinicia y se pierde el cambio, casi siempre faltó guardar.</div>
+                <div class="board-footer">
+                  <span>Diagnóstico clásico</span>
+                  <span>Antes de reload</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 4: lectura de show running-config" data-html-caption="Ejemplo anotado de salida show running-config y qué detalles conviene detectar.">
+                <span class="board-kicker">Salida show</span>
+                <h3>Lámina 4: leer <code>show running-config</code></h3>
+                <pre class="output-box">hostname SW-LAB-07
+enable secret 5 $1$Yx...
+service password-encryption
+banner motd #Acceso solo autorizado#
+line con 0
+ password Consola2026
+ login
+line vty 0 4
+ password Remoto2026
+ login</pre>
+                <div class="board-grid">
+                  <div class="board-box">
+                    <strong>Qué sí vemos</strong>
+                    <span>Hostname, seguridad, banner y líneas configuradas.</span>
+                  </div>
+                  <div class="board-box">
+                    <strong>Qué preguntamos</strong>
+                    <span>Qué comando generó la salida, qué ya existe y qué faltaría verificar.</span>
+                  </div>
+                </div>
+                <div class="board-footer">
+                  <span>Bloque 3</span>
+                  <span>Interpretar evidencia</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 5: lectura de show ip interface brief" data-html-caption="Salida breve para identificar IP, estado y SVI administrativa.">
+                <span class="board-kicker">Salida show</span>
+                <h3>Lámina 5: leer <code>show ip interface brief</code></h3>
+                <pre class="output-box">Interface              IP-Address      OK? Method Status                Protocol
+Vlan1                  192.168.10.20   YES manual administratively down down
+FastEthernet0/1        unassigned      YES unset  up                    up
+FastEthernet0/2        unassigned      YES unset  down                  down</pre>
+                <div class="metric-grid">
+                  <div class="metric-box">
+                    <strong>Pista 1</strong>
+                    <span>La IP ya está configurada.</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>Pista 2</strong>
+                    <span>La SVI no está activa porque aparece <code>administratively down</code>.</span>
+                  </div>
+                </div>
+                <div class="board-footer">
+                  <span>SVI</span>
+                  <span><code>no shutdown</code></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 6: show vlan brief y switching básico" data-html-caption="Vista corta para reforzar VLAN, puertos y comportamiento del switch.">
+                <span class="board-kicker">Switching</span>
+                <h3>Lámina 6: <code>show vlan brief</code> y lectura básica del switch</h3>
+                <pre class="output-box">VLAN Name                             Status    Ports
+1    default                          active    Fa0/1, Fa0/2, Fa0/3
+10   DOCENTES                         active    Fa0/7, Fa0/8
+20   ESTUDIANTES                      active    Fa0/9, Fa0/10</pre>
+                <div class="board-note">Aquí no pedimos diseño avanzado: solo lectura básica de pertenencia de puertos, nombre de VLAN y lógica del switch.</div>
+                <div class="board-footer">
+                  <span>Refuerzo corto</span>
+                  <span>Ethernet y switching</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="visual-card">
+              <div class="visual-board" tabindex="0" role="button" aria-haspopup="dialog" data-zoomable-html="true" data-html-title="Lámina 7: diagnóstico rápido de errores frecuentes" data-html-caption="Checklist corto para revisar modo, guardado, SVI y salidas show antes de concluir que algo no funciona.">
+                <span class="board-kicker">Diagnóstico</span>
+                <h3>Lámina 7: checklist de diagnóstico rápido</h3>
+                <div class="metric-grid">
+                  <div class="metric-box">
+                    <strong>1. Modo</strong>
+                    <span>¿Estoy en el prompt correcto para ese comando?</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>2. Evidencia</strong>
+                    <span>¿Qué me dice realmente la salida <code>show</code>?</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>3. SVI</strong>
+                    <span>¿La interfaz virtual tiene IP y <code>no shutdown</code>?</span>
+                  </div>
+                  <div class="metric-box">
+                    <strong>4. Guardado</strong>
+                    <span>¿Se guardó con <code>copy running-config startup-config</code>?</span>
+                  </div>
+                </div>
+                <div class="board-note">Esta ficha es la mejor defensa contra respuestas genéricas: obliga a leer contexto, salida y secuencia.</div>
+                <div class="board-footer">
+                  <span>Corrección rápida</span>
+                  <span>Laboratorio</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-section" id="referencia">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>Repaso Guiado de Comandos, Salidas y Conceptos</h2>
+            <p>Aquí conectamos comandos, modos, salidas, switching básico, MAC, IPv4 inicial y decisiones de verificación antes de entrar a la evaluación.</p>
+          </div>
+          <button class="btn-tool secondary" type="button" data-speak-target="#referencia">Escuchar sección</button>
+        </div>
+        <div class="section-body">
+          <div class="dua-summary">
+            <strong>Resumen fácil</strong>
+            Primero identificamos el modo correcto, luego elegimos el comando y por último leemos la salida para decidir el siguiente paso.
+          </div>
+          <div class="quick-ref-grid">
+            <article class="table-card">
+              <h3>Comandos de configuración que más salen</h3>
+              <div class="ref-table-wrap">
+                <table class="ref-table">
+                  <thead>
+                    <tr>
+                      <th>Comando</th>
+                      <th>Modo</th>
+                      <th>Uso principal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>enable</code></td>
+                      <td><code>Switch&gt;</code></td>
+                      <td>Pasar a EXEC privilegiado.</td>
+                    </tr>
+                    <tr>
+                      <td><code>configure terminal</code></td>
+                      <td><code>Switch#</code></td>
+                      <td>Entrar a configuración global.</td>
+                    </tr>
+                    <tr>
+                      <td><code>hostname</code></td>
+                      <td><code>Switch(config)#</code></td>
+                      <td>Asignar nombre al equipo.</td>
+                    </tr>
+                    <tr>
+                      <td><code>line console 0</code></td>
+                      <td><code>Switch(config)#</code></td>
+                      <td>Configurar acceso por consola.</td>
+                    </tr>
+                    <tr>
+                      <td><code>line vty 0 4</code></td>
+                      <td><code>Switch(config)#</code></td>
+                      <td>Configurar acceso remoto básico.</td>
+                    </tr>
+                    <tr>
+                      <td><code>interface vlan 1</code></td>
+                      <td><code>Switch(config)#</code></td>
+                      <td>Entrar a la SVI de administración.</td>
+                    </tr>
+                    <tr>
+                      <td><code>ip address ...</code></td>
+                      <td><code>Switch(config-if)#</code></td>
+                      <td>Asignar IP a la SVI.</td>
+                    </tr>
+                    <tr>
+                      <td><code>no shutdown</code></td>
+                      <td><code>Switch(config-if)#</code></td>
+                      <td>Activar interfaz administrativamente apagada.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="table-card">
+              <h3>Salidas <code>show</code> que debemos leer</h3>
+              <div class="ref-table-wrap">
+                <table class="ref-table">
+                  <thead>
+                    <tr>
+                      <th>Comando</th>
+                      <th>Nos dice</th>
+                      <th>Pregunta típica</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>show running-config</code></td>
+                      <td>Configuración activa actual.</td>
+                      <td>¿Qué ya está configurado?</td>
+                    </tr>
+                    <tr>
+                      <td><code>show startup-config</code></td>
+                      <td>Configuración guardada para el reinicio.</td>
+                      <td>¿Se perderá al reiniciar?</td>
+                    </tr>
+                    <tr>
+                      <td><code>show ip interface brief</code></td>
+                      <td>IP, estado y protocolo de interfaces.</td>
+                      <td>¿Qué interfaz está down?</td>
+                    </tr>
+                    <tr>
+                      <td><code>show vlan brief</code></td>
+                      <td>VLAN y puertos asociados.</td>
+                      <td>¿A qué VLAN pertenece el puerto?</td>
+                    </tr>
+                    <tr>
+                      <td><code>show interfaces status</code></td>
+                      <td>Estado resumido de puertos.</td>
+                      <td>¿Qué puerto está conectado?</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+          <div class="concept-grid">
+            <article class="concept-card">
+              <h3>Cómo responder una pregunta sobre salida</h3>
+              <p>Primero leemos el prompt y el comando ejecutado. Luego extraemos 1 o 2 evidencias concretas de la salida. Al final justificamos el siguiente comando con base en esa evidencia, no por memoria suelta.</p>
+            </article>
+            <article class="concept-card">
+              <h3>Conexión con switching y Ethernet</h3>
+              <p>El switch aprende MAC, reenvía por puerto cuando conoce la MAC destino y puede inundar dentro de la VLAN si no la conoce. Aquí solo usamos lo necesario para interpretar comportamiento inicial del switch.</p>
+            </article>
+            <article class="concept-card">
+              <h3>Regla de oro de la tarea</h3>
+              <p>Si aparece <code>% Invalid input detected</code>, casi siempre la primera sospecha es un <a class="keyword-link" href="#visuales">modo incorrecto</a> o un comando mal escrito, no un fallo mágico del equipo.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-section" id="quick-review">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>Activación Previa a la Evaluación</h2>
+            <p>Tarjetas de activación para consolidar el repaso fuerte antes de comenzar la evaluación práctica aplicada.</p>
+          </div>
+          <div class="flash-tools">
+            <button class="btn-tool secondary" id="btnShuffleCards" type="button">Barajar tarjetas</button>
+            <button class="btn-tool secondary" type="button" data-speak-target="#quick-review">Escuchar sección</button>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="flash-grid" id="quickReviewMount"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-section" id="indicadores">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>Indicadores de Evaluación y Rúbrica</h2>
+            <p>La evaluación se organiza en tres indicadores. Cada uno se calificará con nivel Inicial, Intermedio o Avanzado según el desempeño alcanzado.</p>
+          </div>
+          <button class="btn-tool secondary" type="button" data-speak-target="#indicadores">Escuchar sección</button>
+        </div>
+        <div class="section-body">
+          <div class="concept-grid">
+            <article class="concept-card">
+              <h3>Indicador 1</h3>
+              <p><strong>Reconoce conceptos y comandos fundamentales de CCNA 1.</strong> Mide conceptos básicos de red, dispositivos, medios, sistemas numéricos iniciales, comandos IOS y modos de operación.</p>
+            </article>
+            <article class="concept-card">
+              <h3>Indicador 2</h3>
+              <p><strong>Interpreta salidas y verifica configuraciones básicas.</strong> Mide lectura de salidas <code>show</code>, diferencia entre <code>running-config</code> y <code>startup-config</code>, análisis de <code>show ip interface brief</code> y detección de estados anómalos.</p>
+            </article>
+            <article class="concept-card">
+              <h3>Indicador 3</h3>
+              <p><strong>Aplica secuencias lógicas de configuración y diagnóstico.</strong> Mide orden correcto de comandos, configuración básica, verificación, corrección de errores comunes y lógica de diagnóstico.</p>
+            </article>
+          </div>
+
+          <div class="ref-table-wrap" style="margin-top:1rem">
+            <table class="ref-table">
+              <thead>
+                <tr>
+                  <th>Nivel</th>
+                  <th>Indicador 1</th>
+                  <th>Indicador 2</th>
+                  <th>Indicador 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Inicial</strong></td>
+                  <td>Reconoce pocos conceptos o comandos y confunde modos o propósitos.</td>
+                  <td>Presenta dificultad para leer salidas y distinguir configuraciones básicas.</td>
+                  <td>Requiere apoyo para completar secuencias y diagnosticar fallos simples.</td>
+                </tr>
+                <tr>
+                  <td><strong>Intermedio</strong></td>
+                  <td>Reconoce la mayoría de comandos y conceptos con errores menores.</td>
+                  <td>Interpreta salidas simples y verifica configuraciones básicas con alguna vacilación.</td>
+                  <td>Aplica secuencias lógicas con algunos errores menores de orden o verificación.</td>
+                </tr>
+                <tr>
+                  <td><strong>Avanzado</strong></td>
+                  <td>Domina conceptos, comandos clave y modos de operación con seguridad.</td>
+                  <td>Interpreta salidas con criterio técnico y detecta estados anómalos con claridad.</td>
+                  <td>Aplica secuencias correctas y diagnostica errores frecuentes con fundamento técnico.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-section" id="practice">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>Evaluación Práctica Aplicada</h2>
+            <p>La evaluación obliga a aplicar lo repasado. Cuando una respuesta falla, el sistema da retroalimentación pedagógica y permite una sola corrección antes de cerrarla como incorrecta definitiva.</p>
+          </div>
+          <button class="btn-tool secondary" type="button" data-speak-target="#practice">Escuchar sección</button>
+        </div>
+        <div class="section-body">
+          <div class="tool-row">
+            <div class="chip-row" aria-live="polite">
+              <span class="tool-chip">Estudiante: <strong id="studentChip">—</strong></span>
+              <span class="tool-chip">Grupo: <strong id="groupChip">—</strong></span>
+              <span class="tool-chip">Fecha: <strong id="dateChip">—</strong></span>
+              <span class="tool-chip" id="practiceStatus">Pendiente de iniciar</span>
+            </div>
+            <div class="module-action-row">
+              <button class="btn-tool secondary" id="btnChangeStudent" type="button">Cambiar estudiante</button>
+              <button class="btn-tool secondary" id="btnNewPractice" type="button">Nueva práctica</button>
+              <button class="btn-tool" id="btnExportPdf" type="button" disabled>Exportar PDF</button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <strong id="statModules">0/0</strong>
+              <span>Indicadores cerrados</span>
+            </article>
+            <article class="stat-card">
+              <strong id="statAnswered">0</strong>
+              <span>Preguntas resueltas</span>
+            </article>
+            <article class="stat-card">
+              <strong id="statCorrect">0</strong>
+              <span>Aciertos acumulados</span>
+            </article>
+            <article class="stat-card">
+              <strong id="scoreValue">0%</strong>
+              <span>Puntaje global</span>
+            </article>
+          </div>
+
+          <div id="practiceMount"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-section report-shell" id="reportShell">
+      <div class="report-card">
+        <div class="report-top">
+          <div>
+            <h2>Reporte Final de Desempeño</h2>
+            <p class="report-note">Este reporte resume datos del estudiante, puntaje total, resultados por indicador, nivel alcanzado y observación final general.</p>
+          </div>
+          <div class="report-kpis" id="reportKpis"></div>
+        </div>
+        <div id="reportContent"></div>
+        <p class="report-note" style="margin-top:1rem">Al pulsar <strong>Exportar PDF</strong>, el navegador descargará un reporte en PDF con datos del estudiante, puntaje total, desempeño por indicador y observación final.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="task-footer">
+    <span>CCNA 1 · Repaso fuerte acumulativo y evaluación práctica aplicada</span>
+    <span>✍️ Material elaborado por el <strong>Prof. Andrés Mena Abarca</strong></span>
+  </footer>
+
+  <div class="lightbox" id="imageLightbox" aria-hidden="true">
+    <div class="lightbox-dialog">
+      <div class="lightbox-top">
+        <strong id="lightboxTitle">Vista ampliada</strong>
+        <button class="lightbox-close" type="button" data-close-lightbox="true">Cerrar</button>
+      </div>
+      <div class="lightbox-stage">
+        <div class="lightbox-visual" id="lightboxVisual"></div>
+      </div>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="studentModal" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+    <div class="modal-box">
+      <h2 id="studentModalTitle">Registro obligatorio antes de iniciar</h2>
+      <p>Este formulario aparece como <strong>primer paso obligatorio</strong> al ingresar a la página. Debemos registrar <strong>nombre completo del estudiante</strong>, <strong>sección</strong> y <strong>fecha</strong> antes de acceder a la tarea.</p>
+
+      <div class="modal-alert">
+        <strong>Importante:</strong> esta es una <strong>tarea evaluativa individual</strong> y <strong>debe entregarse</strong>. Los datos registrados se usarán en el reporte final y en el PDF de entrega.
+      </div>
+
+      <div class="saved-name-row" id="savedStudentRow">
+        <span id="savedStudentLabel"></span>
+        <button class="btn-use-saved" id="btnUseSaved" type="button">Continuar progreso guardado</button>
+      </div>
+
+      <form id="studentForm">
+        <div class="modal-grid">
+          <label class="modal-label" for="inputName">
+            Nombre completo del estudiante
+            <input class="modal-input" id="inputName" name="name" type="text" required />
+          </label>
+          <label class="modal-label" for="inputGroup">
+            Sección
+            <select class="modal-input" id="inputGroup" name="group" required>
+              <option value="">Seleccione una sección</option>
+              <option value="11-2">11-2</option>
+              <option value="11-3">11-3</option>
+            </select>
+          </label>
+          <label class="modal-label" for="inputDate">
+            Fecha
+            <input class="modal-input" id="inputDate" name="date" type="date" required />
+          </label>
+        </div>
+        <button class="btn-start" type="submit" style="width:100%;margin-top:1.2rem;">Crear sesión nueva</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../assets/js/ccna1-task-module2.js"></script>
+</body>
+</html>
