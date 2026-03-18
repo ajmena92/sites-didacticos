@@ -1,0 +1,55 @@
+---
+import config from '../data/config.json';
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  course: string;
+  type: string;
+  exportarPdf?: boolean;
+}
+
+const { title, course, type, exportarPdf = false } = Astro.props;
+const cursoData = config.cursos[course as keyof typeof config.cursos];
+const accentColor = cursoData?.color_accent ?? '#ffffff';
+const cursoNombre = cursoData?.nombre ?? course;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="es" data-course={course} data-type={type} data-clock="normal" style={`--accent:${accentColor}`}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Ing. Andrés Mena Abarca" />
+    <meta name="description" content={`${title} — ${cursoNombre} · CTP Platanares`} />
+    <title>{title} — Sites Didácticos</title>
+    <link rel="icon" type="image/svg+xml" href="/sites-didacticos/favicon.svg" />
+  </head>
+  <body>
+    <slot />
+    <footer>
+      <p>© {year} Ing. Andrés Mena Abarca · CTP Platanares</p>
+      <p>{cursoNombre} · Contenido bajo licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></p>
+    </footer>
+    {exportarPdf && (
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    )}
+  </body>
+</html>
+
+<style>
+  footer {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    line-height: 1.8;
+  }
+  footer a { color: var(--text-muted); }
+  footer a:hover { color: var(--accent); }
+</style>

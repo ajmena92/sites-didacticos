@@ -1,0 +1,69 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CountdownClock from '../components/ui/CountdownClock.svelte';
+import StudentPanel from '../components/ui/StudentPanel.svelte';
+import ScoreBadge from '../components/ui/ScoreBadge.svelte';
+
+interface Props {
+  titulo: string;
+  subtitulo: string;
+  curso: string;
+  entregaId: string;
+  fechaApertura: string;
+  fechaCierre: string;
+  puntos: number;
+  grupos: { id: string; nombre: string; turno: string }[];
+  exportarPdf?: boolean;
+}
+
+const { titulo, subtitulo, curso, entregaId, fechaApertura, fechaCierre, puntos, grupos, exportarPdf = false } = Astro.props;
+---
+
+<BaseLayout title={titulo} course={curso} type="tarea" exportarPdf={exportarPdf}>
+  <header class="tarea-header">
+    <div class="header-brand">
+      <span class="brand-path">CISCO › {curso.toUpperCase()}</span>
+      <ScoreBadge client:load totalPuntos={puntos} />
+    </div>
+    <h1 class="header-title">{titulo}</h1>
+    <p class="header-sub">{subtitulo}</p>
+  </header>
+
+  <CountdownClock client:load fechaApertura={fechaApertura} fechaCierre={fechaCierre} />
+  <StudentPanel client:load grupos={grupos} entregaId={entregaId} />
+
+  <main>
+    <slot />
+  </main>
+</BaseLayout>
+
+<style>
+  .tarea-header {
+    padding: 2rem 0 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .brand-path {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .header-title {
+    font-size: 1.4rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+  .header-sub {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  main { display: flex; flex-direction: column; gap: 2rem; }
+</style>

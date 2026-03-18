@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+
+:root {
+  --font-mono:    'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', sans-serif;
+  --font-body:    'Exo 2', sans-serif;
+  --radius:     8px;
+  --radius-sm:  4px;
+  --transition: 150ms ease;
+  --text-primary: #d0e8d0;
+  --text-muted:   #6b7f6b;
+  --border:       rgba(255, 255, 255, 0.08);
+  --color-correct: #00ff41;
+  --color-error:   #ff3a3a;
+  --color-warn:    #ffb800;
+}
+
+[data-type="tarea"]    { --surface: #0d1117; --surface-card: #161b22; }
+[data-type="proyecto"] { --surface: #0d1117; --surface-card: #161b22; }
+[data-type="teoria"]   { --surface: #0f1923; --surface-card: #162030; }
+[data-type="practica"] { --surface: #0a1628; --surface-card: #102040; }
+
+[data-clock="normal"]  { --clock-color: #00ff41; }
+[data-clock="warning"] { --clock-color: #ffb800; }
+[data-clock="danger"]  { --clock-color: #ff3a3a; }
