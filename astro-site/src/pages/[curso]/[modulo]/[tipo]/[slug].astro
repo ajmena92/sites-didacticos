@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import config from '../../../../data/config.json';
+import TareaLayout from '../../../../layouts/TareaLayout.astro';
+import FillInBlank from '../../../../components/ejercicios/FillInBlank.svelte';
+import Matching from '../../../../components/ejercicios/Matching.svelte';
+import Ordering from '../../../../components/ejercicios/Ordering.svelte';
+import MultipleChoice from '../../../../components/ejercicios/MultipleChoice.svelte';
+import ResultPanel from '../../../../components/ui/ResultPanel.svelte';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const tareas = await getCollection('ccna1-tareas');
+
+  return config.entregas.map((entrega) => {
+    const ejercicio = tareas.find(t => t.id.includes(entrega.id)) ?? tareas[0] ?? null;
+
+    return {
+      params: {
+        curso:  entrega.curso,
+        modulo: entrega.modulo,
+        tipo:   entrega.tipo,
+        slug:   entrega.id,
+      },
+      props: {
+        entrega,
+        ejercicio: ejercicio?.data ?? null,
+        grupos: config.grupos,
+      },
+    };
+  });
+};
+
+const { entrega, ejercicio, grupos } = Astro.props;
+const ej = ejercicio as any;
+---
+
+<TareaLayout
+  titulo={entrega.titulo}
+  subtitulo={ej?.subtitulo ?? ''}
+  curso={entrega.curso}
+  entregaId={entrega.id}
+  fechaApertura={entrega.fecha_apertura}
+  fechaCierre={entrega.fecha_cierre}
+  puntos={entrega.puntos}
+  grupos={grupos}
+  exportarPdf={entrega.parametros.exportar_pdf}
+>
+  {ej?.contexto && (
+    <div class="card contexto">
+      <p>{ej.contexto}</p>
+    </div>
+  )}
+
+  {ej?.modos_referencia && (
+    <details class="card referencia">
+      <summary>📋 Referencia de modos IOS</summary>
+      <table>
+        <thead><tr><th>Prompt</th><th>Modo</th><th>Acceso</th></tr></thead>
+        <tbody>
+          {ej.modos_referencia.map((m: any) => (
+            <tr>
+              <td><code>{m.prompt}</code></td>
+              <td>{m.modo}</td>
+              <td><code>{m.acceso}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
+  )}
+
+  {ej?.secciones?.fillInBlank && (
+    <FillInBlank
+      client:visible
+      items={ej.secciones.fillInBlank.items}
+      puntos={ej.secciones.fillInBlank.puntos}
+      mostrarRespuestas={entrega.parametros.mostrar_respuestas}
+    />
+  )}
+
+  {ej?.secciones?.matching && (
+    <Matching
+      client:visible
+      pares={ej.secciones.matching.pares}
+      puntos={ej.secciones.matching.puntos}
+    />
+  )}
+
+  {ej?.secciones?.ordering && (
+    <Ordering
+      client:visible
+      pasos={ej.secciones.ordering.pasos}
+      contexto={ej.secciones.ordering.contexto}
+      puntos={ej.secciones.ordering.puntos}
+    />
+  )}
+
+  {ej?.secciones?.multipleChoice && (
+    <MultipleChoice
+      client:visible
+      preguntas={ej.secciones.multipleChoice.preguntas}
+      puntos={ej.secciones.multipleChoice.puntos}
+      mostrarRespuestas={entrega.parametros.mostrar_respuestas}
+    />
+  )}
+
+  <ResultPanel
+    client:visible
+    totalPuntos={entrega.puntos}
+    exportarPdf={entrega.parametros.exportar_pdf}
+    tituloTarea={entrega.titulo}
+  />
+</TareaLayout>
+
+<style>
+  .contexto { font-size: 0.88rem; color: var(--text-muted); border-left: 3px solid var(--accent); }
+  .referencia summary { font-family: var(--font-mono); font-size: 0.82rem; cursor: pointer; color: var(--accent); padding: 0.2rem 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.8rem; }
+  th, td { padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border); text-align: left; }
+  th { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+  code { font-family: var(--font-mono); color: #00ff41; }
+</style>

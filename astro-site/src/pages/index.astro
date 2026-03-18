@@ -1,17 +1,82 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import config from '../data/config.json';
 
+const now = new Date();
+
+function getStatus(entrega: typeof config.entregas[0]) {
+  if (!entrega.activa) return 'closed';
+  const open  = new Date(entrega.fecha_apertura);
+  const close = new Date(entrega.fecha_cierre);
+  if (now < open)  return 'soon';
+  if (now > close) return 'done';
+  return 'open';
+}
+
+const statusLabel = { open: '✅ ABIERTA', soon: '⏳ PRÓXIMAMENTE', done: '📁 FINALIZADA', closed: '🔒 CERRADA' };
+const statusClass = { open: 'badge-open', soon: 'badge-soon', done: 'badge-done', closed: 'badge-closed' };
+const base = import.meta.env.BASE_URL;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Inicio" course="ccna1" type="tarea">
+  <div class="dashboard">
+    <header class="dash-header">
+      <h1 class="dash-title">Sites Didácticos</h1>
+      <p class="dash-sub">{config.docente.nombre} · {config.docente.institucion}</p>
+    </header>
+
+    <section class="entregas-grid">
+      {config.entregas.map((entrega) => {
+        const status = getStatus(entrega);
+        const curso  = config.cursos[entrega.curso as keyof typeof config.cursos];
+        const url    = `${base}${entrega.curso}/${entrega.modulo}/${entrega.tipo}/${entrega.id}`;
+        return (
+          <a
+            href={status === 'open' ? url : undefined}
+            class={`entrega-card card ${status !== 'open' ? 'inactive' : ''}`}
+            style={`--card-accent:${curso?.color_accent ?? '#ffffff'}`}
+          >
+            <div class="card-header">
+              <span class="card-course">{curso?.nombre ?? entrega.curso}</span>
+              <span class={`badge ${statusClass[status]}`}>{statusLabel[status]}</span>
+            </div>
+            <h3 class="card-title">{entrega.titulo}</h3>
+            <div class="card-meta">
+              <span>{entrega.puntos} pts</span>
+              {status === 'open' || status === 'done' ? (
+                <span>Cierra: {new Date(entrega.fecha_cierre).toLocaleDateString('es-CR', {day:'2-digit', month:'short', year:'numeric'})}</span>
+              ) : status === 'soon' ? (
+                <span>Abre: {new Date(entrega.fecha_apertura).toLocaleDateString('es-CR', {day:'2-digit', month:'short', year:'numeric'})}</span>
+              ) : null}
+            </div>
+          </a>
+        );
+      })}
+    </section>
+
+    <p class="dash-note">
+      El estado de las tarjetas se actualiza con cada publicación del sitio.
+      Si una tarea venció, el ejercicio queda bloqueado automáticamente en tiempo real.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .dash-header { padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+  .dash-title  { font-size: 1.8rem; color: var(--accent); }
+  .dash-sub    { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+  .entregas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .entrega-card {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    border-color: color-mix(in srgb, var(--card-accent) 30%, var(--border));
+    text-decoration: none; color: var(--text-primary);
+    transition: border-color var(--transition), transform var(--transition);
+  }
+  .entrega-card:hover:not(.inactive) { border-color: var(--card-accent); transform: translateY(-2px); }
+  .entrega-card.inactive { cursor: default; opacity: 0.65; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; }
+  .card-course { font-family: var(--font-mono); font-size: 0.7rem; color: var(--card-accent); }
+  .card-title  { font-size: 0.95rem; }
+  .card-meta   { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+  .dash-note { margin-top: 2rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); text-align: center; }
+</style>
