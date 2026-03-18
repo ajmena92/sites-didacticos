@@ -732,7 +732,10 @@
     els.lightboxImage = document.getElementById('lightboxImage');
     els.lightboxTitle = document.getElementById('lightboxTitle');
     els.lightboxCaption = document.getElementById('lightboxCaption');
+    els.lightboxClose = document.querySelector('[data-close-lightbox]');
     els.typeFilterStatus = document.getElementById('typeFilterStatus');
+    els.zoomableImages = Array.from(document.querySelectorAll('[data-zoomable-image]'));
+    els.typeFilterNodes = Array.from(document.querySelectorAll('[data-type-filter]'));
   }
 
   function bindEvents() {
@@ -781,6 +784,44 @@
 
     els.practiceMount.addEventListener('change', handlePracticeChange);
     els.practiceMount.addEventListener('input', handlePracticeInput);
+
+    els.zoomableImages.forEach(function (image) {
+      image.setAttribute('tabindex', '0');
+      image.setAttribute('role', 'button');
+      image.addEventListener('click', function () {
+        openImageLightbox(image);
+      });
+      image.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openImageLightbox(image);
+        }
+      });
+    });
+
+    if (els.lightboxClose) {
+      els.lightboxClose.addEventListener('click', closeImageLightbox);
+    }
+
+    if (els.imageLightbox) {
+      els.imageLightbox.addEventListener('click', function (event) {
+        if (event.target === els.imageLightbox) {
+          closeImageLightbox();
+        }
+      });
+    }
+
+    els.typeFilterNodes.forEach(function (node) {
+      node.addEventListener('click', function () {
+        setTypeFilter(node.dataset.typeFilter);
+      });
+      node.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setTypeFilter(node.dataset.typeFilter);
+        }
+      });
+    });
 
     document.addEventListener('click', handleGlobalClick);
     document.addEventListener('keydown', handleGlobalKeydown);
@@ -881,24 +922,6 @@
   }
 
   function handleGlobalClick(event) {
-    const zoomImage = event.target.closest('[data-zoomable-image]');
-    if (zoomImage) {
-      openImageLightbox(zoomImage);
-      return;
-    }
-
-    const closeLightbox = event.target.closest('[data-close-lightbox]');
-    if (closeLightbox || event.target === els.imageLightbox) {
-      closeImageLightbox();
-      return;
-    }
-
-    const typeFilter = event.target.closest('[data-type-filter]');
-    if (typeFilter) {
-      setTypeFilter(typeFilter.dataset.typeFilter);
-      return;
-    }
-
     const reviewBtn = event.target.closest('[data-review-module]');
     if (reviewBtn) {
       reviewModule(reviewBtn.dataset.reviewModule);
@@ -939,12 +962,6 @@
     if (event.key === 'Escape' && els.imageLightbox && els.imageLightbox.classList.contains('is-open')) {
       closeImageLightbox();
       return;
-    }
-
-    const activeFilter = event.target && event.target.closest ? event.target.closest('[data-type-filter]') : null;
-    if (activeFilter && (event.key === 'Enter' || event.key === ' ')) {
-      event.preventDefault();
-      setTypeFilter(activeFilter.dataset.typeFilter);
     }
   }
 
