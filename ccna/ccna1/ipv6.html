@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPv6 Interactivo — CCNA 1</title>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    .ipv6-nav {
+      height: auto;
+      min-height: var(--nav-h);
+      flex-wrap: wrap;
+      padding-top: .85rem;
+      padding-bottom: .85rem;
+    }
+
+    .ipv6-body {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 5rem;
+    }
+
+    .anchor-row,
+    .chip-row,
+    .tool-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    .anchor-chip,
+    .info-chip,
+    .tool-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .35rem .8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .anchor-chip:hover {
+      color: var(--text);
+      border-color: var(--ccna);
+      text-decoration: none;
+    }
+
+    .ipv6-section {
+      margin-top: 2rem;
+    }
+
+    .section-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(27,161,226,.12), transparent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: .88rem;
+      max-width: 780px;
+    }
+
+    .section-body {
+      padding: 1.25rem;
+    }
+
+    .overview-grid,
+    .concept-grid,
+    .diagram-grid,
+    .type-grid,
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .overview-card,
+    .concept-card,
+    .type-card,
+    .stat-card,
+    .practice-module,
+    .report-card,
+    .diagram-card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .overview-card,
+    .concept-card,
+    .type-card,
+    .stat-card,
+    .diagram-card {
+      padding: 1rem 1.1rem;
+    }
+
+    .overview-card strong,
+    .stat-card strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: .25rem;
+    }
+
+    .overview-card span,
+    .stat-card span {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .concept-card h3,
+    .diagram-card h3,
+    .type-card h3,
+    .practice-module h3 {
+      font-size: .95rem;
+      font-weight: 800;
+      margin-bottom: .5rem;
+    }
+
+    .concept-card p,
+    .diagram-card p,
+    .type-card p,
+    .practice-module p,
+    .report-note,
+    .report-card p {
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.7;
+    }
+
+    .concept-card ul,
+    .type-card ul {
+      margin-left: 1.1rem;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.7;
+    }
+
+    .concept-card li + li,
+    .type-card li + li {
+      margin-top: .2rem;
+    }
+
+    .type-card {
+      border-left: 3px solid var(--border);
+    }
+
+    .type-card.gua { border-left-color: var(--ccna); }
+    .type-card.lla { border-left-color: var(--green); }
+    .type-card.ula { border-left-color: var(--linux); }
+    .type-card.multi { border-left-color: var(--accent); }
+    .type-card.misc { border-left-color: var(--red); }
+
+    .svg-wrap {
+      margin-top: .85rem;
+      overflow-x: auto;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .8rem;
+      margin-top: .75rem;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .legend .lg-prefix { background: rgba(27,161,226,.35); border: 1px solid var(--ccna); }
+    .legend .lg-id { background: rgba(245,166,35,.35); border: 1px solid var(--linux); }
+    .legend .lg-host { background: rgba(63,185,80,.35); border: 1px solid var(--green); }
+
+    .tool-row {
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    .btn-tool,
+    .btn-review,
+    .btn-start {
+      background: var(--ccna);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: .65rem 1rem;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .btn-tool:hover,
+    .btn-review:hover,
+    .btn-start:hover {
+      opacity: .88;
+      transform: translateY(-1px);
+    }
+
+    .btn-tool.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-tool.secondary:hover {
+      border-color: var(--ccna);
+    }
+
+    .btn-tool:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .stat-card .small {
+      color: var(--muted);
+      font-size: .76rem;
+      margin-top: .25rem;
+    }
+
+    #practiceMount {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .practice-module {
+      padding: 1rem 1.1rem;
+    }
+
+    .module-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: .85rem;
+    }
+
+    .module-top p {
+      max-width: 760px;
+      margin-top: .25rem;
+    }
+
+    .module-badge {
+      align-self: flex-start;
+      padding: .25rem .75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .76rem;
+      white-space: nowrap;
+    }
+
+    .question-list {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .question-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .9rem;
+    }
+
+    .question-card.correct {
+      border-color: rgba(63,185,80,.5);
+      background: rgba(63,185,80,.06);
+    }
+
+    .question-card.wrong {
+      border-color: rgba(248,81,73,.45);
+      background: rgba(248,81,73,.06);
+    }
+
+    .question-head {
+      display: flex;
+      gap: .7rem;
+      align-items: flex-start;
+    }
+
+    .question-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface2);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+      font-size: .8rem;
+    }
+
+    .question-head p {
+      color: var(--text);
+      font-size: .92rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: .5rem;
+      margin-top: .85rem;
+      margin-left: 2.2rem;
+    }
+
+    .choice-label {
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+      padding: .6rem .75rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+
+    .choice-label:hover {
+      border-color: var(--ccna);
+      background: rgba(27,161,226,.06);
+    }
+
+    .choice-label input {
+      margin-top: .2rem;
+    }
+
+    .choice-label span {
+      font-size: .88rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .question-feedback {
+      margin-top: .75rem;
+      margin-left: 2.2rem;
+      padding: .7rem .85rem;
+      border-radius: 10px;
+      font-size: .84rem;
+      line-height: 1.65;
+    }
+
+    .question-feedback.ok {
+      background: rgba(63,185,80,.1);
+      border: 1px solid rgba(63,185,80,.3);
+      color: var(--green);
+    }
+
+    .question-feedback.err {
+      background: rgba(248,81,73,.1);
+      border: 1px solid rgba(248,81,73,.3);
+      color: var(--red);
+    }
+
+    .question-feedback .detail {
+      display: block;
+      color: var(--muted);
+      margin-top: .3rem;
+    }
+
+    .module-actions {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .module-status {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .report-shell {
+      display: none;
+    }
+
+    .report-shell.ready {
+      display: block;
+    }
+
+    .report-card {
+      padding: 1.2rem 1.25rem;
+    }
+
+    .report-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .report-kpis {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    .report-kpi {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .35rem .8rem;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .report-module {
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    .report-table-wrap {
+      overflow-x: auto;
+      margin-top: .75rem;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: .84rem;
+    }
+
+    .report-table th,
+    .report-table td {
+      border-bottom: 1px solid var(--border);
+      padding: .6rem .65rem;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .report-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .result-ok {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .result-bad {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.76);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 2.1rem;
+    }
+
+    .modal-box h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: .35rem;
+    }
+
+    .modal-box p {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+    }
+
+    .modal-grid {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .modal-label {
+      display: grid;
+      gap: .35rem;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .modal-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: .75rem .9rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: .95rem;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: var(--ccna);
+    }
+
+    .saved-name-row {
+      display: none;
+      margin-top: 1rem;
+      padding: .75rem .85rem;
+      border-radius: 10px;
+      background: rgba(63,185,80,.08);
+      border: 1px solid rgba(63,185,80,.24);
+      align-items: center;
+      justify-content: space-between;
+      gap: .8rem;
+      flex-wrap: wrap;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .saved-name-row.show {
+      display: flex;
+    }
+
+    .saved-name-row strong {
+      color: var(--text);
+    }
+
+    .btn-use-saved {
+      background: none;
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: .35rem .75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .btn-use-saved:hover {
+      background: rgba(63,185,80,.12);
+    }
+
+    .print-note {
+      margin-top: .85rem;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    @media (max-width: 900px) {
+      .ipv6-body {
+        padding: 1.5rem 1rem 4rem;
+      }
+
+      .topic-hero {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+
+      .choice-list,
+      .question-feedback {
+        margin-left: 0;
+      }
+    }
+
+    @media print {
+      body.print-report {
+        background: #fff;
+        color: #000;
+      }
+
+      body.print-report header,
+      body.print-report .topic-hero,
+      body.print-report .ipv6-body > section:not(.report-shell),
+      body.print-report footer,
+      body.print-report #studentModal {
+        display: none !important;
+      }
+
+      body.print-report .report-shell {
+        display: block !important;
+        margin: 0;
+      }
+
+      body.print-report .report-card,
+      body.print-report .report-table th,
+      body.print-report .report-table td,
+      body.print-report .report-module {
+        color: #000 !important;
+        background: #fff !important;
+        border-color: #ddd !important;
+      }
+
+      body.print-report .ipv6-body {
+        max-width: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="ipv6-nav">
+      <span class="nav-brand">🛰️ CCNA 1 — IPv6</span>
+      <div class="nav-pages">
+        <a href="#fundamentos">Fundamentos</a>
+        <a href="#tipos">Tipos</a>
+        <a href="#slaac">SLAAC</a>
+        <a href="#practice">Practica</a>
+      </div>
+      <div class="nav-divider"></div>
+      <a class="back-to-catalog" href="index.html">← CCNA 1</a>
+    </nav>
+  </header>
+
+  <div class="topic-hero">
+    <div class="breadcrumb">CCNA 1 / IPv6</div>
+    <h1>🛰️ IPv6 Interactivo</h1>
+    <p class="hero-sub">
+      Modulo reconstruido desde <strong>IPV6.xlsx</strong>. Cubre representacion, compresion,
+      prefijos, tipos de direccion, multicast, SLAAC, RS/RA y configuracion Cisco IOS,
+      con practica guiada y exportacion final a PDF.
+    </p>
+    <span class="author-chip">✍️ Prof. Andres Mena Abarca</span>
+    <div class="anchor-row" style="margin-top:1rem">
+      <a class="anchor-chip" href="#fundamentos">128 bits y hextetos</a>
+      <a class="anchor-chip" href="#representacion">Compresion y /64</a>
+      <a class="anchor-chip" href="#tipos">GUA · LLA · ULA · Multicast</a>
+      <a class="anchor-chip" href="#slaac">SLAAC · RS · RA</a>
+      <a class="anchor-chip" href="#ios">Cisco IOS</a>
+      <a class="anchor-chip" href="#practice">Practica intensa</a>
+    </div>
+  </div>
+
+  <main class="ipv6-body">
+    <section class="ipv6-section">
+      <div class="overview-grid">
+        <article class="overview-card">
+          <strong>128 bits</strong>
+          <span>8 hextetos de 16 bits cada uno y 32 simbolos hexadecimales.</span>
+        </article>
+        <article class="overview-card">
+          <strong>/64</strong>
+          <span>Prefijo recomendado para LAN y base de SLAAC segun el material principal.</span>
+        </article>
+        <article class="overview-card">
+          <strong>7 bloques</strong>
+          <span>Teoria + practica separada en compresion, tipos, multicast, SLAAC e IOS.</span>
+        </article>
+        <article class="overview-card">
+          <strong>PDF final</strong>
+          <span>La practica resuelta se resume y se exporta via impresion a PDF.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="ipv6-section" id="fundamentos">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>1. Fundamentos que si aparecen en el Excel</h2>
+            <p>El workbook arranca comparando IPv4 vs IPv6, el salto a 128 bits, la escritura en hextetos y la necesidad de dominar la representacion antes de la configuracion.</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="concept-grid">
+            <article class="concept-card">
+              <h3>IPv4 vs IPv6</h3>
+              <ul>
+                <li>IPv4 usa 32 bits y se apoya en NAT para traducir privadas a publicas.</li>
+                <li>IPv6 usa 128 bits y el material lo presenta como la salida al agotamiento de direcciones.</li>
+                <li>El workbook insiste en que primero debemos leer bien la direccion y luego clasificarla.</li>
+              </ul>
+            </article>
+            <article class="concept-card">
+              <h3>Reglas de lectura</h3>
+              <ul>
+                <li>1 hexteto = 16 bits.</li>
+                <li>8 hextetos = 128 bits.</li>
+                <li>Los grupos se separan con <code>:</code> y la longitud de prefijo puede ir de <code>/0</code> a <code>/128</code>.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="diagram-grid" style="margin-top:1rem">
+            <article class="diagram-card">
+              <h3>Imagen 1: anatomia de una direccion IPv6</h3>
+              <p>Visualizamos el ejemplo del workbook: 8 hextetos, prefijo de red e ID de interfaz.</p>
+              <div class="svg-wrap">
+                <svg viewBox="0 0 760 180" role="img" aria-label="Diagrama de direccion IPv6 en 8 hextetos">
+                  <defs>
+                    <linearGradient id="g1" x1="0" x2="1">
+                      <stop offset="0%" stop-color="#1ba1e2" stop-opacity=".35" />
+                      <stop offset="100%" stop-color="#58a6ff" stop-opacity=".15" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="10" y="16" width="740" height="148" rx="18" fill="#0d1117" stroke="#30363d" />
+                  <text x="28" y="42" fill="#8b949e" font-size="15" font-family="Segoe UI">2001 : ACAD : CAFE : 0001 : 0000 : 0000 : 00AB : 10FD /64</text>
+                  <g font-family="monospace" font-size="16">
+                    <rect x="28" y="62" width="84" height="42" rx="10" fill="url(#g1)" stroke="#1ba1e2" />
+                    <rect x="118" y="62" width="84" height="42" rx="10" fill="url(#g1)" stroke="#1ba1e2" />
+                    <rect x="208" y="62" width="84" height="42" rx="10" fill="url(#g1)" stroke="#1ba1e2" />
+                    <rect x="298" y="62" width="84" height="42" rx="10" fill="url(#g1)" stroke="#1ba1e2" />
+                    <rect x="388" y="62" width="84" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
+                    <rect x="478" y="62" width="84" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
+                    <rect x="568" y="62" width="84" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
+                    <rect x="658" y="62" width="70" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
+                    <text x="48" y="88" fill="#e6edf3">2001</text>
+                    <text x="138" y="88" fill="#e6edf3">ACAD</text>
+                    <text x="228" y="88" fill="#e6edf3">CAFE</text>
+                    <text x="318" y="88" fill="#e6edf3">0001</text>
+                    <text x="408" y="88" fill="#e6edf3">0000</text>
+                    <text x="498" y="88" fill="#e6edf3">0000</text>
+                    <text x="588" y="88" fill="#e6edf3">00AB</text>
+                    <text x="674" y="88" fill="#e6edf3">10FD</text>
+                  </g>
+                  <text x="120" y="132" fill="#1ba1e2" font-size="14" font-family="Segoe UI" font-weight="700">Prefijo de red</text>
+                  <text x="522" y="132" fill="#f5a623" font-size="14" font-family="Segoe UI" font-weight="700">ID de interfaz</text>
+                  <line x1="28" y1="120" x2="382" y2="120" stroke="#1ba1e2" stroke-width="3" />
+                  <line x1="388" y1="120" x2="728" y2="120" stroke="#f5a623" stroke-width="3" />
+                </svg>
+              </div>
+              <div class="legend">
+                <span><i class="lg-prefix"></i> Primeros 64 bits: prefijo</span>
+                <span><i class="lg-id"></i> Ultimos 64 bits: interfaz</span>
+              </div>
+            </article>
+
+            <article class="diagram-card">
+              <h3>Imagen 2: barra de capacidad</h3>
+              <p>El contraste que hace el Excel entre 32 bits y 128 bits se vuelve mas tangible con una barra simple.</p>
+              <div class="svg-wrap">
+                <svg viewBox="0 0 760 180" role="img" aria-label="Comparacion visual entre IPv4 e IPv6">
+                  <rect x="24" y="24" width="712" height="132" rx="18" fill="#0d1117" stroke="#30363d" />
+                  <text x="42" y="54" fill="#e6edf3" font-size="18" font-family="Segoe UI" font-weight="700">IPv4 frente a IPv6</text>
+                  <text x="42" y="82" fill="#8b949e" font-size="14" font-family="Segoe UI">IPv4: 32 bits | IPv6: 128 bits</text>
+                  <rect x="42" y="102" width="160" height="18" rx="9" fill="rgba(248,81,73,.3)" />
+                  <rect x="42" y="128" width="640" height="18" rx="9" fill="rgba(63,185,80,.35)" />
+                  <text x="214" y="116" fill="#f85149" font-size="13" font-family="Segoe UI">32 bits</text>
+                  <text x="690" y="142" fill="#3fb950" font-size="13" font-family="Segoe UI" text-anchor="end">128 bits</text>
+                  <text x="42" y="149" fill="#8b949e" font-size="12" font-family="Segoe UI">El workbook usa esta diferencia para justificar por que IPv6 elimina el problema de agotamiento.</text>
+                </svg>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ipv6-section" id="representacion">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>2. Representacion, compresion y prefijo /64</h2>
+            <p>El material principal dedica bastante espacio a las reglas de omitir ceros a la izquierda, usar <code>::</code> una sola vez y separar correctamente prefijo de red e ID de interfaz.</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="diagram-grid">
+            <article class="diagram-card">
+              <h3>Imagen 3: reglas de compresion</h3>
+              <p>Primero quitamos ceros a la izquierda y despues compactamos la corrida continua mas larga de hextetos <code>0000</code>.</p>
+              <div class="svg-wrap">
+                <svg viewBox="0 0 760 210" role="img" aria-label="Diagrama de compresion IPv6">
+                  <rect x="16" y="18" width="728" height="174" rx="18" fill="#0d1117" stroke="#30363d" />
+                  <text x="36" y="48" fill="#8b949e" font-size="14" font-family="Segoe UI">Completa</text>
+                  <text x="36" y="78" fill="#e6edf3" font-size="18" font-family="monospace">2001:0DB8:000A:0000:0000:0000:0000:0001</text>
+                  <text x="36" y="114" fill="#8b949e" font-size="14" font-family="Segoe UI">Paso 1: quitar ceros a la izquierda</text>
+                  <text x="36" y="142" fill="#58a6ff" font-size="18" font-family="monospace">2001:DB8:A:0:0:0:0:1</text>
+                  <text x="36" y="170" fill="#8b949e" font-size="14" font-family="Segoe UI">Paso 2: compactar la corrida continua mas larga</text>
+                  <text x="36" y="196" fill="#3fb950" font-size="20" font-family="monospace" font-weight="700">2001:DB8:A::1</text>
+                  <text x="516" y="196" fill="#f5a623" font-size="13" font-family="Segoe UI">Solo una vez por direccion</text>
+                </svg>
+              </div>
+            </article>
+
+            <article class="diagram-card">
+              <h3>Imagen 4: por que /64 importa</h3>
+              <p>El Excel marca <code>/64</code> como prefijo recomendado para LAN porque simplifica el subneteo y porque SLAAC usa 64 bits de interfaz.</p>
+              <div class="svg-wrap">
+                <svg viewBox="0 0 760 210" role="img" aria-label="Diagrama de prefijo 64 e identificador de interfaz">
+                  <rect x="16" y="18" width="728" height="174" rx="18" fill="#0d1117" stroke="#30363d" />
+                  <rect x="36" y="76" width="320" height="36" rx="12" fill="rgba(27,161,226,.35)" stroke="#1ba1e2" />
+                  <rect x="356" y="76" width="352" height="36" rx="12" fill="rgba(245,166,35,.35)" stroke="#f5a623" />
+                  <text x="196" y="99" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">64 bits de prefijo</text>
+                  <text x="532" y="99" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">64 bits de interfaz</text>
+                  <text x="36" y="50" fill="#8b949e" font-size="14" font-family="Segoe UI">2001:DB8:ACAD:000A : 0000:0000:0000:0015 /64</text>
+                  <text x="36" y="140" fill="#8b949e" font-size="13" font-family="Segoe UI">El router anuncia el prefijo y el host completa el ID de interfaz por SLAAC o por otro mecanismo.</text>
+                </svg>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ipv6-section" id="tipos">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>3. Tipos de direccion IPv6</h2>
+            <p>Este bloque sigue la clasificacion del workbook: unicast, multicast y anycast, con enfasis especial en GUA, LLA, ULA, loopback y direccion no especificada.</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="type-grid">
+            <article class="type-card gua">
+              <h3>GUA</h3>
+              <p><code>2000::/3</code></p>
+              <p>Enrutables globalmente. El workbook las equipara con las publicas de IPv4.</p>
+            </article>
+            <article class="type-card lla">
+              <h3>LLA</h3>
+              <p><code>FE80::/10</code></p>
+              <p>Obligatorias por enlace. No se enrutan fuera de la LAN local.</p>
+            </article>
+            <article class="type-card ula">
+              <h3>ULA</h3>
+              <p><code>FC00::/7</code></p>
+              <p>Equivalente conceptual a privadas RFC1918, pero sin traduccion global.</p>
+            </article>
+            <article class="type-card misc">
+              <h3>Loopback y no especificada</h3>
+              <p><code>::1/128</code> y <code>::</code></p>
+              <p>Prueba interna del host y ausencia de direccion como origen.</p>
+            </article>
+            <article class="type-card multi">
+              <h3>Multicast</h3>
+              <p><code>FF00::/12</code></p>
+              <p>Una direccion multicast nunca puede ser origen. Sustituye la idea de broadcast de IPv4.</p>
+            </article>
+            <article class="type-card misc">
+              <h3>Anycast</h3>
+              <p>Sin prefijo exclusivo</p>
+              <p>Se reutiliza rango unicast. El trafico se enruta al dispositivo mas cercano con esa misma direccion.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ipv6-section" id="slaac">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>4. SLAAC, RS, RA y multicast solicitado</h2>
+            <p>El workbook conecta la parte teorica con operacion real: el host envia RS, el router responde RA y las direcciones solicited-node multicast reemplazan el broadcast/ARP clasico.</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="diagram-grid">
+            <article class="diagram-card">
+              <h3>Imagen 5: flujo RS → RA → GUA</h3>
+              <p>Secuencia simplificada para fijar el razonamiento antes de tocar Cisco IOS.</p>
+              <div class="svg-wrap">
+                <svg viewBox="0 0 760 220" role="img" aria-label="Diagrama de flujo SLAAC, RS y RA">
+                  <rect x="16" y="18" width="728" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
+                  <rect x="48" y="72" width="152" height="48" rx="14" fill="rgba(245,166,35,.2)" stroke="#f5a623" />
+                  <rect x="302" y="72" width="152" height="48" rx="14" fill="rgba(27,161,226,.2)" stroke="#1ba1e2" />
+                  <rect x="556" y="72" width="152" height="48" rx="14" fill="rgba(63,185,80,.2)" stroke="#3fb950" />
+                  <text x="124" y="101" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Host</text>
+                  <text x="378" y="101" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Router</text>
+                  <text x="632" y="101" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">GUA lista</text>
+                  <line x1="200" y1="96" x2="302" y2="96" stroke="#58a6ff" stroke-width="4" marker-end="url(#arrow)" />
+                  <line x1="454" y1="96" x2="556" y2="96" stroke="#58a6ff" stroke-width="4" marker-end="url(#arrow)" />
+                  <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+                      <polygon points="0 0, 8 3, 0 6" fill="#58a6ff" />
+                    </marker>
+                  </defs>
+                  <text x="252" y="84" fill="#8b949e" font-size="13" font-family="Segoe UI">RS para descubrir router</text>
+                  <text x="504" y="84" fill="#8b949e" font-size="13" font-family="Segoe UI">RA con prefijo, gateway y datos de red</text>
+                  <text x="48" y="154" fill="#8b949e" font-size="13" font-family="Segoe UI">El material remarca que /64 y RA son la base de SLAAC en LAN.</text>
+                </svg>
+              </div>
+            </article>
+
+            <article class="diagram-card">
+              <h3>Imagen 6: solicited-node multicast</h3>
+              <p>El workbook lo presenta como el mecanismo mas eficiente que reemplaza el broadcast de IPv4 para resolucion de capa 3 a capa 2.</p>
+              <div class="svg-wrap">
+                <svg viewBox="0 0 760 220" role="img" aria-label="Diagrama de direccion solicited-node multicast">
+                  <rect x="16" y="18" width="728" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
+                  <text x="36" y="52" fill="#8b949e" font-size="14" font-family="Segoe UI">Unicast del host</text>
+                  <text x="36" y="84" fill="#e6edf3" font-size="18" font-family="monospace">2001:DB8:ACAD:10::12AB:34CD</text>
+                  <text x="36" y="118" fill="#8b949e" font-size="14" font-family="Segoe UI">Ultimos 24 bits + prefijo ff02::1:ff00:0/104</text>
+                  <text x="36" y="152" fill="#58a6ff" font-size="20" font-family="monospace">FF02::1:FFAB:34CD</text>
+                  <text x="36" y="183" fill="#8b949e" font-size="13" font-family="Segoe UI">Cada direccion unicast genera automaticamente su propia multicast solicitada.</text>
+                </svg>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ipv6-section" id="ios">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>5. Cisco IOS: el comando que no se puede olvidar</h2>
+            <p>El Excel deja claro que, si el router no enruta ni emite RA, lo primero que se revisa es <code>ipv6 unicast-routing</code>.</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="concept-grid">
+            <article class="concept-card">
+              <h3>Checklist minima</h3>
+              <ul>
+                <li><code>enable</code></li>
+                <li><code>configure terminal</code></li>
+                <li><code>ipv6 unicast-routing</code></li>
+                <li><code>interface g0/0</code></li>
+                <li><code>ipv6 address 2001:DB8:1::1/64</code></li>
+                <li><code>no shutdown</code></li>
+              </ul>
+            </article>
+            <article class="concept-card">
+              <h3>Lectura operativa</h3>
+              <ul>
+                <li>Sin <code>ipv6 unicast-routing</code>, el router no enruta IPv6 globalmente.</li>
+                <li>Sin RA, los hosts no reciben la orientacion necesaria para SLAAC.</li>
+                <li>Si el host solo hace ping local, revisamos primero ese comando.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ipv6-section" id="practice">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>6. Practica intensiva basada en el workbook</h2>
+            <p>La practica se divide en bloques: estructura, prefijos, tipos de direccion, multicast/anycast, SLAAC/RS/RA y Cisco IOS. Al final se genera un reporte exportable a PDF.</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="tool-row">
+            <div class="chip-row">
+              <span class="tool-chip">Estudiante: <strong id="studentChip">—</strong></span>
+              <span class="tool-chip">Grupo: <strong id="groupChip">—</strong></span>
+              <span class="tool-chip" id="practiceStatus">Pendiente de iniciar</span>
+            </div>
+            <div class="toolbar-actions">
+              <button class="btn-tool secondary" id="btnChangeStudent" type="button">Cambiar estudiante</button>
+              <button class="btn-tool secondary" id="btnNewPractice" type="button">Nueva practica</button>
+              <button class="btn-tool" id="btnExportPdf" type="button" disabled>Exportar PDF</button>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <strong id="statModules">0/0</strong>
+              <span>Bloques revisados</span>
+              <div class="small">Cada bloque se corrige por separado.</div>
+            </article>
+            <article class="stat-card">
+              <strong id="statAnswered">0</strong>
+              <span>Respuestas marcadas</span>
+              <div class="small">El modulo exige responder para cerrar cada bloque.</div>
+            </article>
+            <article class="stat-card">
+              <strong id="statCorrect">0</strong>
+              <span>Aciertos</span>
+              <div class="small">Se calculan contra la respuesta esperada del material base.</div>
+            </article>
+            <article class="stat-card">
+              <strong id="scoreValue">0%</strong>
+              <span>Puntaje global</span>
+              <div class="small">Se habilita el PDF cuando todos los bloques fueron revisados.</div>
+            </article>
+          </div>
+
+          <div id="practiceMount"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ipv6-section report-shell" id="reportShell">
+      <div class="report-card">
+        <div class="report-top">
+          <div>
+            <h2 style="font-size:1.15rem;font-weight:800;">Reporte de practica resuelta</h2>
+            <p class="report-note">Este reporte resume cada pregunta, la respuesta marcada por el estudiante, la respuesta correcta y la explicacion pedagogica usada para el repaso final.</p>
+          </div>
+          <div class="report-kpis" id="reportKpis"></div>
+        </div>
+        <div id="reportContent"></div>
+        <p class="print-note">Al pulsar <strong>Exportar PDF</strong>, el navegador abre la impresion y desde ahi se guarda como PDF.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>CCNA 1 — IPv6 Interactivo</span>
+    <span class="footer-author">✍️ Material elaborado por el <strong>Prof. Andres Mena Abarca</strong></span>
+  </footer>
+
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-box">
+      <h2>Iniciar practica de IPv6</h2>
+      <p>Registramos nombre, grupo y fecha para poder generar el resumen final y exportarlo como PDF. Si ya hay progreso guardado, puedes retomarlo.</p>
+
+      <div class="saved-name-row" id="savedStudentRow">
+        <span id="savedStudentLabel"></span>
+        <button class="btn-use-saved" id="btnUseSaved" type="button">Continuar progreso guardado</button>
+      </div>
+
+      <form id="studentForm">
+        <div class="modal-grid">
+          <label class="modal-label" for="inputName">
+            Nombre del estudiante
+            <input class="modal-input" id="inputName" name="name" type="text" required />
+          </label>
+          <label class="modal-label" for="inputGroup">
+            Grupo
+            <input class="modal-input" id="inputGroup" name="group" type="text" required />
+          </label>
+          <label class="modal-label" for="inputDate">
+            Fecha
+            <input class="modal-input" id="inputDate" name="date" type="date" required />
+          </label>
+        </div>
+        <button class="btn-start" type="submit" style="width:100%;margin-top:1.25rem;">Crear nueva practica</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../assets/js/ipv6-practice.js"></script>
+</body>
+</html>
