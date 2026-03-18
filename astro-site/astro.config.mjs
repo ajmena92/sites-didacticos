@@ -4,7 +4,7 @@ import svelte from '@astrojs/svelte';
 
 export default defineConfig({
   output: 'static',
-  site: 'https://andres-mena.github.io',
+  site: 'https://ajmena92.github.io',
   base: '/sites-didacticos',
   integrations: [svelte()],
 });
