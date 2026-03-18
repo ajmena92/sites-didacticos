@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Cisco IOS IPv6 sequence</title>
+  <desc id="desc">Minimal Cisco IOS command sequence for IPv6 with emphasis on ipv6 unicast-routing.</desc>
+  <rect width="960" height="600" rx="28" fill="#0a1220"/>
+  <text x="56" y="72" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Cisco IOS minimal IPv6 sequence</text>
+  <text x="56" y="112" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">The critical command is highlighted in blue</text>
+
+  <rect x="56" y="154" width="848" height="360" rx="22" fill="#050b14" stroke="#1f2a3d"/>
+  <rect x="56" y="154" width="848" height="46" rx="22" fill="#0f172a"/>
+  <circle cx="88" cy="177" r="8" fill="#ff5f56"/>
+  <circle cx="114" cy="177" r="8" fill="#ffbd2e"/>
+  <circle cx="140" cy="177" r="8" fill="#27c93f"/>
+  <text x="180" y="183" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">Cisco IOS</text>
+
+  <g font-family="Consolas, Monaco, monospace" font-size="24">
+    <text x="88" y="252" fill="#7ee787">R1&gt;</text>
+    <text x="160" y="252" fill="#dbeafe">enable</text>
+    <text x="88" y="296" fill="#7ee787">R1#</text>
+    <text x="144" y="296" fill="#dbeafe">configure terminal</text>
+    <text x="88" y="340" fill="#7ee787">R1(config)#</text>
+    <text x="254" y="340" fill="#7dd3fc">ipv6 unicast-routing</text>
+    <text x="88" y="384" fill="#7ee787">R1(config)#</text>
+    <text x="254" y="384" fill="#dbeafe">interface g0/0</text>
+    <text x="88" y="428" fill="#7ee787">R1(config-if)#</text>
+    <text x="304" y="428" fill="#dbeafe">ipv6 address 2001:DB8:1::1/64</text>
+    <text x="88" y="472" fill="#7ee787">R1(config-if)#</text>
+    <text x="304" y="472" fill="#dbeafe">no shutdown</text>
+  </g>
+
+  <rect x="604" y="250" width="248" height="114" rx="18" fill="#102341" stroke="#60a5fa"/>
+  <text x="628" y="290" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Critical step</text>
+  <text x="628" y="324" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="18">Without ipv6 unicast-routing</text>
+  <text x="628" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="18">the router will not forward IPv6 traffic properly.</text>
+</svg>

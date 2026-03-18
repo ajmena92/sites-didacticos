@@ -330,12 +330,53 @@
     .svg-wrap {
       margin-top: .85rem;
       overflow-x: auto;
+      border: 1px solid rgba(88,166,255,.14);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.08), transparent 42%),
+        linear-gradient(180deg, rgba(11,18,32,.9), rgba(7,12,21,.96));
+      padding: .75rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
 
-    svg {
+    svg,
+    .image-card img {
       width: 100%;
       height: auto;
       display: block;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .image-card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .image-card img {
+      background: #0b1220;
+      object-fit: cover;
+      aspect-ratio: 16 / 10;
+    }
+
+    .image-card figcaption {
+      padding: .95rem 1rem 1rem;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.7;
+    }
+
+    .image-card strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: .35rem;
+      font-size: .95rem;
     }
 
     .legend {
@@ -462,17 +503,70 @@
       padding: .08rem .35rem;
     }
 
-    .command-block {
+    .code-panel {
       margin-top: .85rem;
       background: #0b1220;
       border: 1px solid #1f2a3d;
-      border-radius: 12px;
-      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,.22);
+    }
+
+    .code-head {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      padding: .7rem .9rem;
+      border-bottom: 1px solid #1f2a3d;
+      background: linear-gradient(180deg, #111827, #0f172a);
+    }
+
+    .code-dots {
+      display: inline-flex;
+      gap: .35rem;
+    }
+
+    .code-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .code-dots span:nth-child(1) { background: #ff5f56; }
+    .code-dots span:nth-child(2) { background: #ffbd2e; }
+    .code-dots span:nth-child(3) { background: #27c93f; }
+
+    .code-lang {
+      color: #93c5fd;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .code-block {
+      margin: 0;
+      padding: 1rem 1.1rem 1.1rem;
       overflow-x: auto;
       color: #dbeafe;
       font-family: Consolas, Monaco, monospace;
       font-size: .84rem;
       line-height: 1.8;
+      white-space: pre;
+    }
+
+    .code-block code {
+      display: block;
+    }
+
+    .cmd-prompt {
+      color: #7ee787;
+      font-weight: 700;
+    }
+
+    .cmd-comment {
+      color: #94a3b8;
     }
 
     .flash-grid {
@@ -959,6 +1053,10 @@
       .hint-box {
         margin-left: 0;
       }
+
+      .svg-wrap {
+        padding: .5rem;
+      }
     }
 
     @media print {
@@ -1002,6 +1100,7 @@
       <span class="nav-brand">🛰️ CCNA 1 — IPv6</span>
       <div class="nav-pages">
         <a href="#roadmap">Mapa</a>
+        <a href="#imagenes">Imagenes</a>
         <a href="#tipos">Tipos</a>
         <a href="#slaac">SLAAC</a>
         <a href="#practice">Practica</a>
@@ -1022,6 +1121,7 @@
     <span class="author-chip">✍️ Prof. Andres Mena Abarca</span>
     <div class="anchor-row" style="margin-top:1rem">
       <a class="anchor-chip" href="#roadmap">Mapa del tema</a>
+      <a class="anchor-chip" href="#imagenes">Imagenes</a>
       <a class="anchor-chip" href="#representacion">Compresion</a>
       <a class="anchor-chip" href="#asignacion">IANA · RIR · AAAA</a>
       <a class="anchor-chip" href="#tipos">Todos los tipos IPv6</a>
@@ -1052,17 +1152,6 @@
               <button class="btn-tool secondary" id="btnFontUp" type="button">A+</button>
               <button class="btn-tool secondary" id="btnStopAudio" type="button">Detener audio</button>
               <button class="btn-tool secondary" type="button" data-speak-target="#heroIntro">Escuchar portada</button>
-            </div>
-          </div>
-
-          <div>
-            <h3>Estado actual</h3>
-            <div class="tool-status" aria-live="polite">
-              <span class="status-chip" id="contrastChip">Contraste normal</span>
-              <span class="status-chip" id="easyChip">Modo facil oculto</span>
-              <span class="status-chip" id="modeChip">Vista completa</span>
-              <span class="status-chip" id="fontChip">Escala 100%</span>
-              <span class="status-chip" id="audioChip">Audio detenido</span>
             </div>
           </div>
         </div>
@@ -1099,31 +1188,56 @@
         Si solo memorizas tres ideas hoy: IPv6 usa 8 hextetos, la LAN recomendada es /64 y
         <code>ipv6 unicast-routing</code> es el comando crítico en Cisco IOS.
       </div>
+    </section>
 
-      <div class="micro-grid" style="margin-top:1rem">
-        <details class="micro-card" open>
-          <summary>Ruta de aprendizaje en microlecciones</summary>
-          <div class="micro-body">
-            1. Leer una dirección IPv6. 2. Abreviar y expandir sin errores.
-            3. Separar prefijo e ID de interfaz. 4. Clasificar GUA, LLA, ULA y direcciones especiales.
-            5. Entender multicast, anycast y solicited-node. 6. Relacionar RS, RA y SLAAC.
-            7. Aplicar el mínimo viable de Cisco IOS. 8. Resolver escenarios tipo examen.
+    <section class="ipv6-section" id="imagenes">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <h2>Biblioteca visual en imagenes</h2>
+            <p>Estas laminas ya no dependen del render del SVG embebido. Si algun diagrama te cuesta ver, usa esta galeria de imagenes directas del tema.</p>
           </div>
-        </details>
-        <details class="micro-card">
-          <summary>Qué mejora respecto al módulo anterior</summary>
-          <div class="micro-body">
-            Más práctica, más tipos de IPv6, más diagramas, glosario, repaso rápido,
-            DUA real, reporte final detallado y exportación a PDF para práctica resuelta.
+          <button class="btn-tool secondary" type="button" data-speak-target="#imagenes">Escuchar sección</button>
+        </div>
+        <div class="section-body">
+          <div class="image-grid">
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" />
+              <figcaption>
+                <strong>Lamina 1: anatomia IPv6</strong>
+                Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen.
+              </figcaption>
+            </figure>
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" />
+              <figcaption>
+                <strong>Lamina 2: mapa de tipos</strong>
+                GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos.
+              </figcaption>
+            </figure>
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" />
+              <figcaption>
+                <strong>Lamina 3: solicited-node</strong>
+                La transformacion desde una unicast hacia <code>FF02::1:FFxx:xxxx</code>.
+              </figcaption>
+            </figure>
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" />
+              <figcaption>
+                <strong>Lamina 4: flujo SLAAC</strong>
+                Host, router, RS, RA y los datos que permiten formar la GUA.
+              </figcaption>
+            </figure>
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/ios-sequence.svg" alt="Secuencia minima de comandos Cisco IOS para IPv6" loading="lazy" />
+              <figcaption>
+                <strong>Lamina 5: Cisco IOS</strong>
+                Secuencia minima y recordatorio del comando critico <code>ipv6 unicast-routing</code>.
+              </figcaption>
+            </figure>
           </div>
-        </details>
-        <details class="micro-card">
-          <summary>Cómo estudiar este sitio</summary>
-          <div class="micro-body">
-            Recorre teoría con audio opcional, usa modo fácil cuando quieras una versión más guiada,
-            pasa al repaso rápido y luego cierra todos los bloques de práctica. Al final exporta tu PDF.
-          </div>
-        </details>
+        </div>
       </div>
     </section>
 
@@ -1345,11 +1459,18 @@
             <article class="lab-card">
               <h3>Imagen 7: consulta DNS AAAA</h3>
               <p>El material sugiere usar <code>nslookup</code> con dominios públicos para practicar IPv6 real.</p>
-              <div class="command-block">nslookup
+              <div class="code-panel" aria-label="Secuencia de nslookup para registros AAAA">
+                <div class="code-head">
+                  <div class="code-dots"><span></span><span></span><span></span></div>
+                  <span class="code-lang">PowerShell / nslookup</span>
+                </div>
+                <pre class="code-block"><code><span class="cmd-comment"># Consulta IPv6 publica por registro AAAA</span>
+nslookup
 set type=AAAA
 cisco.com
 netflix.com
-facebook.com</div>
+facebook.com</code></pre>
+              </div>
               <p>La idea no es memorizar los resultados exactos, sino reconocer que IPv6 público se publica en registros AAAA.</p>
             </article>
           </div>
@@ -1756,12 +1877,18 @@ facebook.com</div>
           <div class="lab-grid">
             <article class="lab-card">
               <h3>Checklist mínima</h3>
-              <div class="command-block">enable
-configure terminal
-ipv6 unicast-routing
-interface g0/0
-ipv6 address 2001:DB8:1::1/64
-no shutdown</div>
+              <div class="code-panel" aria-label="Secuencia minima Cisco IOS para IPv6">
+                <div class="code-head">
+                  <div class="code-dots"><span></span><span></span><span></span></div>
+                  <span class="code-lang">Cisco IOS</span>
+                </div>
+                <pre class="code-block"><code><span class="cmd-prompt">R1&gt;</span> enable
+<span class="cmd-prompt">R1#</span> configure terminal
+<span class="cmd-prompt">R1(config)#</span> ipv6 unicast-routing
+<span class="cmd-prompt">R1(config)#</span> interface g0/0
+<span class="cmd-prompt">R1(config-if)#</span> ipv6 address 2001:DB8:1::1/64
+<span class="cmd-prompt">R1(config-if)#</span> no shutdown</code></pre>
+              </div>
             </article>
             <article class="lab-card">
               <h3>Qué revisar cuando algo falla</h3>

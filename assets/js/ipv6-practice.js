@@ -1003,11 +1003,19 @@
     setPressed(els.btnEasyMode, prefs.easyMode);
     setPressed(els.btnPracticeMode, prefs.practiceOnly);
 
-    els.contrastChip.textContent = prefs.contrast ? 'Contraste alto activo' : 'Contraste normal';
-    els.easyChip.textContent = prefs.easyMode ? 'Modo facil activo' : 'Modo facil oculto';
-    els.modeChip.textContent = prefs.practiceOnly ? 'Solo practica' : 'Vista completa';
-    els.fontChip.textContent = 'Escala ' + Math.round(prefs.fontScale * 100) + '%';
-    if (!currentAudio) {
+    if (els.contrastChip) {
+      els.contrastChip.textContent = prefs.contrast ? 'Contraste alto activo' : 'Contraste normal';
+    }
+    if (els.easyChip) {
+      els.easyChip.textContent = prefs.easyMode ? 'Modo facil activo' : 'Modo facil oculto';
+    }
+    if (els.modeChip) {
+      els.modeChip.textContent = prefs.practiceOnly ? 'Solo practica' : 'Vista completa';
+    }
+    if (els.fontChip) {
+      els.fontChip.textContent = 'Escala ' + Math.round(prefs.fontScale * 100) + '%';
+    }
+    if (els.audioChip && !currentAudio) {
       els.audioChip.textContent = 'Audio detenido';
     }
   }
@@ -1424,7 +1432,7 @@
     stopSpeaking();
 
     if (!('speechSynthesis' in window)) {
-      els.audioChip.textContent = 'Audio no disponible';
+      if (els.audioChip) els.audioChip.textContent = 'Audio no disponible';
       return;
     }
 
@@ -1433,14 +1441,14 @@
     currentAudio.rate = 0.95;
     currentAudio.onend = function () {
       currentAudio = null;
-      els.audioChip.textContent = 'Audio detenido';
+      if (els.audioChip) els.audioChip.textContent = 'Audio detenido';
     };
     currentAudio.onerror = function () {
       currentAudio = null;
-      els.audioChip.textContent = 'Audio con error';
+      if (els.audioChip) els.audioChip.textContent = 'Audio con error';
     };
 
-    els.audioChip.textContent = 'Leyendo seccion';
+    if (els.audioChip) els.audioChip.textContent = 'Leyendo seccion';
     window.speechSynthesis.speak(currentAudio);
   }
 
@@ -1449,7 +1457,7 @@
       window.speechSynthesis.cancel();
     }
     currentAudio = null;
-    els.audioChip.textContent = 'Audio detenido';
+    if (els.audioChip) els.audioChip.textContent = 'Audio detenido';
   }
 
   function applyPrefs() {
@@ -1460,6 +1468,7 @@
   }
 
   function setPressed(button, active) {
+    if (!button) return;
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
     button.classList.toggle('is-active', active);
   }

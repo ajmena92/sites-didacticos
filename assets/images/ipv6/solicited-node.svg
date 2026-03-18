@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Solicited node multicast</title>
+  <desc id="desc">Construction of a solicited node multicast address from a unicast IPv6 address.</desc>
+  <rect width="960" height="600" rx="28" fill="#08111d"/>
+  <text x="56" y="72" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Solicited-node multicast</text>
+  <text x="56" y="112" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Derive the multicast target from the last 24 bits of the unicast address</text>
+
+  <rect x="56" y="164" width="848" height="116" rx="20" fill="#0b1220" stroke="#243244"/>
+  <text x="84" y="210" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Host unicast address</text>
+  <text x="84" y="248" fill="#e2e8f0" font-family="Consolas, Monaco, monospace" font-size="28">2001:DB8:ACAD:10::12AB:34CD</text>
+  <text x="84" y="278" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Last 24 bits used: AB:34CD</text>
+
+  <path d="M 480 306 L 480 352" stroke="#f59e0b" stroke-width="6"/>
+  <polygon points="480,370 466,346 494,346" fill="#f59e0b"/>
+
+  <rect x="56" y="394" width="848" height="116" rx="20" fill="#111b33" stroke="#60a5fa"/>
+  <text x="84" y="440" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Solicited-node prefix + last 24 bits</text>
+  <text x="84" y="478" fill="#f8fafc" font-family="Consolas, Monaco, monospace" font-size="30">FF02::1:FFAB:34CD</text>
+  <text x="84" y="508" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="18">Used by Neighbor Discovery instead of IPv4 broadcast behavior</text>
+</svg>
