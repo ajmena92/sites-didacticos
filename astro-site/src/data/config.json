@@ -23,8 +23,8 @@
       "titulo": "Tarea 1 — Comandos Básicos Switch",
       "grupos_habilitados": ["10-1", "10-2", "11-1"],
       "activa": true,
-      "fecha_apertura": "2026-03-01T07:00:00",
-      "fecha_cierre": "2026-03-28T23:59:00",
+      "fecha_apertura": "2026-03-18T00:00:00",
+      "fecha_cierre": "2026-03-26T07:00:00",
       "puntos": 40,
       "google_form_id": "PENDIENTE_FASE2",
       "parametros": {
