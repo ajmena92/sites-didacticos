@@ -579,16 +579,114 @@
 
     .image-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.15rem;
+    }
+
+    .gallery-head {
+      align-items: flex-start;
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.16), transparent 34%),
+        linear-gradient(90deg, rgba(27,161,226,.16), rgba(255,255,255,.02));
+    }
+
+    .gallery-head-copy {
+      min-width: 0;
+      max-width: 920px;
+    }
+
+    .gallery-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      margin-bottom: .55rem;
+      padding: .34rem .74rem;
+      border-radius: 999px;
+      background: rgba(88,166,255,.12);
+      border: 1px solid rgba(88,166,255,.24);
+      color: #b9dbff;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .gallery-stats,
+    .gallery-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-top: .85rem;
+    }
+
+    .gallery-stat,
+    .gallery-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .42rem;
+      padding: .45rem .8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.2;
+    }
+
+    .gallery-stat strong {
+      color: var(--text);
+      font-size: .95rem;
+    }
+
+    .gallery-tag {
+      background: rgba(15,23,42,.72);
+      color: #dbeafe;
+    }
+
+    .gallery-banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr);
       gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem 1.05rem;
+      border-radius: 16px;
+      border: 1px solid rgba(88,166,255,.18);
+      background:
+        radial-gradient(circle at top right, rgba(88,166,255,.1), transparent 35%),
+        linear-gradient(135deg, rgba(88,166,255,.08), rgba(255,255,255,.02));
+    }
+
+    .gallery-banner strong {
+      display: block;
+      color: var(--text);
+      font-size: .95rem;
+      margin-bottom: .3rem;
+    }
+
+    .gallery-banner p,
+    .gallery-banner span {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.7;
     }
 
     .image-card {
       position: relative;
-      background: rgba(255,255,255,.02);
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.08), transparent 42%),
+        rgba(255,255,255,.02);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .image-card.featured {
+      border-color: rgba(88,166,255,.34);
+      box-shadow: 0 18px 36px rgba(0,0,0,.18);
     }
 
     .image-card::after {
@@ -626,6 +724,12 @@
       filter: saturate(1.06);
     }
 
+    .image-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(88,166,255,.34);
+      box-shadow: 0 18px 36px rgba(0,0,0,.18);
+    }
+
     .image-card:focus-within {
       border-color: rgba(88,166,255,.42);
       box-shadow: 0 0 0 5px rgba(88,166,255,.12);
@@ -637,6 +741,9 @@
     }
 
     .image-card figcaption {
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
       padding: .95rem 1rem 1rem;
       color: var(--muted);
       font-size: .88rem;
@@ -644,11 +751,48 @@
       border-top: 1px solid var(--border);
     }
 
+    .image-card figcaption code {
+      font-size: .84rem;
+    }
+
+    .image-label {
+      align-self: flex-start;
+      padding: .22rem .58rem;
+      border-radius: 999px;
+      background: rgba(88,166,255,.1);
+      border: 1px solid rgba(88,166,255,.22);
+      color: #b9dbff;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
     .image-card strong {
       display: block;
       color: var(--text);
-      margin-bottom: .35rem;
       font-size: .95rem;
+    }
+
+    .image-copy {
+      color: var(--muted);
+    }
+
+    .image-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: .55rem;
+      margin-top: auto;
+      padding-top: .2rem;
+      color: #9fb0c4;
+      font-size: .78rem;
+    }
+
+    .image-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
     }
 
     .gallery-note {
@@ -698,6 +842,16 @@
     .legend .lg-prefix { background: rgba(27,161,226,.35); border: 1px solid var(--ccna); }
     .legend .lg-id { background: rgba(245,166,35,.35); border: 1px solid var(--linux); }
     .legend .lg-green { background: rgba(63,185,80,.35); border: 1px solid var(--green); }
+
+    @media (min-width: 960px) {
+      .image-card.featured {
+        grid-column: span 2;
+      }
+
+      .image-card.featured img {
+        max-height: 390px;
+      }
+    }
     .legend .lg-red { background: rgba(248,81,73,.35); border: 1px solid var(--red); }
 
     .type-card {
@@ -1586,13 +1740,12 @@
       <span class="nav-brand">🛰️ CCNA 1 — IPv6</span>
       <div class="nav-pages">
         <a href="#roadmap">Mapa</a>
-        <a href="#imagenes">Imagenes</a>
+        <a href="#imagenes">Galeria</a>
+        <a href="#lectura">Lectura</a>
         <a href="#tipos">Tipos</a>
         <a href="#slaac">SLAAC</a>
         <a href="#practice">Practica</a>
       </div>
-      <div class="nav-divider"></div>
-      <a class="back-to-catalog" href="index.html">← CCNA 1</a>
     </nav>
   </header>
 
@@ -1605,70 +1758,67 @@
         </div>
         <h1 class="hero-title">🛰️ IPv6 Interactivo</h1>
         <p class="hero-sub">
-          En este módulo trabajamos IPv6 como lo haríamos en clase: primero comprendemos la lógica
-          de la dirección, luego la simplificamos, la clasificamos y finalmente la aplicamos en
-          escenarios reales. A partir de <strong>IPV6.xlsx</strong> estudiamos representación,
-          compresión, <code>/64</code>, asignación global, GUA, LLA, ULA, multicast, anycast,
-          RS, RA, SLAAC y configuración base en Cisco IOS, siempre con apoyo visual y mucha práctica.
+          En este módulo dejamos una ruta más limpia y directa: aprendemos a leer direcciones IPv6,
+          a comprimirlas, a clasificar sus tipos, a entender SLAAC y a llevarlo a Cisco IOS sin
+          rodeos. La teoría queda resumida, la galería concentra lo visual y la práctica sigue siendo
+          el centro del trabajo.
         </p>
         <div class="hero-meta-row">
-          <span class="hero-meta-chip"><strong>Visual</strong> láminas ampliables</span>
-          <span class="hero-meta-chip"><strong>Guiado</strong> teoría + repaso + práctica</span>
+          <span class="hero-meta-chip"><strong>Visual</strong> galeria maestra con lightbox</span>
+          <span class="hero-meta-chip"><strong>Guiado</strong> teoría breve + repaso + práctica</span>
           <span class="hero-meta-chip"><strong>Privado</strong> acceso por enlace directo</span>
           <span class="author-chip">✍️ Prof. Andres Mena Abarca</span>
         </div>
         <div class="anchor-row" style="margin-top:1rem">
           <a class="anchor-chip" href="#roadmap">Mapa del tema</a>
-          <a class="anchor-chip" href="#imagenes">Imagenes</a>
-          <a class="anchor-chip" href="#representacion">Compresion</a>
-          <a class="anchor-chip" href="#asignacion">IANA · RIR · AAAA</a>
-          <a class="anchor-chip" href="#tipos">Todos los tipos IPv6</a>
-          <a class="anchor-chip" href="#multicast">Multicast · Anycast</a>
+          <a class="anchor-chip" href="#imagenes">Galeria visual</a>
+          <a class="anchor-chip" href="#lectura">Lectura de direcciones</a>
+          <a class="anchor-chip" href="#tipos">Clasificacion IPv6</a>
           <a class="anchor-chip" href="#slaac">SLAAC · RS · RA</a>
           <a class="anchor-chip" href="#ios">Cisco IOS</a>
-          <a class="anchor-chip" href="#memory">Memorización</a>
+          <a class="anchor-chip" href="#memory">Resumen final</a>
           <a class="anchor-chip" href="#quick-review">Repaso rápido</a>
           <a class="anchor-chip" href="#practice">Practica intensiva</a>
         </div>
       </div>
       <aside class="hero-panel" aria-label="Resumen del modulo IPv6">
-        <h2>Lo que vamos a dominar</h2>
-        <p>La portada ya no solo presenta el tema; ahora nos orienta sobre el recorrido completo y el foco práctico del módulo.</p>
+        <h2>Ruta compacta</h2>
+        <p>La página ahora separa mejor qué leemos, qué clasificamos y qué practicamos.</p>
         <div class="hero-list">
           <div class="hero-list-item">
             <div class="hero-list-num">01</div>
             <div>
-              <strong>Lectura y compresión</strong>
-              <span>Aprendemos a expandir, abreviar y detectar direcciones mal escritas sin memorizar reglas aisladas.</span>
+              <strong>Lectura</strong>
+              <span>128 bits, 8 hextetos, compresión correcta, prefijo e ID de interfaz.</span>
             </div>
           </div>
           <div class="hero-list-item">
             <div class="hero-list-num">02</div>
             <div>
-              <strong>Clasificación real</strong>
-              <span>Diferenciamos GUA, LLA, ULA, multicast, nodo solicitado y anycast con criterio de red.</span>
+              <strong>Clasificación</strong>
+              <span>GUA, LLA, ULA, multicast, nodo solicitado y anycast sin mezclar conceptos.</span>
             </div>
           </div>
           <div class="hero-list-item">
             <div class="hero-list-num">03</div>
             <div>
-              <strong>Aplicación operativa</strong>
-              <span>Relacionamos RS, RA, SLAAC y el mínimo viable de Cisco IOS para llevar la teoría a práctica.</span>
+              <strong>Operación</strong>
+              <span>RS, RA, SLAAC y la secuencia mínima en Cisco IOS para pasar a práctica.</span>
             </div>
           </div>
         </div>
         <div class="hero-stats">
           <div class="hero-stat">
+            <strong>7</strong>
+            <span>laminas clave en la galeria</span>
+          </div>
+          <div class="hero-stat">
             <strong>9</strong>
-            <span>bloques de práctica por tema</span>
+            <span>bloques de práctica</span>
           </div>
           <div class="hero-stat">
             <strong>56</strong>
-            <span>preguntas con retroalimentación</span>
-          </div>
-          <div class="hero-stat">
-            <strong>5</strong>
-            <span>láminas en galería con zoom</span>
+            <span>preguntas con retroalimentacion</span>
           </div>
         </div>
       </aside>
@@ -1698,130 +1848,143 @@
         </div>
       </div>
 
-      <div class="overview-grid" style="margin-top:1rem">
-        <article class="overview-card">
-          <strong>128 bits</strong>
-          <span>IPv6 se trabaja en 8 hextetos, 32 simbolos hexadecimales y prefijos de /0 a /128.</span>
-        </article>
-        <article class="overview-card">
-          <strong>/64</strong>
-          <span>La LAN recomendada por el material usa /64 por su relación directa con SLAAC.</span>
-        </article>
-        <article class="overview-card">
-          <strong>15 recursos visuales</strong>
-          <span>El tema ahora incluye 14 SVG pedagógicos y una lámina CLI para reforzar práctica real.</span>
-        </article>
-        <article class="overview-card">
-          <strong>9 bloques</strong>
-          <span>La práctica creció a 9 bloques con preguntas de selección, texto, múltiple y orden.</span>
-        </article>
-      </div>
-
-      <div class="roadmap-progress" id="themeProgressMount" aria-live="polite">
-        <article class="roadmap-chip">
-          <strong>Progreso por tema</strong>
-          <span>Inicia una práctica para ver el avance detallado de cada bloque.</span>
-        </article>
-      </div>
-
-      <div class="concept-grid" style="margin-top:1rem">
-        <article class="concept-card">
-          <h3>Objetivos de aprendizaje</h3>
-          <ul>
-            <li>Expandir y abreviar direcciones IPv6 sin perder la estructura de 8 hextetos.</li>
-            <li>Distinguir prefijo de red e identificador de interfaz en escenarios con <code>/64</code>.</li>
-            <li>Clasificar GUA, LLA, ULA, multicast, nodo solicitado y anycast con criterio de red.</li>
-            <li>Relacionar RS, RA, SLAAC y la configuración mínima de Cisco IOS con el comportamiento real del enlace.</li>
-          </ul>
-        </article>
-        <article class="concept-card">
-          <h3>Qué memorizamos y qué razonamos</h3>
-          <ul>
-            <li>Memorizamos rangos, grupos conocidos y el comando <code>ipv6 unicast-routing</code>.</li>
-            <li>Razonamos cuándo una dirección es válida, qué tipo tiene y por qué un host forma cierta multicast solicitada.</li>
-            <li>La meta no es repetir listas, sino reconocer patrones y aplicarlos en práctica.</li>
-          </ul>
-        </article>
-      </div>
-
       <article class="lab-card" style="margin-top:1rem">
-        <h3>Ruta de dificultad</h3>
-        <p>Podemos recorrer el módulo por capas para no mezclar memorización básica con razonamiento de examen.</p>
+        <h3>Objetivos del módulo</h3>
         <div class="difficulty-track">
           <div class="difficulty-step">
-            <strong>Nivel 1: lectura</strong>
-            <span>Formato, hextetos, expansión y compresión.</span>
+            <strong>1. Leer</strong>
+            <span>Entender 128 bits, hextetos, compresión y prefijos.</span>
           </div>
           <div class="difficulty-step">
-            <strong>Nivel 2: clasificación</strong>
-            <span>Tipos de dirección, alcance y prefijos.</span>
+            <strong>2. Clasificar</strong>
+            <span>Distinguir tipos IPv6 y reconocer qué grupos sí conviene memorizar.</span>
           </div>
           <div class="difficulty-step">
-            <strong>Nivel 3: operación</strong>
-            <span>RS, RA, SLAAC, nodo solicitado y práctica IOS.</span>
-          </div>
-          <div class="difficulty-step">
-            <strong>Nivel 4: examen</strong>
-            <span>Escenarios combinados, distractores y errores frecuentes.</span>
+            <strong>3. Aplicar</strong>
+            <span>Relacionar RS, RA, SLAAC y Cisco IOS con el trabajo real de clase.</span>
           </div>
         </div>
       </article>
-
-      <div class="dua-summary">
-        <strong>Resumen fácil</strong>
-        Si solo memorizas tres ideas hoy: IPv6 usa 8 hextetos, la LAN recomendada es /64 y
-        <code>ipv6 unicast-routing</code> es el comando crítico en Cisco IOS.
-      </div>
     </section>
 
     <section class="ipv6-section" id="imagenes">
       <div class="section-shell">
-        <div class="section-head">
-          <div>
-            <h2>Biblioteca visual en imagenes</h2>
-            <p>Estas laminas ya no dependen del render del SVG embebido. Si algun diagrama te cuesta ver, usa esta galeria de imagenes directas del tema.</p>
+        <div class="section-head gallery-head">
+          <div class="gallery-head-copy">
+            <span class="gallery-kicker">Biblioteca del tema</span>
+            <h2>Biblioteca visual maestra</h2>
+            <p>Todo lo visual del módulo se concentra aquí para evitar repetir diagramas en cada sección. Cada lámina se abre en grande con lightbox y funciona como apoyo directo para teoría, repaso y práctica.</p>
+            <div class="gallery-stats">
+              <span class="gallery-stat"><strong>7</strong> laminas esenciales</span>
+              <span class="gallery-stat"><strong>1</strong> biblioteca central</span>
+              <span class="gallery-stat"><strong>100%</strong> ampliables</span>
+            </div>
+            <div class="gallery-tags">
+              <span class="gallery-tag">Lectura</span>
+              <span class="gallery-tag">Clasificacion</span>
+              <span class="gallery-tag">Vecindad</span>
+              <span class="gallery-tag">Cisco IOS</span>
+            </div>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#imagenes">Escuchar sección</button>
         </div>
         <div class="section-body">
+          <div class="gallery-banner">
+            <div>
+              <strong>Cómo usar esta biblioteca</strong>
+              <p>Revisa una lámina antes de cada bloque teórico o cuando una pregunta de práctica te pida recordar un patrón, un rango o una secuencia.</p>
+            </div>
+            <div>
+              <strong>Criterio visual</strong>
+              <span>Cada tarjeta resume una idea grande y evita texto excesivo dentro de la imagen para mantener la lectura limpia.</span>
+            </div>
+          </div>
           <p class="gallery-note">
-            Toca cualquier lámina para verla en grande. Todas las imágenes de esta galería fueron
-            normalizadas a español y ajustadas para evitar recortes o solapes de texto.
+            Usa esta galería como referencia rápida mientras estudias o resuelves la práctica. Las láminas fueron unificadas en español y ajustadas para evitar recortes o solapes.
           </p>
           <div class="image-grid">
-            <figure class="image-card">
+            <figure class="image-card featured">
               <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 1: anatomia IPv6" data-image-caption="Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen." />
               <figcaption>
+                <span class="image-label">Lectura base</span>
                 <strong>Lamina 1: anatomia IPv6</strong>
-                Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen.
+                <span class="image-copy">Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">Base del tema</span>
+                  <span class="image-meta">Abrir en grande</span>
+                </div>
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 2: mapa de tipos" data-image-caption="GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos." />
+              <img src="../../assets/images/ipv6/compression-guide.svg" alt="Guia visual de compresion correcta e incorrecta en IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 2: compresion correcta" data-image-caption="Reglas de compresion, una direccion valida y un error tipico con doble dos puntos." />
               <figcaption>
-                <strong>Lamina 2: mapa de tipos</strong>
-                GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos.
+                <span class="image-label">Compresion</span>
+                <strong>Lamina 2: compresion correcta</strong>
+                <span class="image-copy">Reglas de compresion, una direccion valida y el error tipico con <code>::</code>.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">Error comun</span>
+                  <span class="image-meta">Reglas clave</span>
+                </div>
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 3: solicited-node" data-image-caption="La transformacion desde una unicast hacia FF02::1:FFxx:xxxx." />
+              <img src="../../assets/images/ipv6/prefix-allocation.svg" alt="Lamina de prefijo 64, asignacion global y registro AAAA" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 3: prefijos y asignacion" data-image-caption="Relacion entre /64, camino IANA a operador y el papel del registro AAAA." />
               <figcaption>
-                <strong>Lamina 3: solicited-node</strong>
-                La transformacion desde una unicast hacia <code>FF02::1:FFxx:xxxx</code>.
+                <span class="image-label">Prefijos</span>
+                <strong>Lamina 3: prefijos y asignacion</strong>
+                <span class="image-copy"><code>/64</code>, ruta IANA a operador y el papel del registro <code>AAAA</code>.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">Red e interfaz</span>
+                  <span class="image-meta">Asignacion global</span>
+                </div>
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 4: flujo SLAAC" data-image-caption="Equipo, router, RS, RA y los datos que permiten formar la GUA." />
+              <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 4: mapa de tipos" data-image-caption="GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos." />
               <figcaption>
-                <strong>Lamina 4: flujo SLAAC</strong>
-                Equipo, router, RS, RA y los datos que permiten formar la GUA.
+                <span class="image-label">Clasificacion</span>
+                <strong>Lamina 4: mapa de tipos</strong>
+                <span class="image-copy">GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">Tipos IPv6</span>
+                  <span class="image-meta">Rangos utiles</span>
+                </div>
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/ios-sequence.svg" alt="Secuencia minima de comandos Cisco IOS para IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 5: Cisco IOS" data-image-caption="Secuencia minima y recordatorio del comando critico ipv6 unicast-routing." />
+              <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 5: multicast y nodo solicitado" data-image-caption="Construccion de la multicast de nodo solicitado y su papel en la vecindad IPv6." />
               <figcaption>
-                <strong>Lamina 5: Cisco IOS</strong>
-                Secuencia minima y recordatorio del comando critico <code>ipv6 unicast-routing</code>.
+                <span class="image-label">Vecindad</span>
+                <strong>Lamina 5: multicast y nodo solicitado</strong>
+                <span class="image-copy">La transformacion desde una unicast hacia <code>FF02::1:FFxx:xxxx</code>.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">NDP</span>
+                  <span class="image-meta">Nodo solicitado</span>
+                </div>
+              </figcaption>
+            </figure>
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 6: flujo SLAAC" data-image-caption="Equipo, router, RS, RA y los datos que permiten formar la GUA." />
+              <figcaption>
+                <span class="image-label">Autoconfiguracion</span>
+                <strong>Lamina 6: flujo SLAAC</strong>
+                <span class="image-copy">Equipo, router, RS, RA y los datos que permiten formar la GUA.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">RS y RA</span>
+                  <span class="image-meta">SLAAC</span>
+                </div>
+              </figcaption>
+            </figure>
+            <figure class="image-card">
+              <img src="../../assets/images/ipv6/ios-sequence.svg" alt="Secuencia minima de comandos Cisco IOS para IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 7: Cisco IOS" data-image-caption="Secuencia minima y recordatorio del comando critico ipv6 unicast-routing." />
+              <figcaption>
+                <span class="image-label">Operacion</span>
+                <strong>Lamina 7: Cisco IOS</strong>
+                <span class="image-copy">Secuencia minima y recordatorio del comando critico <code>ipv6 unicast-routing</code>.</span>
+                <div class="image-meta-row">
+                  <span class="image-meta">Router</span>
+                  <span class="image-meta">Checklist minima</span>
+                </div>
               </figcaption>
             </figure>
           </div>
@@ -1829,143 +1992,58 @@
       </div>
     </section>
 
-    <section class="ipv6-section" id="fundamentos">
+    <section class="ipv6-section" id="lectura">
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>1. Fundamentos: de IPv4 a IPv6</h2>
-            <p>El workbook empieza comparando 32 bits frente a 128 bits y deja claro que antes de configurar, primero debemos saber leer bien la dirección.</p>
+            <h2>1. Lectura de direcciones IPv6</h2>
+            <p>Este bloque concentra lo esencial para leer, expandir y abreviar direcciones sin repartir la misma teoría en tres secciones distintas.</p>
           </div>
-          <button class="btn-tool secondary" type="button" data-speak-target="#fundamentos">Escuchar sección</button>
+          <button class="btn-tool secondary" type="button" data-speak-target="#lectura">Escuchar sección</button>
         </div>
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            IPv4 tiene 32 bits. IPv6 tiene 128 bits. Una dirección IPv6 completa tiene 8 hextetos y 32 símbolos hexadecimales.
+            IPv6 usa 128 bits, 8 hextetos y 32 símbolos hexadecimales. En una LAN típica, <code>/64</code> separa 64 bits de red y 64 bits de interfaz.
           </div>
 
-          <div class="concept-grid">
-            <article class="concept-card">
-              <h3>Idea central</h3>
-              <ul>
-                <li>IPv4 se apoya en NAT y ya no escala bien para el crecimiento actual.</li>
-                <li>IPv6 amplía el espacio de direcciones y normaliza el uso de prefijos y autoconfiguración.</li>
-                <li>El material insiste en que el estudiante domine escritura, clasificación y lógica de red.</li>
-              </ul>
+          <div class="overview-grid">
+            <article class="overview-card">
+              <strong>128 bits</strong>
+              <span>La dirección completa siempre tiene 8 hextetos y cada hexteto representa 16 bits.</span>
             </article>
-            <article class="concept-card">
-              <h3>Reglas mínimas</h3>
-              <ul>
-                <li><span class="keyword">1 hexteto = 16 bits</span>.</li>
-                <li><span class="keyword">8 hextetos = 128 bits</span>.</li>
-                <li>Los grupos se separan con <code>:</code>.</li>
-                <li>La longitud de prefijo se expresa con <code>/n</code>.</li>
-              </ul>
+            <article class="overview-card">
+              <strong>Compresión</strong>
+              <span>Quitamos ceros a la izquierda y solo usamos <code>::</code> una vez por dirección.</span>
             </article>
-          </div>
-
-          <div class="diagram-grid" style="margin-top:1rem">
-            <article class="diagram-card">
-              <h3>Imagen 1: anatomía de una dirección IPv6</h3>
-              <p>Un solo diagrama para ubicar hextetos, prefijo y porción de interfaz.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 190" role="img" aria-label="Anatomia de una direccion IPv6">
-                  <rect x="10" y="14" width="740" height="160" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <text x="30" y="40" fill="#8b949e" font-size="14" font-family="Segoe UI">2001 : ACAD : CAFE : 0001 : 0000 : 0000 : 00AB : 10FD /64</text>
-                  <g font-family="monospace" font-size="16">
-                    <rect x="28" y="60" width="84" height="42" rx="10" fill="rgba(27,161,226,.22)" stroke="#1ba1e2" />
-                    <rect x="118" y="60" width="84" height="42" rx="10" fill="rgba(27,161,226,.22)" stroke="#1ba1e2" />
-                    <rect x="208" y="60" width="84" height="42" rx="10" fill="rgba(27,161,226,.22)" stroke="#1ba1e2" />
-                    <rect x="298" y="60" width="84" height="42" rx="10" fill="rgba(27,161,226,.22)" stroke="#1ba1e2" />
-                    <rect x="388" y="60" width="84" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
-                    <rect x="478" y="60" width="84" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
-                    <rect x="568" y="60" width="84" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
-                    <rect x="658" y="60" width="70" height="42" rx="10" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
-                    <text x="49" y="87" fill="#e6edf3">2001</text>
-                    <text x="139" y="87" fill="#e6edf3">ACAD</text>
-                    <text x="229" y="87" fill="#e6edf3">CAFE</text>
-                    <text x="319" y="87" fill="#e6edf3">0001</text>
-                    <text x="409" y="87" fill="#e6edf3">0000</text>
-                    <text x="499" y="87" fill="#e6edf3">0000</text>
-                    <text x="589" y="87" fill="#e6edf3">00AB</text>
-                    <text x="675" y="87" fill="#e6edf3">10FD</text>
-                  </g>
-                  <line x1="28" y1="122" x2="382" y2="122" stroke="#1ba1e2" stroke-width="3" />
-                  <line x1="388" y1="122" x2="728" y2="122" stroke="#f5a623" stroke-width="3" />
-                  <text x="120" y="145" fill="#1ba1e2" font-size="14" font-family="Segoe UI" font-weight="700">Prefijo de red</text>
-                  <text x="518" y="145" fill="#f5a623" font-size="14" font-family="Segoe UI" font-weight="700">ID de interfaz</text>
-                </svg>
-              </div>
-              <div class="legend">
-                <span><i class="lg-prefix"></i> Prefijo</span>
-                <span><i class="lg-id"></i> ID de interfaz</span>
-              </div>
+            <article class="overview-card">
+              <strong>/64</strong>
+              <span>Es el prefijo clave para SLAAC porque deja otros 64 bits para el ID de interfaz.</span>
             </article>
-
-            <article class="diagram-card">
-              <h3>Imagen 2: capacidad relativa IPv4 vs IPv6</h3>
-              <p>La diferencia conceptual se vuelve más visible con una escala simple.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 180" role="img" aria-label="Comparacion visual IPv4 e IPv6">
-                  <rect x="24" y="22" width="712" height="134" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <text x="44" y="52" fill="#e6edf3" font-size="18" font-family="Segoe UI" font-weight="700">IPv4 frente a IPv6</text>
-                  <text x="44" y="78" fill="#8b949e" font-size="14" font-family="Segoe UI">IPv4 = 32 bits | IPv6 = 128 bits</text>
-                  <rect x="44" y="100" width="164" height="18" rx="9" fill="rgba(248,81,73,.28)" />
-                  <rect x="44" y="128" width="656" height="18" rx="9" fill="rgba(63,185,80,.34)" />
-                  <text x="220" y="114" fill="#f85149" font-size="13" font-family="Segoe UI">32 bits</text>
-                  <text x="708" y="142" fill="#3fb950" font-size="13" font-family="Segoe UI" text-anchor="end">128 bits</text>
-                </svg>
-              </div>
+            <article class="overview-card">
+              <strong>AAAA</strong>
+              <span>El DNS publica direcciones IPv6 globales en registros <code>AAAA</code>.</span>
             </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="ipv6-section" id="representacion">
-      <div class="section-shell">
-        <div class="section-head">
-          <div>
-            <h2>2. Representación y compresión correcta</h2>
-            <p>El workbook insiste en dos reglas: quitar ceros a la izquierda y usar <code>::</code> solo una vez cuando hay una corrida continua de hextetos 0000.</p>
-          </div>
-          <button class="btn-tool secondary" type="button" data-speak-target="#representacion">Escuchar sección</button>
-        </div>
-        <div class="section-body">
-          <div class="dua-summary">
-            <strong>Resumen fácil</strong>
-            Regla 1: quita ceros a la izquierda. Regla 2: usa <code>::</code> solo una vez. Si la repites, la dirección queda inválida.
-          </div>
-
-          <div class="micro-grid">
-            <details class="micro-card" open>
-              <summary>Regla 1: ceros a la izquierda</summary>
-              <div class="micro-body">
-                <code>000A</code> pasa a <code>A</code>, <code>0001</code> pasa a <code>1</code>,
-                y así con todos los hextetos. Esta regla no cambia la longitud lógica del grupo.
-              </div>
-            </details>
-            <details class="micro-card">
-              <summary>Regla 2: compresión con ::</summary>
-              <div class="micro-body">
-                Cuando hay una corrida continua de grupos <code>0000</code>, podemos sustituirla
-                por <code>::</code>, pero solo una vez por dirección.
-              </div>
-            </details>
           </div>
 
           <div class="concept-grid" style="margin-top:1rem">
             <article class="concept-card">
-              <h3>Error frecuente 1</h3>
-              <p>Usar <code>::</code> dos veces en la misma dirección. Si hacemos eso, la expansión deja de ser inequívoca y la dirección se vuelve inválida.</p>
+              <h3>Reglas que no fallan</h3>
+              <ul>
+                <li><span class="keyword">1 hexteto = 16 bits</span> y <span class="keyword">8 hextetos = 128 bits</span>.</li>
+                <li>Los grupos se separan con <code>:</code> y el prefijo se expresa con <code>/n</code>.</li>
+                <li>Primero quitamos ceros a la izquierda; después comprimimos si conviene.</li>
+                <li>La compresión con <code>::</code> solo puede aparecer una vez.</li>
+              </ul>
             </article>
             <article class="concept-card">
-              <h3>Error frecuente 2</h3>
-              <p>Expandir una dirección sin volver a completar los 8 hextetos. Cuando desarrollamos <code>FE80::1</code>, el objetivo no es “poner algunos ceros”, sino recuperar toda la estructura.</p>
-            </article>
-            <article class="concept-card">
-              <h3>Error frecuente 3</h3>
-              <p>Confundir quitar ceros a la izquierda con borrar grupos completos. Primero simplificamos el hexteto; después, si hay una corrida continua, comprimimos con <code>::</code>.</p>
+              <h3>Errores que eliminamos</h3>
+              <ul>
+                <li>Usar <code>::</code> dos veces en la misma dirección.</li>
+                <li>Expandir una dirección y quedarse con menos de 8 hextetos.</li>
+                <li>Confundir prefijo de red con ID de interfaz.</li>
+                <li>Memorizar ejemplos sin entender el patrón de los grupos.</li>
+              </ul>
             </article>
           </div>
 
@@ -1973,127 +2051,28 @@
             <article class="lab-card">
               <h3>Ejemplo resuelto 1: expansión correcta</h3>
               <p><strong>Dirección:</strong> <code>FE80::1</code></p>
-              <p><strong>Paso 1:</strong> reconocemos que falta una secuencia de hextetos completos.</p>
-              <p><strong>Paso 2:</strong> reponemos grupos <code>0000</code> hasta recuperar 8 hextetos.</p>
+              <p><strong>Paso 1:</strong> contamos los grupos visibles y detectamos la secuencia omitida.</p>
+              <p><strong>Paso 2:</strong> reponemos <code>0000</code> hasta volver a 8 hextetos.</p>
               <p><strong>Resultado:</strong> <code>FE80:0000:0000:0000:0000:0000:0000:0001</code></p>
             </article>
             <article class="lab-card">
               <h3>Ejemplo resuelto 2: abreviación correcta</h3>
               <p><strong>Dirección:</strong> <code>2001:0DB8:000A:0000:0000:0000:0000:0001</code></p>
               <p><strong>Paso 1:</strong> quitamos ceros a la izquierda en cada hexteto.</p>
-              <p><strong>Paso 2:</strong> comprimimos la corrida continua de <code>0000</code>.</p>
+              <p><strong>Paso 2:</strong> comprimimos la corrida más larga de <code>0000</code>.</p>
               <p><strong>Resultado:</strong> <code>2001:DB8:A::1</code></p>
             </article>
-          </div>
-
-          <div class="diagram-grid" style="margin-top:1rem">
-            <article class="diagram-card">
-              <h3>Imagen 3: paso a paso de compresión</h3>
-              <p>Visualización del ejemplo largo hasta su forma corta.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 210" role="img" aria-label="Proceso de compresion IPv6">
-                  <rect x="18" y="18" width="724" height="174" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <text x="36" y="48" fill="#8b949e" font-size="14" font-family="Segoe UI">Completa</text>
-                  <text x="36" y="77" fill="#e6edf3" font-size="18" font-family="monospace">2001:0DB8:000A:0000:0000:0000:0000:0001</text>
-                  <text x="36" y="111" fill="#8b949e" font-size="14" font-family="Segoe UI">Quitando ceros a la izquierda</text>
-                  <text x="36" y="139" fill="#58a6ff" font-size="18" font-family="monospace">2001:DB8:A:0:0:0:0:1</text>
-                  <text x="36" y="168" fill="#8b949e" font-size="14" font-family="Segoe UI">Compactando la corrida más larga</text>
-                  <text x="36" y="194" fill="#3fb950" font-size="20" font-family="monospace" font-weight="700">2001:DB8:A::1</text>
-                </svg>
-              </div>
-            </article>
-
-            <article class="diagram-card">
-              <h3>Imagen 4: dirección válida vs inválida</h3>
-              <p>Comparación rápida para evitar el error más común del estudiante.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 210" role="img" aria-label="Uso correcto e incorrecto de doble dos puntos">
-                  <rect x="18" y="18" width="724" height="174" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="36" y="54" width="300" height="84" rx="14" fill="rgba(63,185,80,.12)" stroke="#3fb950" />
-                  <rect x="424" y="54" width="300" height="84" rx="14" fill="rgba(248,81,73,.12)" stroke="#f85149" />
-                  <text x="186" y="82" fill="#3fb950" font-size="15" font-family="Segoe UI" font-weight="700" text-anchor="middle">Correcta</text>
-                  <text x="186" y="112" fill="#e6edf3" font-size="18" font-family="monospace" text-anchor="middle">2001:DB8:A::1</text>
-                  <text x="574" y="82" fill="#f85149" font-size="15" font-family="Segoe UI" font-weight="700" text-anchor="middle">Incorrecta</text>
-                  <text x="574" y="112" fill="#e6edf3" font-size="18" font-family="monospace" text-anchor="middle">2001::DB8::1</text>
-                  <text x="36" y="160" fill="#8b949e" font-size="13" font-family="Segoe UI">Solo la caja izquierda respeta la regla de usar :: una sola vez.</text>
-                </svg>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="ipv6-section" id="asignacion">
-      <div class="section-shell">
-        <div class="section-head">
-          <div>
-            <h2>3. Prefijos, asignación global y DNS AAAA</h2>
-            <p>El material no solo habla de direcciones; también toca /64, espacio 2000::/3, rol de la IANA, de los RIR y el uso de <code>nslookup</code> para dominios públicos IPv6.</p>
-          </div>
-          <button class="btn-tool secondary" type="button" data-speak-target="#asignacion">Escuchar sección</button>
-        </div>
-        <div class="section-body">
-          <div class="dua-summary">
-            <strong>Resumen fácil</strong>
-            La LAN típica usa /64. Las GUA viven dentro de 2000::/3. La IANA delega bloques a los RIR. El registro DNS que buscas para IPv6 es AAAA.
-          </div>
-
-          <div class="lab-grid">
             <article class="lab-card">
-              <h3>Imagen 5: división /64</h3>
-              <p>La recomendación /64 se entiende mejor con una barra simple de 64 + 64 bits.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 180" role="img" aria-label="Prefijo 64 e interfaz 64">
-                  <rect x="18" y="18" width="724" height="144" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="36" y="76" width="324" height="34" rx="12" fill="rgba(27,161,226,.35)" stroke="#1ba1e2" />
-                  <rect x="360" y="76" width="364" height="34" rx="12" fill="rgba(245,166,35,.35)" stroke="#f5a623" />
-                  <text x="198" y="98" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">64 bits de prefijo</text>
-                  <text x="542" y="98" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">64 bits de interfaz</text>
-                  <text x="36" y="52" fill="#8b949e" font-size="13" font-family="Segoe UI">/64 recomendado para LAN y SLAAC</text>
-                </svg>
-              </div>
-            </article>
-
-            <article class="lab-card">
-              <h3>Imagen 6: camino IANA → RIR → operador</h3>
-              <p>Resumen visual de la asignación global mencionada en el workbook.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 180" role="img" aria-label="Asignacion global IPv6 desde IANA hasta organizaciones">
-                  <rect x="18" y="18" width="724" height="144" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="40" y="64" width="120" height="42" rx="12" fill="rgba(27,161,226,.22)" stroke="#1ba1e2" />
-                  <rect x="244" y="64" width="120" height="42" rx="12" fill="rgba(63,185,80,.22)" stroke="#3fb950" />
-                  <rect x="448" y="64" width="120" height="42" rx="12" fill="rgba(245,166,35,.22)" stroke="#f5a623" />
-                  <rect x="612" y="64" width="110" height="42" rx="12" fill="rgba(88,166,255,.2)" stroke="#58a6ff" />
-                  <text x="100" y="90" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">IANA</text>
-                  <text x="304" y="90" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">RIR</text>
-                  <text x="508" y="90" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">ISP / operador</text>
-                  <text x="667" y="90" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Cliente</text>
-                  <line x1="160" y1="85" x2="244" y2="85" stroke="#58a6ff" stroke-width="4" />
-                  <line x1="364" y1="85" x2="448" y2="85" stroke="#58a6ff" stroke-width="4" />
-                  <line x1="568" y1="85" x2="612" y2="85" stroke="#58a6ff" stroke-width="4" />
-                </svg>
-              </div>
-            </article>
-
-            <article class="lab-card">
-              <h3>Imagen 7: consulta DNS AAAA</h3>
-              <p>El material sugiere usar <code>nslookup</code> con dominios públicos para practicar IPv6 real.</p>
-              <div class="code-panel" aria-label="Secuencia de nslookup para registros AAAA">
-                <div class="code-head">
-                  <div class="code-dots"><span></span><span></span><span></span></div>
-                  <span class="code-lang">PowerShell / nslookup</span>
-                </div>
-                <pre class="code-block"><code><span class="cmd-comment"># Consulta IPv6 publica por registro AAAA</span>
-nslookup
-set type=AAAA
-cisco.com
-netflix.com
-facebook.com</code></pre>
-              </div>
-              <p>La idea no es memorizar los resultados exactos, sino reconocer que IPv6 público se publica en registros AAAA.</p>
+              <h3>Asignación global y DNS AAAA</h3>
+              <ul>
+                <li>Las GUA se mueven dentro de <code>2000::/3</code>.</li>
+                <li>La IANA delega bloques a los RIR; luego pasan a operadores y clientes.</li>
+                <li>Cuando buscamos IPv6 público en DNS, el registro que nos interesa es <code>AAAA</code>.</li>
+              </ul>
             </article>
           </div>
+
+          <p class="teaching-note">Consulta las láminas 1, 2 y 3 de la galería para reforzar anatomía, compresión y prefijos sin cargar esta sección con más diagramas.</p>
         </div>
       </div>
     </section>
@@ -2102,301 +2081,139 @@ facebook.com</code></pre>
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>4. Todos los tipos principales de IPv6 del material</h2>
-            <p>Aquí se consolida la taxonomía del workbook: unicast global, enlace local, local única, bucle local, no especificada, IPv4 integrada, multicast conocida, multicast transitoria, nodo solicitado y anycast.</p>
+            <h2>2. Clasificación de direcciones IPv6</h2>
+            <p>Aquí concentramos la taxonomía del material para distinguir unicast, multicast y anycast sin repetir tablas y diagramas.</p>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#tipos">Escuchar sección</button>
         </div>
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            GUA = pública/enrutable. LLA = misma LAN. ULA = local privada. Multicast = grupos. Anycast = mismo destino lógico, llega al nodo más cercano.
+            GUA = pública y enrutable. LLA = mismo enlace. ULA = uso local. Multicast = grupos. Anycast = misma dirección, responde el nodo más cercano.
           </div>
 
-          <div class="diagram-grid">
-            <article class="diagram-card">
-              <h3>Imagen 8: árbol rápido de clasificación</h3>
-              <p>Una guía visual para mirar una dirección y clasificarla antes de leer más.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 300" role="img" aria-label="Arbol de clasificacion de direcciones IPv6">
-                  <rect x="18" y="18" width="724" height="264" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="290" y="34" width="180" height="38" rx="12" fill="rgba(88,166,255,.18)" stroke="#58a6ff" />
-                  <text x="380" y="58" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Dirección IPv6</text>
-                  <line x1="380" y1="72" x2="380" y2="100" stroke="#58a6ff" stroke-width="3" />
-                  <line x1="140" y1="100" x2="620" y2="100" stroke="#58a6ff" stroke-width="3" />
-                  <line x1="140" y1="100" x2="140" y2="120" stroke="#58a6ff" stroke-width="3" />
-                  <line x1="380" y1="100" x2="380" y2="120" stroke="#58a6ff" stroke-width="3" />
-                  <line x1="620" y1="100" x2="620" y2="120" stroke="#58a6ff" stroke-width="3" />
-                  <g class="tree-filter-hit" data-type-filter="unicast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo unicast">
-                    <rect x="60" y="120" width="160" height="44" rx="12" fill="rgba(27,161,226,.18)" stroke="#1ba1e2" />
-                    <text x="140" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Unicast</text>
-                  </g>
-                  <g class="tree-filter-hit" data-type-filter="multicast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo multicast">
-                    <rect x="300" y="120" width="160" height="44" rx="12" fill="rgba(63,185,80,.18)" stroke="#3fb950" />
-                    <text x="380" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Multicast</text>
-                  </g>
-                  <g class="tree-filter-hit" data-type-filter="anycast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo anycast">
-                    <rect x="540" y="120" width="160" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
-                    <text x="620" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Anycast</text>
-                  </g>
-                  <text x="140" y="194" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
-                    <tspan x="140" dy="0">GUA · LLA · ULA</tspan>
-                    <tspan x="140" dy="18">bucle local</tspan>
-                    <tspan x="140" dy="18">no especificada · IPv4 integrada</tspan>
-                  </text>
-                  <text x="380" y="194" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
-                    <tspan x="380" dy="0">FF00::/12 · todos nodos</tspan>
-                    <tspan x="380" dy="18">todos routers · OSPFv3</tspan>
-                    <tspan x="380" dy="18">EIGRP · nodo solicitado</tspan>
-                  </text>
-                  <text x="620" y="200" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
-                    <tspan x="620" dy="0">Misma direccion</tspan>
-                    <tspan x="620" dy="18">en varios nodos</tspan>
-                    <tspan x="620" dy="18">gana el mas cercano</tspan>
-                  </text>
-                </svg>
-              </div>
-              <div class="tree-filter-bar" aria-label="Filtro de tarjetas IPv6">
-                <button class="tree-filter-btn is-active" type="button" data-type-filter="all">Todas</button>
-                <button class="tree-filter-btn" type="button" data-type-filter="unicast">Unicast</button>
-                <button class="tree-filter-btn" type="button" data-type-filter="multicast">Multicast</button>
-                <button class="tree-filter-btn" type="button" data-type-filter="anycast">Anycast</button>
-              </div>
-              <p class="report-note" id="typeFilterStatus">Mostrando todas las tarjetas y la tabla completa.</p>
-            </article>
+          <article class="diagram-card" style="margin-top:1rem">
+            <h3>Mapa rápido de clasificación</h3>
+            <p>Toca un nodo del mapa para filtrar directamente las tarjetas de <strong>Unicast</strong>, <strong>Multicast</strong> o <strong>Anycast</strong>.</p>
+            <div class="svg-wrap">
+              <svg viewBox="0 0 760 300" role="img" aria-label="Arbol de clasificacion de direcciones IPv6">
+                <rect x="18" y="18" width="724" height="264" rx="18" fill="#0d1117" stroke="#30363d" />
+                <rect x="290" y="34" width="180" height="38" rx="12" fill="rgba(88,166,255,.18)" stroke="#58a6ff" />
+                <text x="380" y="58" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Direccion IPv6</text>
+                <line x1="380" y1="72" x2="380" y2="100" stroke="#58a6ff" stroke-width="3" />
+                <line x1="140" y1="100" x2="620" y2="100" stroke="#58a6ff" stroke-width="3" />
+                <line x1="140" y1="100" x2="140" y2="120" stroke="#58a6ff" stroke-width="3" />
+                <line x1="380" y1="100" x2="380" y2="120" stroke="#58a6ff" stroke-width="3" />
+                <line x1="620" y1="100" x2="620" y2="120" stroke="#58a6ff" stroke-width="3" />
+                <g class="tree-filter-hit" data-type-filter="unicast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo unicast">
+                  <rect x="60" y="120" width="160" height="44" rx="12" fill="rgba(27,161,226,.18)" stroke="#1ba1e2" />
+                  <text x="140" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Unicast</text>
+                </g>
+                <g class="tree-filter-hit" data-type-filter="multicast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo multicast">
+                  <rect x="300" y="120" width="160" height="44" rx="12" fill="rgba(63,185,80,.18)" stroke="#3fb950" />
+                  <text x="380" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Multicast</text>
+                </g>
+                <g class="tree-filter-hit" data-type-filter="anycast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo anycast">
+                  <rect x="540" y="120" width="160" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
+                  <text x="620" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Anycast</text>
+                </g>
+                <text x="140" y="194" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
+                  <tspan x="140" dy="0">GUA · LLA · ULA</tspan>
+                  <tspan x="140" dy="18">bucle local</tspan>
+                  <tspan x="140" dy="18">no especificada · IPv4 integrada</tspan>
+                </text>
+                <text x="380" y="194" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
+                  <tspan x="380" dy="0">FF00::/12 · todos nodos</tspan>
+                  <tspan x="380" dy="18">todos routers · OSPFv3</tspan>
+                  <tspan x="380" dy="18">EIGRP · nodo solicitado</tspan>
+                </text>
+                <text x="620" y="200" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
+                  <tspan x="620" dy="0">Misma direccion</tspan>
+                  <tspan x="620" dy="18">en varios nodos</tspan>
+                  <tspan x="620" dy="18">gana el mas cercano</tspan>
+                </text>
+              </svg>
+            </div>
+          </article>
+
+          <div class="tree-filter-bar" aria-label="Filtro de tarjetas IPv6">
+            <button class="tree-filter-btn is-active" type="button" data-type-filter="all">Todas</button>
+            <button class="tree-filter-btn" type="button" data-type-filter="unicast">Unicast</button>
+            <button class="tree-filter-btn" type="button" data-type-filter="multicast">Multicast</button>
+            <button class="tree-filter-btn" type="button" data-type-filter="anycast">Anycast</button>
           </div>
+          <p class="report-note" id="typeFilterStatus">Mostrando todas las tarjetas.</p>
 
           <div class="type-grid" style="margin-top:1rem">
             <article class="type-card gua" data-type-family="unicast">
               <h3>Unicast global (GUA)</h3>
               <p><code>2000::/3</code></p>
-              <p>Direcciones enrutables en Internet IPv6, equivalentes conceptuales a las públicas IPv4.</p>
+              <p>Dirección enrutable en Internet IPv6. Es la referencia cuando hablamos de dirección global.</p>
               <span class="type-pill">Global y enrutable</span>
             </article>
             <article class="type-card lla" data-type-family="unicast">
               <h3>Enlace local (LLA)</h3>
               <p><code>FE80::/10</code></p>
-              <p>Obligatoria por enlace. Sirve para comunicarse dentro de la misma LAN y no se enruta globalmente.</p>
+              <p>Existe por enlace, no se enruta globalmente y participa en vecindad y descubrimiento.</p>
               <span class="type-pill">Mismo enlace</span>
             </article>
             <article class="type-card ula" data-type-family="unicast">
               <h3>Local única (ULA)</h3>
               <p><code>FC00::/7</code></p>
-              <p>Para direccionamiento local limitado. Similar al concepto de privado en IPv4, pero no pensado para NAT tradicional.</p>
-              <span class="type-pill">Privada local</span>
+              <p>Sirve para direccionamiento interno sin depender de una GUA.</p>
+              <span class="type-pill">Uso local</span>
             </article>
             <article class="type-card misc" data-type-family="unicast">
-              <h3>Bucle local</h3>
-              <p><code>::1/128</code></p>
-              <p>Prueba interna del host. Equivalente funcional al 127.0.0.1 de IPv4.</p>
-              <span class="type-pill">Auto-prueba</span>
-            </article>
-            <article class="type-card misc" data-type-family="unicast">
-              <h3>No especificada</h3>
-              <p><code>::</code></p>
-              <p>Se usa como origen para indicar ausencia de dirección configurada.</p>
-              <span class="type-pill">Sin dirección</span>
+              <h3>Direcciones especiales</h3>
+              <p><code>::1/128</code> y <code>::</code></p>
+              <p><code>::1</code> prueba interna del host. <code>::</code> indica ausencia de dirección configurada.</p>
+              <span class="type-pill">Prueba y ausencia</span>
             </article>
             <article class="type-card misc" data-type-family="unicast">
               <h3>IPv4 integrada</h3>
               <p>Usa los 32 bits inferiores para transportar una IPv4 dentro de una dirección IPv6.</p>
-              <span class="type-pill">Transición</span>
+              <span class="type-pill">Transicion</span>
             </article>
             <article class="type-card multi" data-type-family="multicast">
               <h3>Multicast general</h3>
               <p><code>FF00::/12</code></p>
-              <p>Una dirección multicast nunca puede ser origen. Sustituye la idea de broadcast general de IPv4.</p>
-              <span class="type-pill">Grupos</span>
+              <p>Nunca se usa como origen y reemplaza la idea de broadcast general de IPv4.</p>
+              <span class="type-pill">Uno a muchos</span>
             </article>
             <article class="type-card multi" data-type-family="multicast">
-              <h3>Multicast permanente</h3>
-              <p>Indicada por la bandera <code>0</code>. Incluye grupos bien conocidos asignados por IANA.</p>
-              <span class="type-pill">Asignada por IANA</span>
-            </article>
-            <article class="type-card multi" data-type-family="multicast">
-              <h3>Multicast transitoria</h3>
-              <p>Indicada por la bandera <code>1</code>, como <code>ff10::/12</code>.</p>
-              <span class="type-pill">Dinámica</span>
-            </article>
-            <article class="type-card multi" data-type-family="multicast">
-              <h3>All-nodes</h3>
-              <p><code>FF02::1</code></p>
-              <p>Todos los nodos IPv6 del enlace local.</p>
-              <span class="type-pill">Grupo conocido</span>
-            </article>
-            <article class="type-card multi" data-type-family="multicast">
-              <h3>All-routers</h3>
-              <p><code>FF02::2</code></p>
-              <p>Todos los routers IPv6 del enlace local.</p>
-              <span class="type-pill">Grupo conocido</span>
-            </article>
-            <article class="type-card multi" data-type-family="multicast">
-              <h3>OSPFv3</h3>
-              <p><code>FF02::5</code></p>
-              <p>Grupo de todos los routers OSPFv3.</p>
-              <span class="type-pill">Routing</span>
-            </article>
-            <article class="type-card multi" data-type-family="multicast">
-              <h3>EIGRP para IPv6</h3>
-              <p><code>FF02::A</code></p>
-              <p>Grupo multicast de todos los routers EIGRP para IPv6.</p>
-              <span class="type-pill">Routing</span>
-            </article>
-            <article class="type-card multi" data-type-family="multicast">
-              <h3>Solicited-node multicast</h3>
-              <p><code>FF02:0:0:0:0:1:FF00::/104</code></p>
-              <p>Se crea automáticamente a partir de una unicast para resolver capa 3 a capa 2.</p>
-              <span class="type-pill">Vecindad</span>
+              <h3>Grupos que sí memorizamos</h3>
+              <p><code>FF02::1</code>, <code>FF02::2</code>, <code>FF02::5</code>, <code>FF02::A</code>, <code>FF02::1:FF00::/104</code></p>
+              <p>Todos los nodos, todos los routers, OSPFv3, EIGRP para IPv6 y nodo solicitado.</p>
+              <span class="type-pill">Grupos clave</span>
             </article>
             <article class="type-card misc" data-type-family="anycast">
               <h3>Anycast</h3>
-              <p>Sin prefijo exclusivo. Reutiliza rango unicast y el tráfico llega al nodo más cercano.</p>
-              <span class="type-pill">Nodo más cercano</span>
+              <p>Usa rango unicast y la red entrega el tráfico al nodo más cercano.</p>
+              <span class="type-pill">Nodo mas cercano</span>
             </article>
           </div>
 
-          <div class="type-matrix-wrap">
-            <table class="type-matrix">
-              <thead>
-                <tr>
-                  <th>Tipo</th>
-                  <th>Prefijo o ejemplo</th>
-                  <th>Ámbito</th>
-                  <th>¿Enrutable?</th>
-                  <th>Uso principal</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr data-type-family="unicast">
-                  <td>GUA</td>
-                  <td><code>2000::/3</code></td>
-                  <td>Internet</td>
-                  <td>Sí</td>
-                  <td>Dirección pública IPv6</td>
-                </tr>
-                <tr data-type-family="unicast">
-                  <td>Enlace local</td>
-                  <td><code>FE80::/10</code></td>
-                  <td>Mismo enlace</td>
-                  <td>No globalmente</td>
-                  <td>Vecindad, gateway local, NDP</td>
-                </tr>
-                <tr data-type-family="unicast">
-                  <td>Local única</td>
-                  <td><code>FC00::/7</code></td>
-                  <td>Sitio local</td>
-                  <td>No globalmente</td>
-                  <td>Direcciones internas</td>
-                </tr>
-                <tr data-type-family="unicast">
-                  <td>Bucle local</td>
-                  <td><code>::1/128</code></td>
-                  <td>Equipo local</td>
-                  <td>No</td>
-                  <td>Prueba interna</td>
-                </tr>
-                <tr data-type-family="unicast">
-                  <td>No especificada</td>
-                  <td><code>::</code></td>
-                  <td>Equipo local</td>
-                  <td>No</td>
-                  <td>Ausencia de dirección</td>
-                </tr>
-                <tr data-type-family="multicast">
-                  <td>Multicast</td>
-                  <td><code>FF00::/12</code></td>
-                  <td>Grupo</td>
-                  <td>Según ámbito</td>
-                  <td>Comunicación uno-a-muchos</td>
-                </tr>
-                <tr data-type-family="anycast">
-                  <td>Anycast</td>
-                  <td>Mismo rango que GUA</td>
-                  <td>Red / Internet</td>
-                  <td>Sí</td>
-                  <td>Llegar al nodo más cercano</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="ipv6-section" id="multicast">
-      <div class="section-shell">
-        <div class="section-head">
-          <div>
-            <h2>5. Multicast, solicited-node y anycast</h2>
-            <p>El workbook insiste en que multicast nunca es dirección de origen, que solicited-node reemplaza el broadcast clásico y que anycast se enruta hacia el nodo más cercano.</p>
-          </div>
-          <button class="btn-tool secondary" type="button" data-speak-target="#multicast">Escuchar sección</button>
-        </div>
-        <div class="section-body">
-          <div class="dua-summary">
-            <strong>Resumen fácil</strong>
-            <code>FF02::1</code> = todos los nodos. <code>FF02::2</code> = todos los routers.
-            La solicited-node sale de una unicast. Anycast usa la misma dirección en varios nodos y gana el más cercano.
-          </div>
-
-          <div class="diagram-grid">
-            <article class="diagram-card">
-              <h3>Imagen 9: grupos multicast conocidos</h3>
-              <p>Un vistazo rápido a los grupos que sí conviene memorizar.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 230" role="img" aria-label="Grupos multicast conocidos de IPv6">
-                  <rect x="18" y="18" width="724" height="194" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <g font-family="monospace" font-size="16">
-                    <text x="40" y="58" fill="#58a6ff">FF02::1</text>
-                    <text x="170" y="58" fill="#8b949e" font-family="Segoe UI" font-size="14">Todos los nodos IPv6</text>
-                    <text x="40" y="92" fill="#58a6ff">FF02::2</text>
-                    <text x="170" y="92" fill="#8b949e" font-family="Segoe UI" font-size="14">Todos los routers IPv6</text>
-                    <text x="40" y="126" fill="#58a6ff">FF02::5</text>
-                    <text x="170" y="126" fill="#8b949e" font-family="Segoe UI" font-size="14">Todos los routers OSPFv3</text>
-                    <text x="40" y="160" fill="#58a6ff">FF02::A</text>
-                    <text x="170" y="160" fill="#8b949e" font-family="Segoe UI" font-size="14">Todos los routers EIGRP para IPv6</text>
-                    <text x="40" y="194" fill="#58a6ff">FF02::1:FFxx:xxxx</text>
-                    <text x="230" y="194" fill="#8b949e" font-family="Segoe UI" font-size="14">Solicited-node multicast</text>
-                  </g>
-                </svg>
-              </div>
+          <div class="concept-grid" style="margin-top:1rem">
+            <article class="concept-card">
+              <h3>Cómo no confundir multicast y anycast</h3>
+              <ul>
+                <li><strong>Multicast</strong>: una dirección llega a muchos receptores del grupo.</li>
+                <li><strong>Anycast</strong>: varios nodos anuncian la misma dirección, pero responde el más cercano.</li>
+                <li><strong>Nodo solicitado</strong>: es multicast y sale de una unicast.</li>
+              </ul>
             </article>
-
-            <article class="diagram-card">
-              <h3>Imagen 10: construcción de solicited-node</h3>
-              <p>El mecanismo clave que reemplaza el broadcast de IPv4 para resolver capa 3 a capa 2.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 220" role="img" aria-label="Construccion de direccion solicited node multicast">
-                  <rect x="18" y="18" width="724" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <text x="36" y="52" fill="#8b949e" font-size="14" font-family="Segoe UI">Unicast del host</text>
-                  <text x="36" y="84" fill="#e6edf3" font-size="18" font-family="monospace">2001:DB8:ACAD:10::12AB:34CD</text>
-                  <text x="36" y="116" fill="#8b949e" font-size="14" font-family="Segoe UI">Prefijo multicast + últimos 24 bits</text>
-                  <text x="36" y="150" fill="#58a6ff" font-size="20" font-family="monospace">FF02::1:FFAB:34CD</text>
-                  <text x="36" y="180" fill="#8b949e" font-size="13" font-family="Segoe UI">Cada dirección unicast genera automáticamente su multicast solicitada.</text>
-                </svg>
-              </div>
-            </article>
-
-            <article class="diagram-card">
-              <h3>Imagen 11: lógica anycast</h3>
-              <p>Misma dirección lógica, varios servidores, llega el más cercano por enrutamiento.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 220" role="img" aria-label="Comportamiento anycast hacia el nodo mas cercano">
-                  <rect x="18" y="18" width="724" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <circle cx="130" cy="108" r="28" fill="rgba(245,166,35,.2)" stroke="#f5a623" />
-                  <circle cx="384" cy="108" r="28" fill="rgba(27,161,226,.2)" stroke="#1ba1e2" />
-                  <circle cx="628" cy="108" r="28" fill="rgba(63,185,80,.2)" stroke="#3fb950" />
-                  <text x="130" y="113" fill="#e6edf3" font-size="14" font-family="Segoe UI" text-anchor="middle">A</text>
-                  <text x="384" y="113" fill="#e6edf3" font-size="14" font-family="Segoe UI" text-anchor="middle">B</text>
-                  <text x="628" y="113" fill="#e6edf3" font-size="14" font-family="Segoe UI" text-anchor="middle">C</text>
-                  <text x="378" y="54" fill="#8b949e" font-size="14" font-family="Segoe UI" text-anchor="middle">Los tres anuncian la misma /128</text>
-                  <path d="M 80 160 Q 210 150 356 120" fill="none" stroke="#58a6ff" stroke-width="4" />
-                  <polygon points="345,115 365,120 349,131" fill="#58a6ff" />
-                  <text x="140" y="174" fill="#8b949e" font-size="13" font-family="Segoe UI">El cliente se dirige al nodo más cercano según la tabla de enrutamiento.</text>
-                </svg>
-              </div>
+            <article class="concept-card">
+              <h3>Patrón rápido de lectura</h3>
+              <ul>
+                <li><code>2000::/3</code> te orienta a GUA.</li>
+                <li><code>FE80::/10</code> te orienta a enlace local.</li>
+                <li><code>FF00::/12</code> te orienta a multicast.</li>
+                <li>Anycast no tiene prefijo exclusivo; se entiende por el escenario.</li>
+              </ul>
             </article>
           </div>
+
+          <p class="teaching-note">Consulta las láminas 4 y 5 de la galería para reforzar el mapa visual de tipos y la lógica de nodo solicitado.</p>
         </div>
       </div>
     </section>
@@ -2405,101 +2222,55 @@ facebook.com</code></pre>
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>6. SLAAC, RS, RA y NDP</h2>
-            <p>La parte dinámica del material conecta el prefijo /64 con la autoconfiguración real: el host envía RS, el router responde con RA y los datos del RA guían la construcción de la GUA.</p>
+            <h2>3. Autoconfiguración y vecindad</h2>
+            <p>En este bloque dejamos solo el flujo que realmente necesitas entender: RS, RA, SLAAC y su relación con la vecindad IPv6.</p>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#slaac">Escuchar sección</button>
         </div>
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            Equipo = RS. Router = RA. El RA puede dar prefijo, gateway y DNS. SLAAC necesita /64 y usa 64 bits para la interfaz.
+            El host envía RS, el router responde con RA, el prefijo suele ser <code>/64</code> y el equipo completa su ID de interfaz para formar la GUA.
           </div>
 
           <div class="concept-grid">
             <article class="concept-card">
-              <h3>Qué memorizar</h3>
+              <h3>Flujo mínimo</h3>
               <ul>
-                <li><span class="keyword">RS</span> lo envía el host para descubrir routers.</li>
-                <li><span class="keyword">RA</span> lo envía el router para informar sobre la red.</li>
-                <li>El RA puede aportar <span class="keyword">prefijo, gateway y datos DNS/dominio</span>.</li>
-                <li>El ID de interfaz puede surgir por <span class="keyword">EUI-64 o generación aleatoria</span>.</li>
+                <li><span class="keyword">RS</span> lo envía el host para descubrir routers IPv6.</li>
+                <li><span class="keyword">RA</span> lo envía el router para anunciar la red.</li>
+                <li>Con ese RA, el host forma su GUA y aprende cómo salir de la LAN.</li>
+              </ul>
+            </article>
+            <article class="concept-card">
+              <h3>Qué puede traer un RA</h3>
+              <ul>
+                <li>Prefijo de red y longitud de prefijo.</li>
+                <li>Gateway predeterminado.</li>
+                <li>DNS y nombre de dominio.</li>
               </ul>
             </article>
             <article class="concept-card">
               <h3>Relación con vecindad</h3>
               <ul>
-                <li>La solicited-node multicast se usa para resolución de capa 3 a capa 2.</li>
-                <li>Es una aproximación más eficiente al broadcast clásico de IPv4.</li>
-                <li>La LLA sigue siendo clave porque todo comienza en el mismo enlace.</li>
+                <li>La LLA sigue siendo clave porque todo empieza en el mismo enlace.</li>
+                <li>La multicast de nodo solicitado participa en resolución de vecinos.</li>
+                <li>IPv6 evita el broadcast clásico y usa grupos más específicos.</li>
               </ul>
             </article>
           </div>
 
-          <div class="diagram-grid" style="margin-top:1rem">
-            <article class="diagram-card">
-              <h3>Imagen 12: flujo RS → RA → GUA</h3>
-              <p>Secuencia resumida para que el estudiante entienda qué ocurre realmente en la LAN.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 220" role="img" aria-label="Flujo de RS, RA y GUA por SLAAC">
-                  <rect x="18" y="18" width="724" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="54" y="72" width="150" height="48" rx="14" fill="rgba(245,166,35,.2)" stroke="#f5a623" />
-                  <rect x="306" y="72" width="150" height="48" rx="14" fill="rgba(27,161,226,.2)" stroke="#1ba1e2" />
-                  <rect x="558" y="72" width="150" height="48" rx="14" fill="rgba(63,185,80,.2)" stroke="#3fb950" />
-                  <text x="129" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Equipo</text>
-                  <text x="381" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Router</text>
-                  <text x="633" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">GUA lista</text>
-                  <line x1="204" y1="96" x2="306" y2="96" stroke="#58a6ff" stroke-width="4" />
-                  <line x1="456" y1="96" x2="558" y2="96" stroke="#58a6ff" stroke-width="4" />
-                  <polygon points="297,90 312,96 297,102" fill="#58a6ff" />
-                  <polygon points="549,90 564,96 549,102" fill="#58a6ff" />
-                  <text x="254" y="82" fill="#8b949e" font-size="13" font-family="Segoe UI">RS</text>
-                  <text x="508" y="82" fill="#8b949e" font-size="13" font-family="Segoe UI">RA</text>
-                  <text x="54" y="156" fill="#8b949e" font-size="13" font-family="Segoe UI">El RA entrega el prefijo y el host completa el ID de interfaz con /64.</text>
-                </svg>
-              </div>
-            </article>
+          <article class="lab-card" style="margin-top:1rem">
+            <h3>Secuencia mental que conviene repetir</h3>
+            <ol>
+              <li>Identificamos el prefijo anunciado.</li>
+              <li>Comprobamos que el escenario usa <code>/64</code>.</li>
+              <li>Relacionamos RS con descubrimiento y RA con información de red.</li>
+              <li>Recordamos que la vecindad usa nodo solicitado en lugar de broadcast.</li>
+            </ol>
+          </article>
 
-            <article class="diagram-card">
-              <h3>Imagen 13: qué puede llevar un RA</h3>
-              <p>Un resumen visual de la información citada en el workbook.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 220" role="img" aria-label="Informacion tipica de un router advertisement">
-                  <rect x="18" y="18" width="724" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="44" y="64" width="672" height="100" rx="14" fill="rgba(88,166,255,.12)" stroke="#58a6ff" />
-                  <text x="64" y="92" fill="#e6edf3" font-size="16" font-family="Segoe UI" font-weight="700">RA: información útil para el host</text>
-                  <text x="64" y="122" fill="#8b949e" font-size="14" font-family="Segoe UI">• Prefijo de red y longitud de prefijo</text>
-                  <text x="64" y="146" fill="#8b949e" font-size="14" font-family="Segoe UI">• Gateway predeterminado</text>
-                  <text x="64" y="170" fill="#8b949e" font-size="14" font-family="Segoe UI">• Direcciones DNS y nombre de dominio</text>
-                </svg>
-              </div>
-            </article>
-
-            <article class="diagram-card">
-              <h3>Imagen 14: host, router y solicited-node en la misma escena</h3>
-              <p>La vecindad IPv6 completa: el host envía RS, aprende por RA y resuelve vecinos con solicited-node multicast.</p>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 240" role="img" aria-label="Relacion entre host router router advertisement y solicited node multicast">
-                  <rect x="18" y="18" width="724" height="204" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <rect x="48" y="72" width="152" height="56" rx="14" fill="rgba(245,166,35,.2)" stroke="#f5a623" />
-                  <rect x="290" y="72" width="176" height="56" rx="14" fill="rgba(27,161,226,.2)" stroke="#1ba1e2" />
-                  <rect x="556" y="72" width="152" height="56" rx="14" fill="rgba(63,185,80,.2)" stroke="#3fb950" />
-                  <text x="124" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Equipo</text>
-                  <text x="378" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Router IPv6</text>
-                  <text x="632" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Vecino IPv6</text>
-                  <line x1="200" y1="90" x2="290" y2="90" stroke="#58a6ff" stroke-width="4" />
-                  <polygon points="281,84 296,90 281,96" fill="#58a6ff" />
-                  <text x="244" y="80" fill="#8b949e" font-size="13" font-family="Segoe UI">RS</text>
-                  <line x1="290" y1="112" x2="200" y2="112" stroke="#58a6ff" stroke-width="4" />
-                  <polygon points="209,106 194,112 209,118" fill="#58a6ff" />
-                  <text x="244" y="132" fill="#8b949e" font-size="13" font-family="Segoe UI">RA</text>
-                  <line x1="200" y1="154" x2="556" y2="154" stroke="#f5a623" stroke-width="4" stroke-dasharray="8 8" />
-                  <text x="378" y="178" fill="#f5a623" font-size="13" font-family="Segoe UI" text-anchor="middle">Solicitud de vecino hacia FF02::1:FFxx:xxxx</text>
-                  <text x="48" y="204" fill="#8b949e" font-size="13" font-family="Segoe UI">Primero se descubre el router; luego la vecindad usa solicited-node multicast en vez de broadcast.</text>
-                </svg>
-              </div>
-            </article>
-          </div>
+          <p class="teaching-note">Consulta la lámina 6 de la galería para ver el flujo RS → RA → GUA sin duplicar diagramas aquí.</p>
         </div>
       </div>
     </section>
@@ -2508,15 +2279,15 @@ facebook.com</code></pre>
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>7. Cisco IOS: mínimo viable y error crítico</h2>
-            <p>La idea fuerte del workbook es operativa: si no existe <code>ipv6 unicast-routing</code>, el router no enruta IPv6 globalmente y no apoya bien el proceso de anuncios.</p>
+            <h2>4. Cisco IOS mínimo</h2>
+            <p>La idea operativa se resume a una secuencia corta y a una verificación crítica: si falta <code>ipv6 unicast-routing</code>, el diseño no se comporta como esperas.</p>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#ios">Escuchar sección</button>
         </div>
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            El comando más importante es <code>ipv6 unicast-routing</code>. Si el host no pasa de la LAN, esa revisión va primero.
+            Si el host no sale de la LAN, primero revisamos <code>ipv6 unicast-routing</code>, la dirección de la interfaz y el estado de la interfaz.
           </div>
 
           <div class="lab-grid">
@@ -2541,80 +2312,12 @@ facebook.com</code></pre>
                 <li>¿Está activo <code>ipv6 unicast-routing</code>?</li>
                 <li>¿La interfaz tiene dirección IPv6 correcta?</li>
                 <li>¿La interfaz está levantada?</li>
-                <li>¿El host tiene LLA y aprendió el prefijo /64 correcto?</li>
+                <li>¿El host tiene LLA y aprendió el prefijo correcto?</li>
               </ul>
             </article>
-            <article class="lab-card">
-              <h3>Imagen 15: flujo mínimo de configuración</h3>
-              <div class="svg-wrap">
-                <svg viewBox="0 0 760 220" role="img" aria-label="Secuencia de configuracion minima Cisco IOS">
-                  <rect x="18" y="18" width="724" height="184" rx="18" fill="#0d1117" stroke="#30363d" />
-                  <text x="42" y="52" fill="#8b949e" font-size="14" font-family="Segoe UI">enable → conf t → ipv6 unicast-routing → interface → ipv6 address → no shutdown</text>
-                  <line x1="72" y1="110" x2="688" y2="110" stroke="#58a6ff" stroke-width="3" />
-                  <circle cx="92" cy="110" r="14" fill="#1ba1e2" />
-                  <circle cx="212" cy="110" r="14" fill="#1ba1e2" />
-                  <circle cx="332" cy="110" r="14" fill="#1ba1e2" />
-                  <circle cx="452" cy="110" r="14" fill="#1ba1e2" />
-                  <circle cx="572" cy="110" r="14" fill="#1ba1e2" />
-                  <circle cx="688" cy="110" r="14" fill="#3fb950" />
-                  <text x="92" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">enable</text>
-                  <text x="212" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">conf t</text>
-                  <text x="332" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">routing</text>
-                  <text x="452" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">interfaz</text>
-                  <text x="572" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">direccion</text>
-                  <text x="688" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">activa</text>
-                </svg>
-              </div>
-            </article>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="ipv6-section" id="glosario">
-      <div class="section-shell">
-        <div class="section-head">
-          <div>
-            <h2>8. Glosario rápido</h2>
-            <p>Este bloque sirve como soporte DUA: términos cortos, claros y reutilizables durante toda la práctica.</p>
-          </div>
-          <button class="btn-tool secondary" type="button" data-speak-target="#glosario">Escuchar sección</button>
-        </div>
-        <div class="section-body">
-          <div class="glossary-grid">
-            <article class="glossary-card">
-              <h3>GUA</h3>
-              <p>Dirección unicast global, enrutada en Internet IPv6. Rango: <code>2000::/3</code>.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>LLA</h3>
-              <p>Dirección de enlace local. Existe por enlace, no se enruta globalmente. Rango: <code>FE80::/10</code>.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>ULA</h3>
-              <p>Dirección local única. Útil dentro de un sitio o un conjunto limitado de sitios.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>SLAAC</h3>
-              <p>Autoconfiguración sin estado. Usa <code>/64</code> y se apoya en mensajes RA.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>RS</h3>
-              <p>Router Solicitation. Lo envía el host para descubrir routers IPv6.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>RA</h3>
-              <p>Router Advertisement. Lo envía el router con prefijo, gateway y otros datos.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>Solicited-node</h3>
-              <p>Multicast derivada de una unicast para resolución de vecindad de capa 3 a capa 2.</p>
-            </article>
-            <article class="glossary-card">
-              <h3>Anycast</h3>
-              <p>Misma dirección lógica en varios nodos; el tráfico llega al más cercano.</p>
-            </article>
-          </div>
+          <p class="teaching-note">Consulta la lámina 7 de la galería para fijar visualmente la secuencia mínima de Cisco IOS.</p>
         </div>
       </div>
     </section>
@@ -2623,43 +2326,48 @@ facebook.com</code></pre>
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>9. Qué debes memorizar para CCNA</h2>
-            <p>Bloque final de repaso duro: lo mínimo que sí conviene retener sin mirar apuntes antes del examen o de la práctica en clase.</p>
+            <h2>5. Resumen para práctica y examen</h2>
+            <p>Este cierre fusiona glosario y memorización para dejar un repaso corto, útil y sin repeticiones innecesarias.</p>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#memory">Escuchar sección</button>
         </div>
         <div class="section-body">
-          <div class="memory-list">
-            <article class="memory-item"><strong>Formato:</strong> IPv6 usa 128 bits, 8 hextetos y 32 símbolos hexadecimales.</article>
-            <article class="memory-item"><strong>Compresión:</strong> quita ceros a la izquierda y usa <code>::</code> una sola vez.</article>
-            <article class="memory-item"><strong>Prefijo clave:</strong> <code>/64</code> separa 64 bits de red y 64 bits de interfaz para SLAAC.</article>
-            <article class="memory-item"><strong>Tipos principales:</strong> <code>2000::/3</code>, <code>FE80::/10</code>, <code>FC00::/7</code>, <code>::1/128</code>, <code>::</code>, <code>FF00::/12</code>.</article>
-            <article class="memory-item"><strong>Multicast conocidos:</strong> <code>FF02::1</code>, <code>FF02::2</code>, <code>FF02::5</code>, <code>FF02::A</code> y solicited-node <code>FF02:0:0:0:0:1:FF00::/104</code>.</article>
-            <article class="memory-item"><strong>Operación:</strong> host = RS, router = RA, y en Cisco IOS el punto crítico es <code>ipv6 unicast-routing</code>.</article>
-          </div>
-          <div class="concept-grid" style="margin-top:1rem">
-            <article class="concept-card">
-              <h3>Antes de una evaluación</h3>
-              <ul>
-                <li>Verificamos si sabemos expandir y abreviar sin mirar apuntes.</li>
-                <li>Comprobamos si distinguimos rápidamente GUA, LLA, ULA, multicast y anycast.</li>
-                <li>Revisamos si entendemos por qué <code>/64</code> es central para SLAAC.</li>
-              </ul>
+          <div class="glossary-grid">
+            <article class="glossary-card">
+              <h3>GUA</h3>
+              <p>Unicast global. Rango: <code>2000::/3</code>.</p>
             </article>
-            <article class="concept-card">
-              <h3>Si algo falla, revisamos esto</h3>
-              <ul>
-                <li>¿Estamos contando correctamente los 8 hextetos?</li>
-                <li>¿Estamos usando <code>::</code> una sola vez?</li>
-                <li>¿Estamos mezclando tipo de dirección con alcance o uso?</li>
-              </ul>
+            <article class="glossary-card">
+              <h3>LLA</h3>
+              <p>Dirección de enlace local. Rango: <code>FE80::/10</code>.</p>
+            </article>
+            <article class="glossary-card">
+              <h3>ULA</h3>
+              <p>Dirección local única para uso interno. Rango: <code>FC00::/7</code>.</p>
+            </article>
+            <article class="glossary-card">
+              <h3>SLAAC</h3>
+              <p>Autoconfiguración sin estado apoyada en RA y prefijos <code>/64</code>.</p>
+            </article>
+            <article class="glossary-card">
+              <h3>RS y RA</h3>
+              <p>RS lo envía el host; RA lo responde el router con la información de red.</p>
+            </article>
+            <article class="glossary-card">
+              <h3>Nodo solicitado y anycast</h3>
+              <p>La multicast de nodo solicitado resuelve vecindad; anycast entrega al nodo más cercano.</p>
             </article>
           </div>
-          <p class="teaching-note">
-            Recomendación pedagógica: antes de pasar a la práctica grande, intentamos explicar en voz alta
-            una dirección IPv6 completa, un ejemplo de multicast y el flujo RS → RA → SLAAC. Si podemos
-            hacerlo con nuestras palabras, el contenido ya está mejor fijado.
-          </p>
+
+          <div class="memory-list" style="margin-top:1rem">
+            <article class="memory-item"><strong>Formato:</strong> 128 bits, 8 hextetos y 32 símbolos hexadecimales.</article>
+            <article class="memory-item"><strong>Compresión:</strong> ceros a la izquierda fuera; <code>::</code> una sola vez.</article>
+            <article class="memory-item"><strong>Prefijo clave:</strong> <code>/64</code> para SLAAC y separación red/interfaz.</article>
+            <article class="memory-item"><strong>Rangos que sí conviene recordar:</strong> <code>2000::/3</code>, <code>FE80::/10</code>, <code>FC00::/7</code>, <code>FF00::/12</code>.</article>
+            <article class="memory-item"><strong>Operación:</strong> host = RS, router = RA, Cisco IOS = <code>ipv6 unicast-routing</code>.</article>
+          </div>
+
+          <p class="teaching-note">Si podemos explicar en voz alta una dirección completa, distinguir GUA y LLA, y narrar RS → RA → SLAAC, ya estamos listos para el repaso rápido y la práctica.</p>
         </div>
       </div>
     </section>
@@ -2668,7 +2376,7 @@ facebook.com</code></pre>
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>10. Repaso rápido</h2>
+            <h2>6. Repaso rápido</h2>
             <p>Tarjetas breves para memorizar rangos, grupos y conceptos clave antes de entrar a la práctica grande.</p>
           </div>
           <div class="module-action-row">
@@ -2686,7 +2394,7 @@ facebook.com</code></pre>
       <div class="section-shell">
         <div class="section-head">
           <div>
-            <h2>11. Práctica intensiva</h2>
+            <h2>7. Práctica intensiva</h2>
             <p>La práctica ahora combina selección única, selección múltiple, texto y orden. Se mantiene privada, local y exportable a PDF solo cuando todo el recorrido fue revisado.</p>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#practice">Escuchar sección</button>

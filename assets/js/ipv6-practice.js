@@ -834,12 +834,14 @@
     }
 
     els.typeFilterNodes.forEach(function (node) {
-      node.addEventListener('click', function () {
+      node.addEventListener('click', function (event) {
+        event.stopPropagation();
         setTypeFilter(node.dataset.typeFilter);
       });
       node.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
+          event.stopPropagation();
           setTypeFilter(node.dataset.typeFilter);
         }
       });
@@ -1167,7 +1169,7 @@
 
     if (els.typeFilterStatus) {
       els.typeFilterStatus.textContent = selected === 'all'
-        ? 'Mostrando todas las tarjetas y la tabla completa.'
+        ? 'Mostrando todas las tarjetas.'
         : 'Filtro activo: ' + selected + '.';
     }
   }

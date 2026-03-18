@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" role="img" aria-labelledby="title desc">
+  <title id="title">Prefijo, asignacion global y AAAA</title>
+  <desc id="desc">Relacion entre prefijo 64, ruta de asignacion global de IPv6 y el uso del registro DNS AAAA.</desc>
+  <rect width="960" height="680" rx="28" fill="#0a1220"/>
+  <text x="56" y="72" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Prefijos, asignacion global y AAAA</text>
+  <text x="56" y="112" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Una sola lamina para conectar /64, ruta de delegacion y el papel del DNS en IPv6.</text>
+
+  <rect x="56" y="156" width="848" height="138" rx="22" fill="#0f1a2d" stroke="#243244"/>
+  <text x="84" y="198" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Division recomendada en la LAN</text>
+  <rect x="84" y="228" width="372" height="34" rx="12" fill="#14314a" stroke="#38bdf8"/>
+  <rect x="456" y="228" width="420" height="34" rx="12" fill="#4c3410" stroke="#f59e0b"/>
+  <text x="270" y="251" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle">64 bits de red</text>
+  <text x="666" y="251" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle">64 bits de interfaz</text>
+  <text x="84" y="282" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">/64 se usa como base de SLAAC y ayuda a separar red e interfaz con claridad.</text>
+
+  <rect x="56" y="334" width="848" height="154" rx="22" fill="#0f1a2d" stroke="#243244"/>
+  <text x="84" y="376" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Ruta de asignacion global</text>
+  <rect x="84" y="410" width="136" height="42" rx="12" fill="#14314a" stroke="#38bdf8"/>
+  <rect x="292" y="410" width="136" height="42" rx="12" fill="#153020" stroke="#4ade80"/>
+  <rect x="500" y="410" width="176" height="42" rx="12" fill="#4c3410" stroke="#f59e0b"/>
+  <rect x="748" y="410" width="128" height="42" rx="12" fill="#19273b" stroke="#93c5fd"/>
+  <text x="152" y="437" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle">IANA</text>
+  <text x="360" y="437" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle">RIR</text>
+  <text x="588" y="437" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle">Operador / ISP</text>
+  <text x="812" y="437" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle">Cliente</text>
+  <line x1="220" y1="431" x2="292" y2="431" stroke="#60a5fa" stroke-width="4"/>
+  <line x1="428" y1="431" x2="500" y2="431" stroke="#60a5fa" stroke-width="4"/>
+  <line x1="676" y1="431" x2="748" y2="431" stroke="#60a5fa" stroke-width="4"/>
+  <text x="84" y="474" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Las GUA viven dentro de <tspan fill="#7dd3fc">2000::/3</tspan> y llegan al usuario despues de una cadena de delegacion.</text>
+
+  <rect x="56" y="528" width="848" height="106" rx="22" fill="#101b2f" stroke="#60a5fa"/>
+  <text x="84" y="570" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">DNS para IPv6</text>
+  <text x="84" y="606" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="19">Cuando queremos publicar o consultar una direccion IPv6 en DNS, buscamos un registro <tspan fill="#93c5fd" font-weight="700">AAAA</tspan>.</text>
+</svg>

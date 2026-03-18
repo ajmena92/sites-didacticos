@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Guia de compresion IPv6</title>
+  <desc id="desc">Reglas visuales de compresion correcta de direcciones IPv6 y ejemplo de error invalido.</desc>
+  <rect width="960" height="640" rx="28" fill="#09111d"/>
+  <text x="56" y="72" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Compresion correcta de IPv6</text>
+  <text x="56" y="112" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Primero quitamos ceros a la izquierda. Despues usamos :: una sola vez si realmente conviene.</text>
+
+  <rect x="56" y="154" width="260" height="146" rx="20" fill="#0f1a2d" stroke="#26405f"/>
+  <text x="84" y="196" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Regla 1</text>
+  <text x="84" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="19">Quitamos ceros a la izquierda</text>
+  <text x="84" y="266" fill="#7dd3fc" font-family="Consolas, Monaco, monospace" font-size="21">000A → A</text>
+
+  <rect x="350" y="154" width="260" height="146" rx="20" fill="#0f1a2d" stroke="#26405f"/>
+  <text x="378" y="196" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Regla 2</text>
+  <text x="378" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="19">:: reemplaza una corrida</text>
+  <text x="378" y="266" fill="#7dd3fc" font-family="Consolas, Monaco, monospace" font-size="21">de grupos 0000</text>
+
+  <rect x="644" y="154" width="260" height="146" rx="20" fill="#102936" stroke="#4ade80"/>
+  <text x="672" y="196" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Regla 3</text>
+  <text x="672" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="19">:: solo puede aparecer</text>
+  <text x="672" y="266" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19">una vez por direccion</text>
+
+  <rect x="56" y="346" width="404" height="226" rx="22" fill="#0c1727" stroke="#334155"/>
+  <text x="84" y="390" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Ejemplo correcto</text>
+  <text x="84" y="430" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Completa</text>
+  <text x="84" y="466" fill="#e2e8f0" font-family="Consolas, Monaco, monospace" font-size="22">2001:0DB8:000A:0000:0000:0000:0000:0001</text>
+  <text x="84" y="508" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Comprimida</text>
+  <text x="84" y="544" fill="#4ade80" font-family="Consolas, Monaco, monospace" font-size="26" font-weight="700">2001:DB8:A::1</text>
+
+  <rect x="500" y="346" width="404" height="226" rx="22" fill="#28151b" stroke="#f87171"/>
+  <text x="528" y="390" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Error invalido</text>
+  <text x="528" y="430" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="18">No podemos usar :: dos veces</text>
+  <text x="528" y="472" fill="#f8fafc" font-family="Consolas, Monaco, monospace" font-size="26">2001::DB8::1</text>
+  <text x="528" y="520" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="18">La expansion deja de ser unica.</text>
+</svg>

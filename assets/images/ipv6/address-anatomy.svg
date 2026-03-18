@@ -41,24 +41,32 @@
     <rect x="488" y="388" width="196" height="156" rx="18" fill="#0b1220" stroke="#243244"/>
     <rect x="704" y="388" width="200" height="156" rx="18" fill="#0b1220" stroke="#243244"/>
 
-    <text x="84" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 1</text>
-    <text x="84" y="466" fill="#93a4b8" font-size="19">1 hexteto = 16 bits</text>
-    <text x="84" y="500" fill="#93a4b8" font-size="19">Cada grupo tiene 4</text>
-    <text x="84" y="528" fill="#93a4b8" font-size="19">simbolos hexadecimales.</text>
+    <text x="154" y="430" fill="#e2e8f0" font-size="21" font-weight="700" text-anchor="middle">Dato 1</text>
+    <text x="154" y="466" fill="#93a4b8" font-size="17" text-anchor="middle">
+      <tspan x="154" dy="0">1 hexteto = 16 bits</tspan>
+      <tspan x="154" dy="26">Cada grupo tiene</tspan>
+      <tspan x="154" dy="26">4 simbolos hexadecimales.</tspan>
+    </text>
 
-    <text x="300" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 2</text>
-    <text x="300" y="466" fill="#93a4b8" font-size="19">8 hextetos = 128 bits</text>
-    <text x="300" y="500" fill="#93a4b8" font-size="19">La direccion completa usa</text>
-    <text x="300" y="528" fill="#93a4b8" font-size="19">32 simbolos hexadecimales.</text>
+    <text x="370" y="430" fill="#e2e8f0" font-size="21" font-weight="700" text-anchor="middle">Dato 2</text>
+    <text x="370" y="466" fill="#93a4b8" font-size="17" text-anchor="middle">
+      <tspan x="370" dy="0">8 hextetos = 128 bits</tspan>
+      <tspan x="370" dy="26">La direccion completa usa</tspan>
+      <tspan x="370" dy="26">32 simbolos hexadecimales.</tspan>
+    </text>
 
-    <text x="516" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 3</text>
-    <text x="516" y="466" fill="#93a4b8" font-size="19">/64 divide la direccion</text>
-    <text x="516" y="500" fill="#93a4b8" font-size="19">en 64 bits de red y</text>
-    <text x="516" y="528" fill="#93a4b8" font-size="19">64 bits de interfaz.</text>
+    <text x="586" y="430" fill="#e2e8f0" font-size="21" font-weight="700" text-anchor="middle">Dato 3</text>
+    <text x="586" y="466" fill="#93a4b8" font-size="17" text-anchor="middle">
+      <tspan x="586" dy="0">/64 divide la direccion</tspan>
+      <tspan x="586" dy="26">en 64 bits de red</tspan>
+      <tspan x="586" dy="26">y 64 bits de interfaz.</tspan>
+    </text>
 
-    <text x="732" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 4</text>
-    <text x="732" y="466" fill="#93a4b8" font-size="19">Los grupos se separan</text>
-    <text x="732" y="500" fill="#93a4b8" font-size="19">con dos puntos y el</text>
-    <text x="732" y="528" fill="#93a4b8" font-size="19">prefijo se expresa con /n.</text>
+    <text x="804" y="430" fill="#e2e8f0" font-size="21" font-weight="700" text-anchor="middle">Dato 4</text>
+    <text x="804" y="466" fill="#93a4b8" font-size="17" text-anchor="middle">
+      <tspan x="804" dy="0">Los grupos se separan</tspan>
+      <tspan x="804" dy="26">con dos puntos y el</tspan>
+      <tspan x="804" dy="26">prefijo se expresa con /n.</tspan>
+    </text>
   </g>
 </svg>
