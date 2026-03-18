@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarea 1 — Comandos Cisco IOS | Módulo 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#0a0e0a;--panel:#0f1a0f;--border:#1a3a1a;--green:#00ff41;--green-dim:#00c030;--green-dark:#004010;--amber:#ffb800;--red:#ff3a3a;--cyan:#00e5ff;--white:#d0e8d0;--muted:#4a7a4a;--r:6px;--glow:0 0 10px rgba(0,255,65,.3);--glow-s:0 0 20px rgba(0,255,65,.6)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--white);font-family:'Exo 2',sans-serif;font-weight:300;min-height:100vh;background-image:radial-gradient(ellipse at 20% 0%,rgba(0,60,10,.4) 0%,transparent 60%),radial-gradient(ellipse at 80% 100%,rgba(0,40,10,.3) 0%,transparent 60%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);z-index:9999}
+header{border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;gap:20px;background:linear-gradient(180deg,rgba(0,255,65,.04) 0%,transparent 100%);position:relative;overflow:hidden;flex-wrap:wrap}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);animation:scanline 3s ease-in-out infinite}
+@keyframes scanline{0%,100%{opacity:.4}50%{opacity:1}}
+.logo-cisco{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:4px;opacity:.7}
+.hd{width:1px;height:38px;background:var(--border)}
+.header-info h1{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--green);letter-spacing:2px;text-shadow:var(--glow)}
+.header-info p{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.save-ind{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);opacity:0;transition:opacity .3s}
+.save-ind.show{opacity:1;color:var(--green-dim)}
+.score-badge{background:var(--green-dark);border:1px solid var(--green-dim);border-radius:var(--r);padding:7px 14px;text-align:center;box-shadow:var(--glow)}
+.score-badge .num{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:var(--green);line-height:1}
+.score-badge .lbl{font-size:8px;color:var(--muted);letter-spacing:2px}
+main{max-width:960px;margin:0 auto;padding:30px 18px;display:flex;flex-direction:column;gap:28px}
+.student-panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fg label{display:block;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.fg input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--green);font-family:'Share Tech Mono',monospace;font-size:13px;padding:7px 10px;outline:none;transition:border-color .2s,box-shadow .2s}
+.fg input:focus{border-color:var(--green-dim);box-shadow:0 0 8px rgba(0,255,65,.2)}
+.fg input::placeholder{color:var(--muted);opacity:.5}
+.fg input.err{border-color:var(--red);box-shadow:0 0 8px rgba(255,58,58,.3)}
+.name-hint{display:none;font-size:9px;color:var(--red);margin-top:3px;font-family:'Share Tech Mono',monospace}
+.name-hint.show{display:block}
+.btn-pdf{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:9px 16px;border-radius:var(--r);border:none;cursor:pointer;background:var(--amber);color:var(--bg);box-shadow:0 0 12px rgba(255,184,0,.35);transition:all .2s;text-transform:uppercase}
+.btn-pdf:hover{box-shadow:0 0 22px rgba(255,184,0,.6);transform:translateY(-1px)}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sn{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--bg);background:var(--green);padding:3px 8px;border-radius:2px;letter-spacing:1px}
+.st{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--green);letter-spacing:2px;text-shadow:0 0 8px rgba(0,255,65,.3)}
+.sp{margin-left:auto;font-size:10px;color:var(--amber);letter-spacing:1px}
+.terminal{background:#050a05;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.tbar{background:#0f1a0f;border-bottom:1px solid var(--border);padding:6px 11px;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%}
+.dr{background:#ff5f56}.dy{background:#ffbd2e}.dg{background:#27c93f}
+.ttitle{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-left:5px}
+.ibar{display:flex;align-items:center;gap:7px;padding:9px 16px;background:rgba(0,229,255,.04);border-bottom:1px solid var(--border);font-size:11px;color:var(--cyan);letter-spacing:.5px}
+.fc{padding:12px 16px}
+.fi{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;margin-bottom:9px;transition:border-color .2s}
+.fi:last-child{margin-bottom:0}
+.fi.ok{border-color:var(--green-dim);background:rgba(0,255,65,.04)}
+.fi.err{border-color:var(--red);background:rgba(255,58,58,.04)}
+.fr{display:flex;align-items:center;flex-wrap:wrap;font-family:'Share Tech Mono',monospace;font-size:13px}
+.fs{color:var(--green);white-space:pre}
+.finp{background:var(--bg);border:none;border-bottom:2px solid var(--amber);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:13px;padding:2px 6px;outline:none;min-width:50px;text-align:center;transition:border-color .2s}
+.finp:focus{border-bottom-color:var(--green)}
+.fdesc{font-size:10px;color:var(--muted);margin-top:5px}
+.ffb{font-size:9px;margin-top:4px;font-family:'Share Tech Mono',monospace;display:none}
+.fi.ok .ffb{display:block;color:var(--green)}
+.fi.err .ffb{display:block;color:var(--red)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:12px 16px}
+.mc{display:flex;flex-direction:column;gap:6px}
+.mct{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
+.mcmd{background:var(--green-dark);border:1px solid var(--green-dim);border-radius:var(--r);padding:8px 11px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);cursor:pointer;transition:all .15s;user-select:none}
+.mcmd:hover{background:rgba(0,255,65,.15);box-shadow:var(--glow)}
+.mcmd.sel{background:rgba(0,255,65,.2);border-color:var(--green);box-shadow:var(--glow-s)}
+.mcmd.mok{background:rgba(0,255,65,.06);border-color:var(--green);pointer-events:none;opacity:.7}
+.mcmd.merr{background:rgba(255,58,58,.1);border-color:var(--red)}
+.mdef{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:8px 11px;font-size:11px;color:var(--white);cursor:pointer;transition:all .15s;user-select:none;line-height:1.4}
+.mdef:hover{border-color:var(--amber);color:var(--amber)}
+.mdef.tsel{border-color:var(--amber);color:var(--amber)}
+.mdef.mok{border-color:var(--green-dim);color:var(--green);pointer-events:none}
+.mdef.mok::before{content:'✓ '}
+.mdef.merr{border-color:var(--red);color:var(--red)}
+.oc{padding:12px 16px}
+.otask{font-size:11px;color:var(--white);margin-bottom:12px;line-height:1.6;padding:10px 12px;background:var(--panel);border-left:3px solid var(--amber);border-radius:0 var(--r) var(--r) 0}
+.oslots{display:flex;flex-direction:column;gap:6px}
+.oslot{display:flex;align-items:center;gap:9px}
+.osn{font-family:'Orbitron',monospace;font-size:9px;color:var(--muted);width:16px;flex-shrink:0;text-align:right}
+.osel{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px 10px;outline:none;cursor:pointer;transition:border-color .2s;appearance:none}
+.osel:focus{border-color:var(--green-dim)}
+.osel option{background:#0a0e0a;color:var(--green)}
+.ores{font-size:14px;width:16px;text-align:center}
+.swrap{padding:0 16px 16px}
+.sdesc{font-size:11px;line-height:1.7;color:var(--white);margin-bottom:16px;padding:12px;background:var(--panel);border-radius:var(--r);border-left:3px solid var(--cyan)}
+.sq{margin-bottom:13px}
+.sqn{font-family:'Orbitron',monospace;font-size:8px;color:var(--cyan);margin-bottom:4px;letter-spacing:1px}
+.sq p{font-size:11px;color:var(--white);margin-bottom:7px}
+.opts{display:flex;flex-direction:column;gap:4px}
+.ol{display:flex;align-items:flex-start;gap:8px;padding:7px 11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--white);transition:all .15s;line-height:1.4}
+.ol:hover{border-color:var(--cyan);color:var(--cyan)}
+.od{width:11px;height:11px;border:1px solid var(--muted);border-radius:50%;flex-shrink:0;margin-top:2px;transition:all .15s}
+.ol.ck{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.05)}
+.ol.ck .od{background:var(--cyan);border-color:var(--cyan)}
+.ol.cans{border-color:var(--green);color:var(--green);background:rgba(0,255,65,.06)}
+.ol.cans .od{background:var(--green);border-color:var(--green)}
+.ol.wans{border-color:var(--red);color:var(--red);background:rgba(255,58,58,.06)}
+.ol.wans .od{border-color:var(--red)}
+.know-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px}
+.know-box h3{font-family:'Orbitron',monospace;font-size:9px;color:var(--green);letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
+.ct{width:100%;border-collapse:collapse}
+.ct th{font-size:8px;letter-spacing:2px;color:var(--muted);text-align:left;padding:4px 9px;border-bottom:1px solid var(--border);text-transform:uppercase}
+.ct td{padding:7px 9px;font-size:11px;border-bottom:1px solid rgba(26,58,26,.5);vertical-align:top}
+.ct tr:last-child td{border-bottom:none}
+.ct td:first-child{font-family:'Share Tech Mono',monospace;color:var(--green);white-space:nowrap}
+.ct td:nth-child(2){color:var(--cyan);font-size:9px}
+.ct td:last-child{color:var(--white);opacity:.8}
+.ar{display:flex;gap:9px;padding:14px 16px 0;flex-wrap:wrap}
+.btn{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:10px 18px;border-radius:var(--r);border:none;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.bp{background:var(--green);color:var(--bg);box-shadow:0 0 12px rgba(0,255,65,.4)}
+.bp:hover{background:var(--green-dim);box-shadow:0 0 20px rgba(0,255,65,.6);transform:translateY(-1px)}
+.bs{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.bs:hover{border-color:var(--muted);color:var(--white)}
+.rp{display:none;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;text-align:center;position:relative;overflow:hidden}
+.rp::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,255,65,.08) 0%,transparent 70%);pointer-events:none}
+.rp h2{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:var(--green);text-shadow:var(--glow-s);margin-bottom:5px}
+.fs2{font-family:'Orbitron',monospace;font-size:52px;font-weight:900;color:var(--green);text-shadow:0 0 26px rgba(0,255,65,.8);line-height:1;margin:12px 0}
+.slb{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.rb{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin:12px 0}
+.rbf{height:100%;background:linear-gradient(90deg,var(--green-dim),var(--green));border-radius:3px;transition:width 1s ease;box-shadow:0 0 7px rgba(0,255,65,.5)}
+.rmsg{font-size:12px;color:var(--white);line-height:1.6;margin-top:9px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sb{animation:fadeIn .4s ease both}
+.sb:nth-child(2){animation-delay:.05s}.sb:nth-child(3){animation-delay:.1s}.sb:nth-child(4){animation-delay:.15s}.sb:nth-child(5){animation-delay:.2s}
+footer{text-align:center;padding:24px;font-size:10px;color:var(--muted);border-top:1px solid var(--border);letter-spacing:1px}
+footer span{color:var(--green-dim)}
+@media(max-width:640px){.student-panel{grid-template-columns:1fr}.mgrid{grid-template-columns:1fr}header{padding:12px 14px}main{padding:16px 10px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-cisco">CISCO ▸ CCNA1</div>
+  <div class="hd"></div>
+  <div class="header-info">
+    <h1>ITN — MÓDULO 2 · TAREA 1</h1>
+    <p>CONFIGURACIÓN BÁSICA DEL SWITCH · COMANDOS IOS</p>
+  </div>
+  <div class="header-right">
+    <div class="save-ind" id="save-ind">● GUARDADO</div>
+    <button class="btn-pdf" onclick="generatePDF()">⬇ EXPORTAR PDF</button>
+    <div class="score-badge">
+      <div class="num" id="live-score">0</div>
+      <div class="lbl">/ 40 pts</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="student-panel sb">
+    <div class="fg">
+      <label>Nombre completo ★</label>
+      <input type="text" id="student-name" placeholder="Apellidos, Nombre" oninput="autoSave()">
+      <div class="name-hint" id="name-hint">⚠ Requerido para generar PDF</div>
+    </div>
+    <div class="fg">
+      <label>Sección / Grupo</label>
+      <input type="text" id="student-section" placeholder="Ej: 12-A" oninput="autoSave()">
+    </div>
+    <div class="fg">
+      <label>Fecha</label>
+      <input type="date" id="student-date" onchange="autoSave()">
+    </div>
+  </div>
+
+  <div class="know-box sb">
+    <h3>► Referencia rápida — Modos y Prompts de Cisco IOS</h3>
+    <table class="ct">
+      <thead><tr><th>Prompt</th><th>Modo</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td>Switch&gt;</td><td>EXEC usuario</td><td>Acceso limitado, solo monitoreo básico</td></tr>
+        <tr><td>Switch#</td><td>EXEC privilegiado</td><td>Acceso completo a comandos y funciones</td></tr>
+        <tr><td>Switch(config)#</td><td>Configuración global</td><td>Configuración general del dispositivo</td></tr>
+        <tr><td>Switch(config-line)#</td><td>Config. de línea</td><td>Configura consola, VTY, AUX</td></tr>
+        <tr><td>Switch(config-if)#</td><td>Config. de interfaz</td><td>Configura una interfaz de red específica</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sb">
+    <div class="sh"><span class="sn">01</span><span class="st">COMPLETE EL COMANDO</span><span class="sp">20 pts</span></div>
+    <div class="terminal">
+      <div class="tbar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div><div class="ttitle">SW-CTP-Platanares — configuración inicial</div></div>
+      <div class="ibar">💡 Escriba el comando en cada espacio. Acepta abreviaciones válidas (ej: <b style="margin-left:4px">conf t</b>).</div>
+      <div class="fc" id="fill-section"></div>
+      <div class="ar">
+        <button class="btn bp" onclick="checkFill()">▶ VERIFICAR SECCIÓN 01</button>
+        <button class="btn bs" onclick="resetFill()">↺ REINICIAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sh"><span class="sn">02</span><span class="st">RELACIONE COLUMNAS</span><span class="sp">10 pts</span></div>
+    <div class="terminal">
+      <div class="tbar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div><div class="ttitle">match — comandos ↔ función</div></div>
+      <div class="ibar">🎯 Haga clic en un comando (izquierda) y luego en su definición correcta (derecha).</div>
+      <div class="mgrid">
+        <div class="mc"><div class="mct">Comando IOS</div><div id="match-cmds"></div></div>
+        <div class="mc"><div class="mct">Función / Descripción</div><div id="match-defs"></div></div>
+      </div>
+      <div class="ar"><button class="btn bs" onclick="resetMatch()">↺ REINICIAR SECCIÓN 02</button></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sh"><span class="sn">03</span><span class="st">ORDENE LA SECUENCIA</span><span class="sp">5 pts</span></div>
+    <div class="terminal">
+      <div class="tbar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div><div class="ttitle">sequence — configurar SVI en un switch</div></div>
+      <div class="ibar">🔢 Seleccione el orden correcto (1 al 5) para configurar la interfaz virtual del switch con dirección IP.</div>
+      <div class="oc">
+        <div class="otask"><b>Escenario:</b> Debe configurar el switch <code>SW-CTP-01</code> remotamente. Necesita asignarle una IP a la VLAN 1 y habilitarla. Ordene los 5 pasos:</div>
+        <div class="oslots" id="order-section"></div>
+      </div>
+      <div class="ar">
+        <button class="btn bp" onclick="checkOrder()">▶ VERIFICAR SECCIÓN 03</button>
+        <button class="btn bs" onclick="resetOrder()">↺ REINICIAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sh"><span class="sn">04</span><span class="st">PREGUNTAS DE ESCENARIO</span><span class="sp">5 pts</span></div>
+    <div class="terminal">
+      <div class="tbar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div><div class="ttitle">scenario — aplicación de conceptos</div></div>
+      <div class="ibar">🧠 Lea cada situación y seleccione la única respuesta correcta.</div>
+      <div class="swrap">
+        <div class="sdesc">El técnico del <b>CTP Platanares</b> está configurando un switch nuevo. Acaba de encenderlo y necesita realizar la configuración inicial. Responda las siguientes preguntas.</div>
+        <div id="scenario-section"></div>
+        <div class="ar" style="padding-top:10px">
+          <button class="btn bp" onclick="checkScenario()">▶ VERIFICAR SECCIÓN 04</button>
+          <button class="btn bs" onclick="resetScenario()">↺ REINICIAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rp" id="result-panel">
+    <h2 id="result-title">RESULTADO</h2>
+    <div class="fs2" id="result-score">—</div>
+    <div class="slb">PUNTOS DE 40</div>
+    <div class="rb"><div class="rbf" id="result-bar" style="width:0%"></div></div>
+    <div class="rmsg" id="result-msg"></div>
+  </div>
+</main>
+
+<footer>CTP Platanares · Configuración y Soporte a Redes · <span>ITN — Módulo 2 · Tarea 1</span> · CCNA1 v7.0</footer>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const FILL_Q=[
+  {pre:'Switch> ',w:90,ph:'______',desc:'Ingresa al modo EXEC privilegiado.',ans:['enable']},
+  {pre:'Switch# ',w:175,ph:'_______________',desc:'Ingresa al modo de configuración global.',ans:['configure terminal','conf t','conf terminal']},
+  {pre:'Switch(config)# ',w:100,ph:'________',desc:'Asigna un nombre de host único al dispositivo.',ans:['hostname']},
+  {pre:'SW-CTP(config)# ',w:140,ph:'____________',post:' Cisco2025#',desc:'Contraseña encriptada para el modo EXEC privilegiado.',ans:['enable secret']},
+  {pre:'SW-CTP(config)# ',w:162,ph:'______________',desc:'Accede al modo de configuración del puerto de consola.',ans:['line console 0','line con 0']},
+  {pre:'SW-CTP(config)# ',w:235,ph:'_____________________',desc:'Encripta las contraseñas en texto plano del archivo de configuración.',ans:['service password-encryption']},
+  {pre:'SW-CTP# ',w:270,ph:'__________________________',desc:'Guarda la configuración activa en la NVRAM (startup-config).',ans:['copy running-config startup-config','copy run start','wr','write']},
+  {pre:'SW-CTP# ',w:205,ph:'__________________',desc:'Borra la configuración guardada en la NVRAM.',ans:['erase startup-config','erase start']},
+  {pre:'SW-CTP(config-if)# ',w:128,ph:'__________',desc:'Habilita (activa) una interfaz administrativamente apagada.',ans:['no shutdown','no shut']},
+  {pre:'SW-CTP# ',w:195,ph:'_________________',desc:'Muestra la configuración activa en la RAM del dispositivo.',ans:['show running-config','show run']},
+];
+
+const MATCH_DATA=[
+  {id:'m1',cmd:'end',           def:'Sale de cualquier subconfiguración y regresa directamente al modo EXEC privilegiado'},
+  {id:'m2',cmd:'banner motd #', def:'Crea un mensaje de aviso del día que aparece al conectarse al dispositivo'},
+  {id:'m3',cmd:'reload',        def:'Reinicia el dispositivo; cambios sin guardar en running-config se perderán'},
+  {id:'m4',cmd:'line vty 0 15', def:'Accede al modo de configuración de líneas virtuales para Telnet/SSH'},
+  {id:'m5',cmd:'ip address [IP] [mask]', def:'Asigna una dirección IP y máscara de subred a una interfaz de red'},
+];
+
+const ORDER_STEPS=[
+  {label:'Switch# configure terminal',correct:1},
+  {label:'Switch(config)# interface vlan 1',correct:2},
+  {label:'Switch(config-if)# ip address 192.168.1.20 255.255.255.0',correct:3},
+  {label:'Switch(config-if)# no shutdown',correct:4},
+  {label:'Switch(config-if)# end',correct:5},
+];
+
+const SCENARIO_Q=[
+  {id:'q1',q:'El técnico conecta su laptop al switch con un cable de consola y abre PuTTY. ¿En qué modo IOS se encuentra al conectarse por primera vez?',
+   opts:['EXEC privilegiado — Switch#','EXEC de usuario — Switch>','Configuración global — Switch(config)#','Configuración de interfaz — Switch(config-if)#'],correct:1},
+  {id:'q2',q:'Ejecuta show running-config y ve la contraseña de consola en texto plano. ¿Qué comando debe usar para solucionar esto?',
+   opts:['enable secret [contraseña]','password encryption enable','service password-encryption','encrypt all passwords'],correct:2},
+  {id:'q3',q:'Aplicó cambios erróneos. La startup-config NO fue modificada. ¿Cuál es la forma más rápida de deshacer todos los cambios?',
+   opts:['Ejecutar erase startup-config y apagar el switch','Ejecutar reload para reiniciar el dispositivo','Ejecutar copy startup-config running-config y luego reload','Desconectar el cable de consola y reconectarse'],correct:1},
+  {id:'q4',q:'El técnico teclea Switch# interface vlan 1 y obtiene % Invalid input detected. ¿Por qué ocurrió este error?',
+   opts:['La VLAN 1 no existe en el switch','El switch no soporta interfaces virtuales','El comando interface debe ejecutarse desde el modo de configuración global','Falta escribir VLAN en mayúsculas'],correct:2},
+  {id:'q5',q:'¿Cuál es la diferencia entre startup-config y running-config?',
+   opts:['Son idénticos; se sincronizan automáticamente en tiempo real','startup-config está en RAM (volátil); running-config está en NVRAM (no volátil)','running-config está en RAM (volátil); startup-config está en NVRAM y se carga al reiniciar','startup-config contiene solo contraseñas; running-config contiene toda la configuración'],correct:2},
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const SK='tarea_mod2_v3';
+let fillScore=0,matchScore=0,orderScore=0,scenarioScore=0;
+let fillDone=false,matchDone=false,orderDone=false,scenarioDone=false;
+let matchedPairs=[];
+let scenarioSel={};
+let saveTimer=null;
+
+function autoSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{
+      const state={
+        student:{name:v('student-name'),section:v('student-section'),date:v('student-date')},
+        fill:{answers:[...document.querySelectorAll('.finp')].map(i=>i.value),done:fillDone,score:fillScore},
+        match:{pairs:matchedPairs,done:matchDone,score:matchScore},
+        order:{sels:getOrderSels(),done:orderDone,score:orderScore},
+        scenario:{sel:scenarioSel,done:scenarioDone,score:scenarioScore},
+      };
+      localStorage.setItem(SK,JSON.stringify(state));
+      const ind=document.getElementById('save-ind');
+      ind.classList.add('show');
+      setTimeout(()=>ind.classList.remove('show'),2000);
+    }catch(e){}
+  },600);
+}
+
+function v(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function getOrderSels(){
+  const r=[];
+  for(let i=1;i<=5;i++){const el=document.getElementById('order-slot-'+i);r.push(el?el.value:'');}
+  return r;
+}
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SK);
+    if(!raw)return;
+    const s=JSON.parse(raw);
+    if(s.student){
+      if(s.student.name) document.getElementById('student-name').value=s.student.name;
+      if(s.student.section) document.getElementById('student-section').value=s.student.section;
+      if(s.student.date) document.getElementById('student-date').value=s.student.date;
+    }
+    if(s.fill&&s.fill.answers){
+      const inps=document.querySelectorAll('.finp');
+      s.fill.answers.forEach((v,i)=>{if(inps[i])inps[i].value=v;});
+      if(s.fill.done){fillScore=s.fill.score||0;fillDone=true;checkFill(true);}
+    }
+    if(s.match&&s.match.pairs){
+      s.match.pairs.forEach(p=>restoreMatchPair(p.cmdId));
+      matchScore=s.match.score||0;
+      matchDone=s.match.done||false;
+    }
+    if(s.order&&s.order.sels){
+      s.order.sels.forEach((sv,i)=>{
+        const el=document.getElementById('order-slot-'+(i+1));
+        if(el&&sv)el.value=sv;
+      });
+      if(s.order.done){orderScore=s.order.score||0;orderDone=true;checkOrder(true);}
+    }
+    if(s.scenario&&s.scenario.sel){
+      scenarioSel=s.scenario.sel;
+      Object.entries(scenarioSel).forEach(([qId,data])=>{
+        const opts=document.querySelectorAll('#opts-'+qId+' .ol');
+        if(opts[data.idx]&&!s.scenario.done)opts[data.idx].classList.add('ck');
+      });
+      if(s.scenario.done){scenarioScore=s.scenario.score||0;scenarioDone=true;checkScenario(true);}
+    }
+    updateScore();
+  }catch(e){console.warn(e);}
+}
+
+// ─── SCORE ───────────────────────────────────────────────────────────────────
+function updateScore(){
+  const t=fillScore+matchScore+orderScore+scenarioScore;
+  document.getElementById('live-score').textContent=t;
+  if(fillDone&&matchDone&&orderDone&&scenarioDone)showResult();
+  autoSave();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderFill(){
+  const c=document.getElementById('fill-section');
+  FILL_Q.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='fi';d.dataset.idx=i;
+    const post=q.post?`<span class="fs">${q.post}</span>`:'';
+    d.innerHTML=`<div class="fr"><span class="fs">${q.pre}</span><input class="finp" style="width:${q.w}px" placeholder="${q.ph}" data-i="${i}" oninput="autoSave()">${post}</div>
+    <div class="fdesc">${q.desc}</div><div class="ffb"></div>`;
+    c.appendChild(d);
+  });
+}
+
+function renderMatch(){
+  const cmdsEl=document.getElementById('match-cmds');
+  const defsEl=document.getElementById('match-defs');
+  cmdsEl.innerHTML='';defsEl.innerHTML='';
+  const shuffled=[...MATCH_DATA].sort(()=>Math.random()-.5);
+  MATCH_DATA.forEach(m=>{
+    const el=document.createElement('div');
+    el.className='mcmd';el.dataset.id=m.id;el.textContent=m.cmd;
+    el.onclick=()=>doSelCmd(el);
+    cmdsEl.appendChild(el);
+  });
+  shuffled.forEach(m=>{
+    const el=document.createElement('div');
+    el.className='mdef';el.dataset.target=m.id;el.textContent=m.def;
+    el.onclick=()=>doSelDef(el);
+    defsEl.appendChild(el);
+  });
+}
+
+function renderOrder(){
+  const c=document.getElementById('order-section');c.innerHTML='';
+  for(let i=1;i<=5;i++){
+    const s=document.createElement('div');s.className='oslot';
+    s.innerHTML=`<div class="osn">${i}.</div>
+    <select class="osel" id="order-slot-${i}" onchange="autoSave()">
+      <option value="">— seleccione —</option>
+      ${ORDER_STEPS.map((st,j)=>`<option value="${j+1}">${st.label}</option>`).join('')}
+    </select>
+    <div class="ores" id="order-res-${i}"></div>`;
+    c.appendChild(s);
+  }
+}
+
+function renderScenario(){
+  const c=document.getElementById('scenario-section');c.innerHTML='';
+  SCENARIO_Q.forEach((q,qi)=>{
+    const d=document.createElement('div');d.className='sq';
+    d.innerHTML=`<div class="sqn">PREGUNTA 4.${qi+1}</div>
+    <p>${q.q}</p>
+    <div class="opts" id="opts-${q.id}">
+      ${q.opts.map((o,oi)=>`<label class="ol" onclick="doSelOpt('${q.id}',${oi},${oi===q.correct})"><div class="od"></div>${o}</label>`).join('')}
+    </div>`;
+    c.appendChild(d);
+  });
+}
+
+// ─── SECTION 1 ───────────────────────────────────────────────────────────────
+function checkFill(silent=false){
+  let pts=0;
+  document.querySelectorAll('.fi').forEach((item,idx)=>{
+    const q=FILL_Q[idx];
+    const inp=item.querySelector('.finp');
+    const fb=item.querySelector('.ffb');
+    const val=inp.value.trim().toLowerCase();
+    const ok=q.ans.some(a=>a.toLowerCase()===val);
+    item.classList.remove('ok','err');
+    if(ok){item.classList.add('ok');fb.textContent='✓ Correcto';pts+=2;}
+    else{item.classList.add('err');fb.textContent='✗  Esperado: '+q.ans[0];}
+    inp.disabled=true;
+  });
+  fillScore=pts;fillDone=true;
+  if(!silent)updateScore();
+}
+function resetFill(){
+  document.querySelectorAll('.fi').forEach(item=>{
+    item.classList.remove('ok','err');
+    item.querySelector('.finp').value='';
+    item.querySelector('.finp').disabled=false;
+    item.querySelector('.ffb').textContent='';
+  });
+  fillScore=0;fillDone=false;updateScore();
+}
+
+// ─── SECTION 2 ───────────────────────────────────────────────────────────────
+let selCmd=null,selDef=null;
+function doSelCmd(el){
+  if(el.classList.contains('mok'))return;
+  document.querySelectorAll('.mcmd.sel').forEach(e=>e.classList.remove('sel'));
+  if(selCmd===el){selCmd=null;return;}
+  selCmd=el;el.classList.add('sel');
+  if(selDef)tryMatch();
+}
+function doSelDef(el){
+  if(el.classList.contains('mok'))return;
+  document.querySelectorAll('.mdef.tsel').forEach(e=>e.classList.remove('tsel'));
+  if(selDef===el){selDef=null;return;}
+  selDef=el;el.classList.add('tsel');
+  if(selCmd)tryMatch();
+}
+function tryMatch(){
+  if(selCmd.dataset.id===selDef.dataset.target){
+    selCmd.classList.remove('sel');selCmd.classList.add('mok');
+    selDef.classList.remove('tsel');selDef.classList.add('mok');
+    matchedPairs.push({cmdId:selCmd.dataset.id});
+    matchScore+=2;if(matchScore>=10)matchDone=true;
+    updateScore();
+  }else{
+    selCmd.classList.add('merr');selDef.classList.add('merr');
+    setTimeout(()=>{
+      if(selCmd)selCmd.classList.remove('merr','sel');
+      if(selDef)selDef.classList.remove('merr','tsel');
+    },700);
+  }
+  selCmd=null;selDef=null;
+}
+function restoreMatchPair(cmdId){
+  const cmdEl=document.querySelector(`.mcmd[data-id="${cmdId}"]`);
+  const defEl=document.querySelector(`.mdef[data-target="${cmdId}"]`);
+  if(cmdEl)cmdEl.classList.add('mok');
+  if(defEl)defEl.classList.add('mok');
+  if(!matchedPairs.find(p=>p.cmdId===cmdId))matchedPairs.push({cmdId});
+}
+function resetMatch(){
+  selCmd=null;selDef=null;matchedPairs=[];
+  document.querySelectorAll('.mcmd').forEach(e=>e.className='mcmd');
+  document.querySelectorAll('.mdef').forEach(e=>e.className='mdef');
+  matchScore=0;matchDone=false;updateScore();
+}
+
+// ─── SECTION 3 ───────────────────────────────────────────────────────────────
+function checkOrder(silent=false){
+  let pts=0;
+  for(let i=1;i<=5;i++){
+    const sel=document.getElementById('order-slot-'+i);
+    const res=document.getElementById('order-res-'+i);
+    const ok=parseInt(sel.value)===i;
+    if(ok){res.textContent='✓';res.style.color='var(--green)';pts++;}
+    else if(sel.value){res.textContent='✗';res.style.color='var(--red)';}
+    sel.disabled=true;
+  }
+  orderScore=pts;orderDone=true;
+  if(!silent)updateScore();
+}
+function resetOrder(){orderScore=0;orderDone=false;renderOrder();updateScore();}
+
+// ─── SECTION 4 ───────────────────────────────────────────────────────────────
+function doSelOpt(qId,idx,isCorrect){
+  if(scenarioDone)return;
+  document.querySelectorAll('#opts-'+qId+' .ol').forEach(l=>l.classList.remove('ck'));
+  document.querySelectorAll('#opts-'+qId+' .ol')[idx].classList.add('ck');
+  scenarioSel[qId]={idx,correct:isCorrect};
+  autoSave();
+}
+function checkScenario(silent=false){
+  let pts=0;
+  SCENARIO_Q.forEach(q=>{
+    const sel=scenarioSel[q.id];
+    const opts=document.querySelectorAll('#opts-'+q.id+' .ol');
+    opts.forEach((opt,i)=>{
+      opt.classList.remove('ck');
+      if(sel&&i===sel.idx){opt.classList.add(sel.correct?'cans':'wans');if(sel.correct)pts++;}
+      else if(i===q.correct)opt.classList.add('cans');
+      opt.onclick=null;opt.style.cursor='default';
+    });
+  });
+  scenarioScore=pts;scenarioDone=true;
+  if(!silent)updateScore();
+}
+function resetScenario(){scenarioSel={};scenarioScore=0;scenarioDone=false;renderScenario();updateScore();}
+
+// ─── RESULT ──────────────────────────────────────────────────────────────────
+function showResult(){
+  const t=fillScore+matchScore+orderScore+scenarioScore,pct=(t/40)*100;
+  const p=document.getElementById('result-panel');p.style.display='block';
+  document.getElementById('result-score').textContent=t;
+  setTimeout(()=>document.getElementById('result-bar').style.width=pct+'%',100);
+  let title,msg;
+  if(pct>=90){title='🏆 EXCELENTE';msg='Dominio sobresaliente de los comandos IOS del Módulo 2. Está listo para configurar switches Cisco en entornos reales.';}
+  else if(pct>=75){title='✅ MUY BIEN';msg='Buen manejo de los comandos básicos. Repase los errores, especialmente los modos de configuración y la secuencia de comandos.';}
+  else if(pct>=60){title='⚠️ ACEPTABLE';msg='Comprensión básica adquirida. Practique en Packet Tracer la navegación entre modos IOS y el guardado de configuraciones.';}
+  else{title='🔁 NECESITA REFUERZO';msg='Es necesario repasar el Módulo 2 antes de avanzar. Practique en Packet Tracer los flujos de configuración básica de switches.';}
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-msg').textContent=msg;
+  p.scrollIntoView({behavior:'smooth'});
+}
+
+// ─── PDF ─────────────────────────────────────────────────────────────────────
+function generatePDF(){
+  const nameEl=document.getElementById('student-name');
+  const studentName=nameEl.value.trim();
+  if(!studentName){
+    nameEl.classList.add('err');
+    document.getElementById('name-hint').classList.add('show');
+    nameEl.focus();
+    setTimeout(()=>nameEl.classList.remove('err'),3000);
+    return;
+  }
+  document.getElementById('name-hint').classList.remove('show');
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,M=14,CW=W-M*2;
+  let y=0;
+
+  // Color palette
+  const DK=[0,45,10],MD=[0,90,22],GN=[0,160,38],LG=[232,255,235],TG=[0,70,18];
+  const AM=[175,115,0],RD=[170,25,25],RB=[255,232,232];
+  const BK=[18,18,18],GR=[85,85,85],LGR=[246,246,246],WH=[255,255,255];
+
+  function pageBreak(need=14){
+    if(y+need>282){doc.addPage();y=16;miniHdr();}
+  }
+  function miniHdr(){
+    doc.setFillColor(...DK);doc.rect(0,0,W,10,'F');
+    doc.setTextColor(...WH);doc.setFontSize(7);doc.setFont('helvetica','normal');
+    doc.text('CTP Platanares · ITN Módulo 2 · Tarea 1',M,6.5);
+    doc.text(studentName,W-M,6.5,{align:'right'});
+  }
+  function sBar(label,score,total){
+    pageBreak(11);
+    doc.setFillColor(...MD);doc.roundedRect(M,y,CW,8,1,1,'F');
+    doc.setTextColor(...WH);doc.setFontSize(8.5);doc.setFont('helvetica','bold');
+    doc.text(label,M+4,y+5.5);
+    doc.text(score+' / '+total+' pts',W-M-4,y+5.5,{align:'right'});
+    y+=11;
+  }
+
+  // ── COVER ──
+  doc.setFillColor(...DK);doc.rect(0,0,W,44,'F');
+  doc.setFillColor(...GN);doc.rect(0,44,W,2,'F');
+  doc.setTextColor(...WH);
+  doc.setFontSize(7.5);doc.setFont('helvetica','normal');
+  doc.text('MINISTERIO DE EDUCACIÓN PÚBLICA — CTP PLATANARES',M,10);
+  doc.text('Configuración y Soporte a Redes de Comunicación y Sistemas Operativos',M,16);
+  doc.setFontSize(17);doc.setFont('helvetica','bold');
+  doc.text('ITN MÓDULO 2 — TAREA 1',M,29);
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  doc.text('Comandos básicos de Cisco IOS',M,37);
+  y=50;
+
+  // Student info
+  doc.setFillColor(...LG);doc.setDrawColor(...GN);doc.roundedRect(M,y,CW,30,2,2,'FD');
+  doc.setTextColor(...TG);doc.setFontSize(7.5);doc.setFont('helvetica','bold');
+  doc.text('INFORMACIÓN DEL ESTUDIANTE',M+4,y+6);
+  doc.setFont('helvetica','normal');doc.setTextColor(...BK);doc.setFontSize(10);
+  const sect=v('student-section')||'—',date=v('student-date')||'—';
+  const total=fillScore+matchScore+orderScore+scenarioScore;
+  doc.text('Nombre:',M+4,y+14);doc.setFont('helvetica','bold');doc.text(studentName,M+27,y+14);doc.setFont('helvetica','normal');
+  doc.text('Sección: '+sect,M+4,y+21);
+  doc.text('Fecha: '+date,CW/2+M,y+14);
+  doc.setFont('helvetica','bold');doc.setTextColor(...TG);
+  doc.text('Puntaje: '+total+' / 40',CW/2+M,y+21);
+  y+=36;
+
+  // Progress bar
+  doc.setFillColor(210,210,210);doc.roundedRect(M,y,CW,5,2,2,'F');
+  const bw=Math.max(0,(total/40)*CW);
+  if(bw>0){doc.setFillColor(...GN);doc.roundedRect(M,y,bw,5,2,2,'F');}
+  doc.setTextColor(...GR);doc.setFontSize(7);doc.setFont('helvetica','normal');
+  doc.text(Math.round((total/40)*100)+'%',W-M,y+3.5,{align:'right'});
+  y+=11;
+
+  // Score table header
+  doc.setFillColor(...DK);doc.rect(M,y,CW,8,'F');
+  doc.setTextColor(...WH);doc.setFontSize(8);doc.setFont('helvetica','bold');
+  doc.text('SECCIÓN',M+4,y+5.5);doc.text('PUNTAJE',W-M-4,y+5.5,{align:'right'});
+  y+=8;
+  [[`01 — Complete el comando (10 × 2 pts)`,fillScore+' / 20'],
+   [`02 — Relacione columnas (5 pares × 2 pts)`,matchScore+' / 10'],
+   [`03 — Ordene la secuencia (5 pasos × 1 pt)`,orderScore+' / 5'],
+   [`04 — Preguntas de escenario (5 × 1 pt)`,scenarioScore+' / 5'],
+  ].forEach((r,i)=>{
+    doc.setFillColor(...(i%2===0?LGR:WH));doc.rect(M,y,CW,8,'F');
+    doc.setTextColor(...BK);doc.setFontSize(8.5);doc.setFont('helvetica','normal');
+    doc.text(r[0],M+4,y+5.5);doc.text(r[1],W-M-4,y+5.5,{align:'right'});y+=8;
+  });
+  doc.setFillColor(...MD);doc.rect(M,y,CW,10,'F');
+  doc.setTextColor(...WH);doc.setFontSize(9);doc.setFont('helvetica','bold');
+  doc.text('TOTAL',M+4,y+6.8);doc.text(total+' / 40',W-M-4,y+6.8,{align:'right'});y+=14;
+
+  // Grade badge
+  const pct=(total/40)*100;
+  let grade,gc;
+  if(pct>=90){grade='EXCELENTE';gc=GN;}
+  else if(pct>=75){grade='MUY BIEN';gc=MD;}
+  else if(pct>=60){grade='ACEPTABLE';gc=AM;}
+  else{grade='NECESITA REFUERZO';gc=RD;}
+  doc.setFillColor(...gc);doc.roundedRect(M,y,CW,12,2,2,'F');
+  doc.setTextColor(...WH);doc.setFontSize(13);doc.setFont('helvetica','bold');
+  doc.text(grade,W/2,y+8.5,{align:'center'});y+=18;
+
+  // ── DETAIL PAGES ──
+  doc.addPage();y=16;miniHdr();
+
+  // SEC 1
+  sBar('SECCIÓN 01 — COMPLETE EL COMANDO',fillScore,20);
+  const fInps=document.querySelectorAll('.finp');
+  FILL_Q.forEach((q,i)=>{
+    pageBreak(17);
+    const ans=fInps[i]?fInps[i].value.trim():'';
+    const ok=q.ans.some(a=>a.toLowerCase()===ans.toLowerCase());
+    doc.setFillColor(...(fillDone?(ok?LG:RB):WH));doc.rect(M,y,CW,16,'F');
+    doc.setDrawColor(200,200,200);doc.rect(M,y,CW,16);
+    doc.setFillColor(...DK);doc.rect(M,y,8,16,'F');
+    doc.setTextColor(...WH);doc.setFontSize(8);doc.setFont('helvetica','bold');
+    doc.text(String(i+1).padStart(2,'0'),M+4,y+9,{align:'center'});
+    doc.setTextColor(...GR);doc.setFontSize(7.5);doc.setFont('helvetica','normal');
+    doc.text(q.pre,M+10,y+6);
+    doc.setTextColor(...BK);doc.setFontSize(8.5);
+    doc.text(q.desc,M+10,y+12);
+    if(fillDone){
+      if(ok){
+        doc.setTextColor(...TG);doc.setFont('helvetica','bold');
+        doc.text('✓ '+ans,W-M-4,y+9,{align:'right'});
+      }else{
+        doc.setTextColor(...RD);doc.setFont('helvetica','bold');
+        doc.text('✗ '+(ans||'(sin respuesta)'),W-M-4,y+5.5,{align:'right'});
+        doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+        doc.text('Correcto: '+q.ans[0],W-M-4,y+11.5,{align:'right'});
+      }
+    }else{
+      doc.setTextColor(...GR);doc.setFontSize(8.5);doc.setFont('helvetica','italic');
+      doc.text(ans||'—',W-M-4,y+9,{align:'right'});
+    }
+    y+=17;
+  });
+
+  // SEC 2
+  y+=4;sBar('SECCIÓN 02 — RELACIONE COLUMNAS',matchScore,10);
+  MATCH_DATA.forEach((m,i)=>{
+    pageBreak(15);
+    const matched=matchedPairs.some(p=>p.cmdId===m.id);
+    // Solo colorear fondo si la sección fue verificada
+    doc.setFillColor(...(matchDone?(matched?LG:RB):WH));doc.rect(M,y,CW,14,'F');
+    doc.setDrawColor(200,200,200);doc.rect(M,y,CW,14);
+    doc.setFillColor(...DK);doc.rect(M,y,8,14,'F');
+    doc.setTextColor(...WH);doc.setFontSize(8);doc.setFont('helvetica','bold');
+    doc.text(String(i+1),M+4,y+9,{align:'center'});
+    doc.setTextColor(...TG);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text(m.cmd,M+11,y+6);
+    if(matchDone){
+      // Mostrar definición y resultado solo si fue verificado
+      doc.setTextColor(...BK);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      const lines=doc.splitTextToSize(m.def,CW-42);
+      doc.text(lines,M+11,y+11.5);
+      doc.setTextColor(matched?TG[0]:RD[0],matched?TG[1]:RD[1],matched?TG[2]:RD[2]);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);
+      doc.text(matched?'✓':'✗',W-M-4,y+9,{align:'right'});
+    }else if(matched){
+      // Ya fue emparejado correctamente en esta sesión
+      doc.setTextColor(...BK);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      const lines=doc.splitTextToSize(m.def,CW-42);
+      doc.text(lines,M+11,y+11.5);
+      doc.setTextColor(...TG);doc.setFont('helvetica','bold');doc.setFontSize(11);
+      doc.text('✓',W-M-4,y+9,{align:'right'});
+    }else{
+      // Sin responder: mostrar solo el comando, sin definición ni respuesta correcta
+      doc.setTextColor(...GR);doc.setFont('helvetica','italic');doc.setFontSize(8);
+      doc.text('(sin relacionar)',M+11,y+10);
+    }
+    y+=15;
+  });
+
+  // SEC 3
+  y+=4;sBar('SECCIÓN 03 — ORDENE LA SECUENCIA',orderScore,5);
+  for(let i=1;i<=5;i++){
+    pageBreak(13);
+    const step=ORDER_STEPS.find(s=>s.correct===i);
+    const selEl=document.getElementById('order-slot-'+i);
+    const selV=selEl?parseInt(selEl.value):0;
+    const selStep=ORDER_STEPS.find(s=>s.correct===selV);
+    const ok=selV===i;
+    doc.setFillColor(...(orderDone?(ok?LG:RB):WH));doc.rect(M,y,CW,12,'F');
+    doc.setDrawColor(200,200,200);doc.rect(M,y,CW,12);
+    doc.setFillColor(...MD);doc.rect(M,y,8,12,'F');
+    doc.setTextColor(...WH);doc.setFontSize(9);doc.setFont('helvetica','bold');
+    doc.text(String(i),M+4,y+7.5,{align:'center'});
+    doc.setTextColor(...BK);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+    if(orderDone){
+      // Mostrar paso correcto solo si fue verificado
+      doc.text(step.label,M+11,y+5);
+      if(!ok&&selStep){doc.setTextColor(...RD);doc.setFontSize(7.5);doc.text('Marcó: '+selStep.label,M+11,y+10);}
+      doc.setTextColor(ok?TG[0]:RD[0],ok?TG[1]:RD[1],ok?TG[2]:RD[2]);
+      doc.setFont('helvetica','bold');doc.setFontSize(12);
+      doc.text(ok?'✓':'✗',W-M-4,y+8,{align:'right'});
+    }else{
+      // Sin verificar: mostrar solo lo que seleccionó, sin revelar el correcto
+      if(selStep){
+        doc.text(selStep.label,M+11,y+7.5);
+      }else{
+        doc.setTextColor(...GR);doc.setFont('helvetica','italic');doc.setFontSize(8);
+        doc.text('(sin seleccionar)',M+11,y+7.5);
+      }
+    }
+    y+=13;
+  }
+
+  // SEC 4
+  y+=4;sBar('SECCIÓN 04 — PREGUNTAS DE ESCENARIO',scenarioScore,5);
+  SCENARIO_Q.forEach((q,qi)=>{
+    const sel=scenarioSel[q.id];
+    const ans=sel!==undefined&&sel!==null;
+    const ok=ans&&sel.correct;
+    const qLines=doc.splitTextToSize((qi+1)+'. '+q.q,CW-8);
+    const extraH=(scenarioDone&&ans&&!ok)?8:0;
+    const h=8+(qLines.length*4)+((scenarioDone||ans)?14:4)+extraH;
+    pageBreak(h+4);
+    // Fondo: solo colorear si fue verificado
+    doc.setFillColor(...(scenarioDone?(ok?LG:RB):WH));doc.rect(M,y,CW,h,'F');
+    doc.setDrawColor(200,200,200);doc.rect(M,y,CW,h);
+    doc.setTextColor(...BK);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+    doc.text(qLines,M+4,y+6);
+    let qy=y+6+(qLines.length*4);
+    if(scenarioDone){
+      // Solo mostrar respuesta correcta después de verificar
+      doc.setTextColor(...TG);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      doc.text('Correcta: '+q.opts[q.correct],M+4,qy+4);qy+=4;
+      if(ans&&!ok){
+        doc.setTextColor(...RD);doc.setFontSize(7.5);
+        doc.text('Marcó: '+q.opts[sel.idx],M+4,qy+8);
+      }
+      if(ans){
+        doc.setTextColor(ok?TG[0]:RD[0],ok?TG[1]:RD[1],ok?TG[2]:RD[2]);
+        doc.setFont('helvetica','bold');doc.setFontSize(12);
+        doc.text(ok?'✓':'✗',W-M-4,y+h/2+3,{align:'right'});
+      }
+    }else if(ans){
+      // Sin verificar pero seleccionó algo: mostrar su selección sin revelar si es correcto
+      doc.setTextColor(...GR);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      doc.text('Seleccionó: '+q.opts[sel.idx],M+4,qy+4);
+    }else{
+      // Sin responder
+      doc.setTextColor(...GR);doc.setFont('helvetica','italic');doc.setFontSize(8);
+      doc.text('(sin responder)',M+4,qy+4);
+    }
+    y+=h+5;
+  });
+
+  // Footer
+  pageBreak(10);
+  doc.setFillColor(...DK);doc.rect(0,287,W,10,'F');
+  doc.setTextColor(...WH);doc.setFontSize(7);doc.setFont('helvetica','normal');
+  doc.text('CTP Platanares · ITN CCNA1 v7.0 · Módulo 2 — Tarea 1',M,293);
+  doc.text('Generado: '+new Date().toLocaleString('es-CR'),W-M,293,{align:'right'});
+
+  const safe=studentName.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'');
+  doc.save(safe+'_tarea1.pdf');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderFill();
+renderMatch();
+renderOrder();
+renderScenario();
+document.getElementById('student-date').valueAsDate=new Date();
+setTimeout(loadState,120);
+</script>
+</body>
+</html>
