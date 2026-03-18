@@ -11,7 +11,12 @@
       "Bash(curl -s http://localhost:58223 > /dev/null 2>&1 && echo \"Server running\" || echo \"Server down\")",
       "Bash(git add:*)",
       "Bash(git push:*)",
-      "Bash(tree -L 3 -I 'node_modules|.git' /mnt/c/Dev/sites-didacticos 2>/dev/null || find /mnt/c/Dev/sites-didacticos -type d -not -path '*/\\\\.*' | head -30)"
+      "Bash(tree -L 3 -I 'node_modules|.git' /mnt/c/Dev/sites-didacticos 2>/dev/null || find /mnt/c/Dev/sites-didacticos -type d -not -path '*/\\\\.*' | head -30)",
+      "Bash(wc -l /mnt/c/Dev/sites-didacticos/ccna/ccna1/*.html)",
+      "Bash(ls /mnt/c/Dev/sites-didacticos/assets/data/ && node -e \"const d=require\\('/mnt/c/Dev/sites-didacticos/assets/data/catalog.json'\\); console.log\\('sections:', d.sections.length\\); d.sections.forEach\\(s => console.log\\(' -', s.id, ':', s.cursos.length, 'cursos'\\)\\);\")",
+      "Bash(grep -c \"TODO:\" /mnt/c/Dev/sites-didacticos/_templates/*.html)",
+      "Bash(wc -l /mnt/c/Dev/sites-didacticos/_templates/*.html && echo \"\" && echo \"Template files structure check:\" && for f in /mnt/c/Dev/sites-didacticos/_templates/*.html; do echo \"\"; echo \"File: $\\(basename $f\\)\"; grep \"TEMPLATE:\" \"$f\" | head -1; done)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/mnt/c/Dev/sites-didacticos/assets/data/vlsm-levels.json'\\)\\); print\\('Valid JSON. Keys:', list\\(d.keys\\(\\)\\)\\); [print\\(f'  {k}: lanRanges={v[\\\\\"lanRanges\\\\\"]}, wan={v[\\\\\"wan\\\\\"]}'\\) for k,v in d.items\\(\\)]\")"
     ]
   }
 }
