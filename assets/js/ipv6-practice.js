@@ -8,6 +8,7 @@
   let state = loadState();
   let prefs = loadPrefs();
   let currentAudio = null;
+  let initialized = false;
 
   const qSingle = (id, prompt, answer, options, hint, explanation) => ({
     id, type: 'single', prompt, answer, options, hint, explanation
@@ -669,14 +670,21 @@
     ['AAAA', 'Registro DNS para direcciones IPv6.']
   ];
 
-  document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
   function init() {
+    if (initialized) return;
+    initialized = true;
     bindElements();
     bindEvents();
     applyPrefs();
     prepareModal();
     renderAll();
+    setTypeFilter('all');
   }
 
   function bindElements() {
@@ -720,6 +728,11 @@
     els.audioChip = document.getElementById('audioChip');
     els.quickReviewMount = document.getElementById('quickReviewMount');
     els.themeProgressMount = document.getElementById('themeProgressMount');
+    els.imageLightbox = document.getElementById('imageLightbox');
+    els.lightboxImage = document.getElementById('lightboxImage');
+    els.lightboxTitle = document.getElementById('lightboxTitle');
+    els.lightboxCaption = document.getElementById('lightboxCaption');
+    els.typeFilterStatus = document.getElementById('typeFilterStatus');
   }
 
   function bindEvents() {
@@ -770,6 +783,7 @@
     els.practiceMount.addEventListener('input', handlePracticeInput);
 
     document.addEventListener('click', handleGlobalClick);
+    document.addEventListener('keydown', handleGlobalKeydown);
   }
 
   function handleStudentSubmit(event) {
@@ -867,6 +881,24 @@
   }
 
   function handleGlobalClick(event) {
+    const zoomImage = event.target.closest('[data-zoomable-image]');
+    if (zoomImage) {
+      openImageLightbox(zoomImage);
+      return;
+    }
+
+    const closeLightbox = event.target.closest('[data-close-lightbox]');
+    if (closeLightbox || event.target === els.imageLightbox) {
+      closeImageLightbox();
+      return;
+    }
+
+    const typeFilter = event.target.closest('[data-type-filter]');
+    if (typeFilter) {
+      setTypeFilter(typeFilter.dataset.typeFilter);
+      return;
+    }
+
     const reviewBtn = event.target.closest('[data-review-module]');
     if (reviewBtn) {
       reviewModule(reviewBtn.dataset.reviewModule);
@@ -900,6 +932,19 @@
     const speakBtn = event.target.closest('[data-speak-target]');
     if (speakBtn) {
       speakFromTarget(speakBtn.dataset.speakTarget);
+    }
+  }
+
+  function handleGlobalKeydown(event) {
+    if (event.key === 'Escape' && els.imageLightbox && els.imageLightbox.classList.contains('is-open')) {
+      closeImageLightbox();
+      return;
+    }
+
+    const activeFilter = event.target && event.target.closest ? event.target.closest('[data-type-filter]') : null;
+    if (activeFilter && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      setTypeFilter(activeFilter.dataset.typeFilter);
     }
   }
 
@@ -1060,6 +1105,32 @@
         '</article>'
       ].join('');
     }).join('');
+  }
+
+  function setTypeFilter(filter) {
+    const selected = ['all', 'unicast', 'multicast', 'anycast'].includes(filter) ? filter : 'all';
+    const targets = document.querySelectorAll('[data-type-family]');
+    const controls = document.querySelectorAll('[data-type-filter]');
+
+    controls.forEach(function (node) {
+      const active = node.dataset.typeFilter === selected;
+      node.classList.toggle('is-active', active);
+      if (node.tagName === 'BUTTON') {
+        node.setAttribute('aria-pressed', active ? 'true' : 'false');
+      }
+    });
+
+    targets.forEach(function (node) {
+      const family = node.dataset.typeFamily;
+      const visible = selected === 'all' || family === selected;
+      node.classList.toggle('is-hidden', !visible);
+    });
+
+    if (els.typeFilterStatus) {
+      els.typeFilterStatus.textContent = selected === 'all'
+        ? 'Mostrando todas las tarjetas y la tabla completa.'
+        : 'Filtro activo: ' + selected + '.';
+    }
   }
 
   function renderWorkspace() {
@@ -1450,6 +1521,30 @@
 
     if (els.audioChip) els.audioChip.textContent = 'Leyendo seccion';
     window.speechSynthesis.speak(currentAudio);
+  }
+
+  function openImageLightbox(image) {
+    if (!els.imageLightbox || !els.lightboxImage) return;
+
+    els.lightboxImage.src = image.getAttribute('src') || '';
+    els.lightboxImage.alt = image.getAttribute('alt') || '';
+    if (els.lightboxTitle) {
+      els.lightboxTitle.textContent = image.dataset.imageTitle || 'Vista ampliada';
+    }
+    if (els.lightboxCaption) {
+      els.lightboxCaption.textContent = image.dataset.imageCaption || image.getAttribute('alt') || '';
+    }
+
+    els.imageLightbox.classList.add('is-open');
+    els.imageLightbox.setAttribute('aria-hidden', 'false');
+    els.body.classList.add('image-presentation-open');
+  }
+
+  function closeImageLightbox() {
+    if (!els.imageLightbox) return;
+    els.imageLightbox.classList.remove('is-open');
+    els.imageLightbox.setAttribute('aria-hidden', 'true');
+    els.body.classList.remove('image-presentation-open');
   }
 
   function stopSpeaking() {

@@ -8,6 +8,10 @@
   <style>
     .ipv6-page { --ipv6-scale: 1; }
 
+    .image-presentation-open {
+      overflow: hidden;
+    }
+
     .ipv6-nav,
     .topic-hero,
     .ipv6-body,
@@ -363,6 +367,13 @@
       background: #0b1220;
       object-fit: cover;
       aspect-ratio: 16 / 10;
+      cursor: zoom-in;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .image-card:hover img {
+      transform: scale(1.02);
+      filter: saturate(1.06);
     }
 
     .image-card figcaption {
@@ -424,6 +435,65 @@
       color: var(--muted);
       font-size: .72rem;
       margin-top: .6rem;
+    }
+
+    .tree-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-top: 1rem;
+    }
+
+    .tree-filter-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: .45rem .9rem;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, border-color .2s, background .2s, color .2s;
+    }
+
+    .tree-filter-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--ccna);
+      color: var(--text);
+    }
+
+    .tree-filter-btn.is-active {
+      background: rgba(27,161,226,.16);
+      border-color: var(--ccna);
+      color: var(--text);
+    }
+
+    .tree-filter-hit {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .tree-filter-hit rect,
+    .tree-filter-hit text {
+      transition: transform .18s, opacity .18s, fill .18s, stroke .18s;
+    }
+
+    .tree-filter-hit:hover rect,
+    .tree-filter-hit.is-active rect,
+    .tree-filter-hit:focus rect {
+      stroke-width: 3px;
+      opacity: 1;
+    }
+
+    .tree-filter-hit:hover text,
+    .tree-filter-hit.is-active text,
+    .tree-filter-hit:focus text {
+      fill: #ffffff;
+    }
+
+    .type-card.is-hidden,
+    .type-matrix tbody tr.is-hidden {
+      display: none;
     }
 
     .type-matrix-wrap {
@@ -993,6 +1063,77 @@
       font-size: .8rem;
     }
 
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background: rgba(2,6,12,.88);
+      backdrop-filter: blur(8px);
+    }
+
+    .lightbox.is-open {
+      display: flex;
+    }
+
+    .lightbox-dialog {
+      width: min(1180px, 100%);
+      max-height: 92vh;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .lightbox-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: #e6edf3;
+    }
+
+    .lightbox-top strong {
+      font-size: 1rem;
+    }
+
+    .lightbox-close {
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      color: #fff;
+      border-radius: 999px;
+      padding: .45rem .85rem;
+      font-size: .84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lightbox-stage {
+      background: rgba(10,18,32,.86);
+      border: 1px solid rgba(88,166,255,.2);
+      border-radius: 22px;
+      padding: 1rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    }
+
+    .lightbox-stage img {
+      width: 100%;
+      max-height: 72vh;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+      border-radius: 16px;
+      background: #08111d;
+    }
+
+    .lightbox-caption {
+      color: #cbd5e1;
+      font-size: .9rem;
+      line-height: 1.7;
+      text-align: center;
+    }
+
     .memory-list {
       display: grid;
       gap: .8rem;
@@ -1056,6 +1197,14 @@
 
       .svg-wrap {
         padding: .5rem;
+      }
+
+      .lightbox {
+        padding: .75rem;
+      }
+
+      .lightbox-stage {
+        padding: .55rem;
       }
     }
 
@@ -1202,35 +1351,35 @@
         <div class="section-body">
           <div class="image-grid">
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" />
+              <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 1: anatomia IPv6" data-image-caption="Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen." />
               <figcaption>
                 <strong>Lamina 1: anatomia IPv6</strong>
                 Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen.
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" />
+              <img src="../../assets/images/ipv6/type-map.svg" alt="Mapa visual de tipos principales de direcciones IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 2: mapa de tipos" data-image-caption="GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos." />
               <figcaption>
                 <strong>Lamina 2: mapa de tipos</strong>
                 GUA, LLA, ULA, loopback, no especificada, multicast y anycast con sus prefijos.
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" />
+              <img src="../../assets/images/ipv6/solicited-node.svg" alt="Imagen del proceso para construir una direccion solicited node multicast" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 3: solicited-node" data-image-caption="La transformacion desde una unicast hacia FF02::1:FFxx:xxxx." />
               <figcaption>
                 <strong>Lamina 3: solicited-node</strong>
                 La transformacion desde una unicast hacia <code>FF02::1:FFxx:xxxx</code>.
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" />
+              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 4: flujo SLAAC" data-image-caption="Host, router, RS, RA y los datos que permiten formar la GUA." />
               <figcaption>
                 <strong>Lamina 4: flujo SLAAC</strong>
                 Host, router, RS, RA y los datos que permiten formar la GUA.
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/ios-sequence.svg" alt="Secuencia minima de comandos Cisco IOS para IPv6" loading="lazy" />
+              <img src="../../assets/images/ipv6/ios-sequence.svg" alt="Secuencia minima de comandos Cisco IOS para IPv6" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 5: Cisco IOS" data-image-caption="Secuencia minima y recordatorio del comando critico ipv6 unicast-routing." />
               <figcaption>
                 <strong>Lamina 5: Cisco IOS</strong>
                 Secuencia minima y recordatorio del comando critico <code>ipv6 unicast-routing</code>.
@@ -1507,103 +1656,116 @@ facebook.com</code></pre>
                   <line x1="140" y1="100" x2="140" y2="120" stroke="#58a6ff" stroke-width="3" />
                   <line x1="380" y1="100" x2="380" y2="120" stroke="#58a6ff" stroke-width="3" />
                   <line x1="620" y1="100" x2="620" y2="120" stroke="#58a6ff" stroke-width="3" />
-                  <rect x="60" y="120" width="160" height="44" rx="12" fill="rgba(27,161,226,.18)" stroke="#1ba1e2" />
-                  <rect x="300" y="120" width="160" height="44" rx="12" fill="rgba(63,185,80,.18)" stroke="#3fb950" />
-                  <rect x="540" y="120" width="160" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
-                  <text x="140" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Unicast</text>
-                  <text x="380" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Multicast</text>
-                  <text x="620" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Anycast</text>
+                  <g class="tree-filter-hit" data-type-filter="unicast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo unicast">
+                    <rect x="60" y="120" width="160" height="44" rx="12" fill="rgba(27,161,226,.18)" stroke="#1ba1e2" />
+                    <text x="140" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Unicast</text>
+                  </g>
+                  <g class="tree-filter-hit" data-type-filter="multicast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo multicast">
+                    <rect x="300" y="120" width="160" height="44" rx="12" fill="rgba(63,185,80,.18)" stroke="#3fb950" />
+                    <text x="380" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Multicast</text>
+                  </g>
+                  <g class="tree-filter-hit" data-type-filter="anycast" tabindex="0" role="button" aria-label="Filtrar tarjetas de tipo anycast">
+                    <rect x="540" y="120" width="160" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
+                    <text x="620" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Anycast</text>
+                  </g>
                   <text x="60" y="198" fill="#8b949e" font-size="13" font-family="Segoe UI">GUA · LLA · ULA · loopback · no especificada · IPv4 integrada</text>
                   <text x="300" y="198" fill="#8b949e" font-size="13" font-family="Segoe UI">FF00::/12 · all-nodes · all-routers · OSPFv3 · EIGRP · solicited-node</text>
                   <text x="540" y="198" fill="#8b949e" font-size="13" font-family="Segoe UI">Misma dirección en varios nodos; gana el más cercano</text>
                 </svg>
               </div>
+              <div class="tree-filter-bar" aria-label="Filtro de tarjetas IPv6">
+                <button class="tree-filter-btn is-active" type="button" data-type-filter="all">Todas</button>
+                <button class="tree-filter-btn" type="button" data-type-filter="unicast">Unicast</button>
+                <button class="tree-filter-btn" type="button" data-type-filter="multicast">Multicast</button>
+                <button class="tree-filter-btn" type="button" data-type-filter="anycast">Anycast</button>
+              </div>
+              <p class="report-note" id="typeFilterStatus">Mostrando todas las tarjetas y la tabla completa.</p>
             </article>
           </div>
 
           <div class="type-grid" style="margin-top:1rem">
-            <article class="type-card gua">
+            <article class="type-card gua" data-type-family="unicast">
               <h3>Unicast global (GUA)</h3>
               <p><code>2000::/3</code></p>
               <p>Direcciones enrutables en Internet IPv6, equivalentes conceptuales a las públicas IPv4.</p>
               <span class="type-pill">Global y enrutable</span>
             </article>
-            <article class="type-card lla">
+            <article class="type-card lla" data-type-family="unicast">
               <h3>Link-local (LLA)</h3>
               <p><code>FE80::/10</code></p>
               <p>Obligatoria por enlace. Sirve para comunicarse dentro de la misma LAN y no se enruta globalmente.</p>
               <span class="type-pill">Mismo enlace</span>
             </article>
-            <article class="type-card ula">
+            <article class="type-card ula" data-type-family="unicast">
               <h3>Unique local (ULA)</h3>
               <p><code>FC00::/7</code></p>
               <p>Para direccionamiento local limitado. Similar al concepto de privado en IPv4, pero no pensado para NAT tradicional.</p>
               <span class="type-pill">Privada local</span>
             </article>
-            <article class="type-card misc">
+            <article class="type-card misc" data-type-family="unicast">
               <h3>Loopback</h3>
               <p><code>::1/128</code></p>
               <p>Prueba interna del host. Equivalente funcional al 127.0.0.1 de IPv4.</p>
               <span class="type-pill">Auto-prueba</span>
             </article>
-            <article class="type-card misc">
+            <article class="type-card misc" data-type-family="unicast">
               <h3>No especificada</h3>
               <p><code>::</code></p>
               <p>Se usa como origen para indicar ausencia de dirección configurada.</p>
               <span class="type-pill">Sin dirección</span>
             </article>
-            <article class="type-card misc">
+            <article class="type-card misc" data-type-family="unicast">
               <h3>IPv4 integrada</h3>
               <p>Usa los 32 bits inferiores para transportar una IPv4 dentro de una dirección IPv6.</p>
               <span class="type-pill">Transición</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>Multicast general</h3>
               <p><code>FF00::/12</code></p>
               <p>Una dirección multicast nunca puede ser origen. Sustituye la idea de broadcast general de IPv4.</p>
               <span class="type-pill">Grupos</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>Multicast permanente</h3>
               <p>Indicada por la bandera <code>0</code>. Incluye grupos bien conocidos asignados por IANA.</p>
               <span class="type-pill">Asignada por IANA</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>Multicast transitoria</h3>
               <p>Indicada por la bandera <code>1</code>, como <code>ff10::/12</code>.</p>
               <span class="type-pill">Dinámica</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>All-nodes</h3>
               <p><code>FF02::1</code></p>
               <p>Todos los nodos IPv6 del enlace local.</p>
               <span class="type-pill">Grupo conocido</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>All-routers</h3>
               <p><code>FF02::2</code></p>
               <p>Todos los routers IPv6 del enlace local.</p>
               <span class="type-pill">Grupo conocido</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>OSPFv3</h3>
               <p><code>FF02::5</code></p>
               <p>Grupo de todos los routers OSPFv3.</p>
               <span class="type-pill">Routing</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>EIGRP para IPv6</h3>
               <p><code>FF02::A</code></p>
               <p>Grupo multicast de todos los routers EIGRP para IPv6.</p>
               <span class="type-pill">Routing</span>
             </article>
-            <article class="type-card multi">
+            <article class="type-card multi" data-type-family="multicast">
               <h3>Solicited-node multicast</h3>
               <p><code>FF02:0:0:0:0:1:FF00::/104</code></p>
               <p>Se crea automáticamente a partir de una unicast para resolver capa 3 a capa 2.</p>
               <span class="type-pill">Vecindad</span>
             </article>
-            <article class="type-card misc">
+            <article class="type-card misc" data-type-family="anycast">
               <h3>Anycast</h3>
               <p>Sin prefijo exclusivo. Reutiliza rango unicast y el tráfico llega al nodo más cercano.</p>
               <span class="type-pill">Nodo más cercano</span>
@@ -1622,49 +1784,49 @@ facebook.com</code></pre>
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr data-type-family="unicast">
                   <td>GUA</td>
                   <td><code>2000::/3</code></td>
                   <td>Internet</td>
                   <td>Sí</td>
                   <td>Dirección pública IPv6</td>
                 </tr>
-                <tr>
+                <tr data-type-family="unicast">
                   <td>LLA</td>
                   <td><code>FE80::/10</code></td>
                   <td>Mismo enlace</td>
                   <td>No globalmente</td>
                   <td>Vecindad, gateway local, NDP</td>
                 </tr>
-                <tr>
+                <tr data-type-family="unicast">
                   <td>ULA</td>
                   <td><code>FC00::/7</code></td>
                   <td>Sitio local</td>
                   <td>No globalmente</td>
                   <td>Direcciones internas</td>
                 </tr>
-                <tr>
+                <tr data-type-family="unicast">
                   <td>Loopback</td>
                   <td><code>::1/128</code></td>
                   <td>Host local</td>
                   <td>No</td>
                   <td>Prueba interna</td>
                 </tr>
-                <tr>
+                <tr data-type-family="unicast">
                   <td>No especificada</td>
                   <td><code>::</code></td>
                   <td>Host local</td>
                   <td>No</td>
                   <td>Ausencia de dirección</td>
                 </tr>
-                <tr>
+                <tr data-type-family="multicast">
                   <td>Multicast</td>
                   <td><code>FF00::/12</code></td>
                   <td>Grupo</td>
                   <td>Según ámbito</td>
                   <td>Comunicación uno-a-muchos</td>
                 </tr>
-                <tr>
+                <tr data-type-family="anycast">
                   <td>Anycast</td>
                   <td>Mismo rango que GUA</td>
                   <td>Red / Internet</td>
@@ -2086,6 +2248,19 @@ facebook.com</code></pre>
     <span>CCNA 1 — IPv6 Interactivo</span>
     <span class="footer-author">✍️ Material elaborado por el <strong>Prof. Andres Mena Abarca</strong></span>
   </footer>
+
+  <div class="lightbox" id="imageLightbox" aria-hidden="true">
+    <div class="lightbox-dialog">
+      <div class="lightbox-top">
+        <strong id="lightboxTitle">Vista ampliada</strong>
+        <button class="lightbox-close" type="button" data-close-lightbox="true">Cerrar</button>
+      </div>
+      <div class="lightbox-stage">
+        <img id="lightboxImage" src="" alt="" />
+      </div>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
 
   <div class="modal-overlay" id="studentModal">
     <div class="modal-box">
