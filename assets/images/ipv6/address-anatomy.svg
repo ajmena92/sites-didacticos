@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-  <title id="title">IPv6 anatomy</title>
-  <desc id="desc">Address anatomy showing 8 hextets with prefix and interface identifier.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Anatomia IPv6</title>
+  <desc id="desc">Direccion IPv6 completa con prefijo de red e identificador de interfaz.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#0f172a"/>
       <stop offset="100%" stop-color="#08111d"/>
     </linearGradient>
   </defs>
-  <rect width="960" height="600" rx="28" fill="url(#bg)"/>
-  <text x="56" y="72" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">IPv6 address anatomy</text>
-  <text x="56" y="112" fill="#93a4b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">128 bits, 8 hextets, prefix and interface identifier</text>
+  <rect width="960" height="640" rx="28" fill="url(#bg)"/>
+  <text x="56" y="72" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Anatomia de una direccion IPv6</text>
+  <text x="56" y="112" fill="#93a4b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">128 bits, 8 hextetos, prefijo de red e identificador de interfaz</text>
 
   <g font-family="Consolas, Monaco, monospace" font-size="24" text-anchor="middle">
     <rect x="56" y="176" width="98" height="78" rx="16" fill="#14314a" stroke="#38bdf8"/>
@@ -33,14 +33,32 @@
   <g font-family="Segoe UI, Arial, sans-serif">
     <line x1="56" y1="294" x2="490" y2="294" stroke="#38bdf8" stroke-width="6"/>
     <line x1="504" y1="294" x2="904" y2="294" stroke="#f59e0b" stroke-width="6"/>
-    <text x="272" y="332" fill="#38bdf8" font-size="24" font-weight="700" text-anchor="middle">64-bit network prefix</text>
-    <text x="704" y="332" fill="#f59e0b" font-size="24" font-weight="700" text-anchor="middle">64-bit interface ID</text>
+    <text x="272" y="332" fill="#38bdf8" font-size="24" font-weight="700" text-anchor="middle">64 bits de red</text>
+    <text x="704" y="332" fill="#f59e0b" font-size="24" font-weight="700" text-anchor="middle">64 bits de interfaz</text>
 
-    <rect x="56" y="392" width="848" height="142" rx="18" fill="#0b1220" stroke="#243244"/>
-    <text x="88" y="432" fill="#e2e8f0" font-size="22" font-weight="700">What to remember</text>
-    <text x="88" y="468" fill="#93a4b8" font-size="20">1 hextet = 16 bits</text>
-    <text x="88" y="500" fill="#93a4b8" font-size="20">8 hextets = 128 bits</text>
-    <text x="470" y="468" fill="#93a4b8" font-size="20">A /64 split is the common LAN design</text>
-    <text x="470" y="500" fill="#93a4b8" font-size="20">IPv6 uses colon-separated hexadecimal groups</text>
+    <rect x="56" y="388" width="196" height="156" rx="18" fill="#0b1220" stroke="#243244"/>
+    <rect x="272" y="388" width="196" height="156" rx="18" fill="#0b1220" stroke="#243244"/>
+    <rect x="488" y="388" width="196" height="156" rx="18" fill="#0b1220" stroke="#243244"/>
+    <rect x="704" y="388" width="200" height="156" rx="18" fill="#0b1220" stroke="#243244"/>
+
+    <text x="84" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 1</text>
+    <text x="84" y="466" fill="#93a4b8" font-size="19">1 hexteto = 16 bits</text>
+    <text x="84" y="500" fill="#93a4b8" font-size="19">Cada grupo tiene 4</text>
+    <text x="84" y="528" fill="#93a4b8" font-size="19">simbolos hexadecimales.</text>
+
+    <text x="300" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 2</text>
+    <text x="300" y="466" fill="#93a4b8" font-size="19">8 hextetos = 128 bits</text>
+    <text x="300" y="500" fill="#93a4b8" font-size="19">La direccion completa usa</text>
+    <text x="300" y="528" fill="#93a4b8" font-size="19">32 simbolos hexadecimales.</text>
+
+    <text x="516" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 3</text>
+    <text x="516" y="466" fill="#93a4b8" font-size="19">/64 divide la direccion</text>
+    <text x="516" y="500" fill="#93a4b8" font-size="19">en 64 bits de red y</text>
+    <text x="516" y="528" fill="#93a4b8" font-size="19">64 bits de interfaz.</text>
+
+    <text x="732" y="430" fill="#e2e8f0" font-size="21" font-weight="700">Dato 4</text>
+    <text x="732" y="466" fill="#93a4b8" font-size="19">Los grupos se separan</text>
+    <text x="732" y="500" fill="#93a4b8" font-size="19">con dos puntos y el</text>
+    <text x="732" y="528" fill="#93a4b8" font-size="19">prefijo se expresa con /n.</text>
   </g>
 </svg>

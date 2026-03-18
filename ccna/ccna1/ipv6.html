@@ -12,13 +12,6 @@
       overflow: hidden;
     }
 
-    .ipv6-nav,
-    .topic-hero,
-    .ipv6-body,
-    .modal-box {
-      font-size: calc(1rem * var(--ipv6-scale));
-    }
-
     .ipv6-nav {
       height: auto;
       min-height: var(--nav-h);
@@ -31,6 +24,222 @@
       max-width: 1320px;
       margin: 0 auto;
       padding: 2rem 2.5rem 5rem;
+    }
+
+    .ipv6-hero {
+      padding: 2.9rem 2.5rem 2.25rem;
+      background:
+        radial-gradient(circle at top left, rgba(27,161,226,.18), transparent 34%),
+        radial-gradient(circle at 85% 12%, rgba(245,166,35,.12), transparent 26%),
+        linear-gradient(135deg, rgba(27,161,226,.12) 0%, rgba(88,166,255,.08) 42%, rgba(255,255,255,.015) 100%),
+        var(--surface);
+    }
+
+    .ipv6-hero::before {
+      content: '';
+      position: absolute;
+      inset: auto auto 18px 38px;
+      width: 190px;
+      height: 190px;
+      border-radius: 32px;
+      background: linear-gradient(145deg, rgba(88,166,255,.08), transparent 62%);
+      transform: rotate(-14deg);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(300px, .92fr);
+      gap: 1.35rem;
+      align-items: stretch;
+    }
+
+    .hero-main {
+      min-width: 0;
+    }
+
+    .hero-topline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .65rem;
+      margin-bottom: .85rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .34rem .8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(88,166,255,.22);
+      background: rgba(88,166,255,.1);
+      color: #b9dbff;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+
+    .hero-breadcrumb {
+      color: var(--muted);
+      font-size: .82rem;
+      letter-spacing: .02em;
+    }
+
+    .hero-title {
+      max-width: 900px;
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      margin-bottom: .95rem;
+    }
+
+    .hero-sub {
+      max-width: 820px;
+      font-size: 1.03rem;
+      line-height: 1.85;
+      color: #b1bac4;
+    }
+
+    .hero-sub strong,
+    .hero-sub code {
+      color: var(--text);
+    }
+
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin-top: 1rem;
+    }
+
+    .hero-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .45rem .8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .hero-meta-chip strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid rgba(88,166,255,.16);
+      background:
+        linear-gradient(180deg, rgba(12,22,37,.96), rgba(9,16,28,.94)),
+        rgba(255,255,255,.02);
+      padding: 1.15rem 1.15rem 1.2rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,.24);
+    }
+
+    .hero-panel::after {
+      content: '';
+      position: absolute;
+      right: -42px;
+      top: -42px;
+      width: 144px;
+      height: 144px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,166,255,.16), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-panel h2 {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #9ecfff;
+      margin-bottom: .45rem;
+    }
+
+    .hero-panel p {
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.72;
+      margin-bottom: 1rem;
+      max-width: 34ch;
+    }
+
+    .hero-list {
+      display: grid;
+      gap: .7rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-list-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: .75rem;
+      align-items: start;
+      padding: .72rem .78rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.025);
+    }
+
+    .hero-list-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(27,161,226,.14);
+      color: #9ddcff;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .hero-list-item strong {
+      display: block;
+      color: var(--text);
+      font-size: .9rem;
+      margin-bottom: .15rem;
+    }
+
+    .hero-list-item span {
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .7rem;
+    }
+
+    .hero-stat {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+      padding: .78rem .82rem;
+    }
+
+    .hero-stat strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-bottom: .25rem;
+    }
+
+    .hero-stat span {
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.55;
     }
 
     .anchor-row,
@@ -343,6 +552,24 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
 
+    .svg-wrap.zoomable-svg {
+      cursor: zoom-in;
+      transition: border-color .2s, transform .18s ease, box-shadow .2s;
+    }
+
+    .svg-wrap.zoomable-svg:hover {
+      border-color: rgba(88,166,255,.38);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 28px rgba(0,0,0,.18);
+    }
+
+    .svg-wrap.zoomable-svg:focus-visible {
+      outline: 3px solid rgba(88,166,255,.55);
+      outline-offset: 3px;
+      border-color: rgba(88,166,255,.44);
+      box-shadow: 0 0 0 6px rgba(88,166,255,.14);
+    }
+
     svg,
     .image-card img {
       width: 100%;
@@ -357,16 +584,39 @@
     }
 
     .image-card {
+      position: relative;
       background: rgba(255,255,255,.02);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
     }
 
+    .image-card::after {
+      content: 'Ampliar';
+      position: absolute;
+      top: .85rem;
+      right: .85rem;
+      z-index: 2;
+      padding: .32rem .62rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(8,17,29,.82);
+      color: #f8fafc;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      pointer-events: none;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+    }
+
     .image-card img {
-      background: #0b1220;
-      object-fit: cover;
-      aspect-ratio: 16 / 10;
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.08), transparent 42%),
+        linear-gradient(180deg, #0b1220, #08111d);
+      object-fit: contain;
+      max-height: 340px;
+      padding: .85rem;
+      box-sizing: border-box;
       cursor: zoom-in;
       transition: transform .22s ease, filter .22s ease;
     }
@@ -376,11 +626,22 @@
       filter: saturate(1.06);
     }
 
+    .image-card:focus-within {
+      border-color: rgba(88,166,255,.42);
+      box-shadow: 0 0 0 5px rgba(88,166,255,.12);
+    }
+
+    .image-card img:focus-visible {
+      outline: 3px solid rgba(88,166,255,.55);
+      outline-offset: -3px;
+    }
+
     .image-card figcaption {
       padding: .95rem 1rem 1rem;
       color: var(--muted);
       font-size: .88rem;
       line-height: 1.7;
+      border-top: 1px solid var(--border);
     }
 
     .image-card strong {
@@ -388,6 +649,28 @@
       color: var(--text);
       margin-bottom: .35rem;
       font-size: .95rem;
+    }
+
+    .gallery-note {
+      margin-bottom: 1rem;
+      padding: .85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(88,166,255,.24);
+      background: rgba(88,166,255,.08);
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.7;
+    }
+
+    .teaching-note {
+      margin-top: 1rem;
+      padding: .9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(63,185,80,.24);
+      background: rgba(63,185,80,.08);
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.7;
     }
 
     .legend {
@@ -1117,7 +1400,15 @@
       box-shadow: 0 24px 60px rgba(0,0,0,.45);
     }
 
-    .lightbox-stage img {
+    .lightbox-visual {
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-stage img,
+    .lightbox-stage svg {
       width: 100%;
       max-height: 72vh;
       object-fit: contain;
@@ -1125,6 +1416,12 @@
       margin: 0 auto;
       border-radius: 16px;
       background: #08111d;
+    }
+
+    .lightbox-stage svg {
+      height: auto;
+      background: transparent;
+      border-radius: 0;
     }
 
     .lightbox-caption {
@@ -1153,6 +1450,33 @@
       color: var(--text);
     }
 
+    .difficulty-track {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .8rem;
+      margin-top: .85rem;
+    }
+
+    .difficulty-step {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.025);
+      padding: .9rem .95rem;
+    }
+
+    .difficulty-step strong {
+      display: block;
+      color: var(--text);
+      font-size: .9rem;
+      margin-bottom: .2rem;
+    }
+
+    .difficulty-step span {
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
     .dua-contrast {
       --bg: #000000;
       --surface: #090909;
@@ -1175,6 +1499,10 @@
       .tool-grid {
         grid-template-columns: 1fr;
       }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 900px) {
@@ -1185,6 +1513,15 @@
       .topic-hero {
         padding-left: 1.25rem;
         padding-right: 1.25rem;
+      }
+
+      .ipv6-hero {
+        padding-top: 2.2rem;
+        padding-bottom: 1.8rem;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
       }
 
       .choice-list,
@@ -1259,27 +1596,82 @@
     </nav>
   </header>
 
-  <div class="topic-hero" id="heroIntro">
-    <div class="breadcrumb">CCNA 1 / IPv6 / acceso directo</div>
-    <h1>🛰️ IPv6 Interactivo</h1>
-    <p class="hero-sub">
-      Módulo privado por URL directa, reconstruido desde <strong>IPV6.xlsx</strong>.
-      Ahora cubre representación, compresión, /64, asignación global, todos los tipos
-      principales de IPv6, multicast, anycast, SLAAC, RS/RA, Cisco IOS y mucha más práctica.
-    </p>
-    <span class="author-chip">✍️ Prof. Andres Mena Abarca</span>
-    <div class="anchor-row" style="margin-top:1rem">
-      <a class="anchor-chip" href="#roadmap">Mapa del tema</a>
-      <a class="anchor-chip" href="#imagenes">Imagenes</a>
-      <a class="anchor-chip" href="#representacion">Compresion</a>
-      <a class="anchor-chip" href="#asignacion">IANA · RIR · AAAA</a>
-      <a class="anchor-chip" href="#tipos">Todos los tipos IPv6</a>
-      <a class="anchor-chip" href="#multicast">Multicast · Anycast</a>
-      <a class="anchor-chip" href="#slaac">SLAAC · RS · RA</a>
-      <a class="anchor-chip" href="#ios">Cisco IOS</a>
-      <a class="anchor-chip" href="#memory">Memorización</a>
-      <a class="anchor-chip" href="#quick-review">Repaso rápido</a>
-      <a class="anchor-chip" href="#practice">Practica intensiva</a>
+  <div class="topic-hero ipv6-hero" id="heroIntro">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="hero-topline">
+          <span class="hero-badge">Modulo privado</span>
+          <span class="hero-breadcrumb">CCNA 1 / IPv6 / acceso directo</span>
+        </div>
+        <h1 class="hero-title">🛰️ IPv6 Interactivo</h1>
+        <p class="hero-sub">
+          En este módulo trabajamos IPv6 como lo haríamos en clase: primero comprendemos la lógica
+          de la dirección, luego la simplificamos, la clasificamos y finalmente la aplicamos en
+          escenarios reales. A partir de <strong>IPV6.xlsx</strong> estudiamos representación,
+          compresión, <code>/64</code>, asignación global, GUA, LLA, ULA, multicast, anycast,
+          RS, RA, SLAAC y configuración base en Cisco IOS, siempre con apoyo visual y mucha práctica.
+        </p>
+        <div class="hero-meta-row">
+          <span class="hero-meta-chip"><strong>Visual</strong> láminas ampliables</span>
+          <span class="hero-meta-chip"><strong>Guiado</strong> teoría + repaso + práctica</span>
+          <span class="hero-meta-chip"><strong>Privado</strong> acceso por enlace directo</span>
+          <span class="author-chip">✍️ Prof. Andres Mena Abarca</span>
+        </div>
+        <div class="anchor-row" style="margin-top:1rem">
+          <a class="anchor-chip" href="#roadmap">Mapa del tema</a>
+          <a class="anchor-chip" href="#imagenes">Imagenes</a>
+          <a class="anchor-chip" href="#representacion">Compresion</a>
+          <a class="anchor-chip" href="#asignacion">IANA · RIR · AAAA</a>
+          <a class="anchor-chip" href="#tipos">Todos los tipos IPv6</a>
+          <a class="anchor-chip" href="#multicast">Multicast · Anycast</a>
+          <a class="anchor-chip" href="#slaac">SLAAC · RS · RA</a>
+          <a class="anchor-chip" href="#ios">Cisco IOS</a>
+          <a class="anchor-chip" href="#memory">Memorización</a>
+          <a class="anchor-chip" href="#quick-review">Repaso rápido</a>
+          <a class="anchor-chip" href="#practice">Practica intensiva</a>
+        </div>
+      </div>
+      <aside class="hero-panel" aria-label="Resumen del modulo IPv6">
+        <h2>Lo que vamos a dominar</h2>
+        <p>La portada ya no solo presenta el tema; ahora nos orienta sobre el recorrido completo y el foco práctico del módulo.</p>
+        <div class="hero-list">
+          <div class="hero-list-item">
+            <div class="hero-list-num">01</div>
+            <div>
+              <strong>Lectura y compresión</strong>
+              <span>Aprendemos a expandir, abreviar y detectar direcciones mal escritas sin memorizar reglas aisladas.</span>
+            </div>
+          </div>
+          <div class="hero-list-item">
+            <div class="hero-list-num">02</div>
+            <div>
+              <strong>Clasificación real</strong>
+              <span>Diferenciamos GUA, LLA, ULA, multicast, nodo solicitado y anycast con criterio de red.</span>
+            </div>
+          </div>
+          <div class="hero-list-item">
+            <div class="hero-list-num">03</div>
+            <div>
+              <strong>Aplicación operativa</strong>
+              <span>Relacionamos RS, RA, SLAAC y el mínimo viable de Cisco IOS para llevar la teoría a práctica.</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>9</strong>
+            <span>bloques de práctica por tema</span>
+          </div>
+          <div class="hero-stat">
+            <strong>56</strong>
+            <span>preguntas con retroalimentación</span>
+          </div>
+          <div class="hero-stat">
+            <strong>5</strong>
+            <span>láminas en galería con zoom</span>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -1332,6 +1724,49 @@
         </article>
       </div>
 
+      <div class="concept-grid" style="margin-top:1rem">
+        <article class="concept-card">
+          <h3>Objetivos de aprendizaje</h3>
+          <ul>
+            <li>Expandir y abreviar direcciones IPv6 sin perder la estructura de 8 hextetos.</li>
+            <li>Distinguir prefijo de red e identificador de interfaz en escenarios con <code>/64</code>.</li>
+            <li>Clasificar GUA, LLA, ULA, multicast, nodo solicitado y anycast con criterio de red.</li>
+            <li>Relacionar RS, RA, SLAAC y la configuración mínima de Cisco IOS con el comportamiento real del enlace.</li>
+          </ul>
+        </article>
+        <article class="concept-card">
+          <h3>Qué memorizamos y qué razonamos</h3>
+          <ul>
+            <li>Memorizamos rangos, grupos conocidos y el comando <code>ipv6 unicast-routing</code>.</li>
+            <li>Razonamos cuándo una dirección es válida, qué tipo tiene y por qué un host forma cierta multicast solicitada.</li>
+            <li>La meta no es repetir listas, sino reconocer patrones y aplicarlos en práctica.</li>
+          </ul>
+        </article>
+      </div>
+
+      <article class="lab-card" style="margin-top:1rem">
+        <h3>Ruta de dificultad</h3>
+        <p>Podemos recorrer el módulo por capas para no mezclar memorización básica con razonamiento de examen.</p>
+        <div class="difficulty-track">
+          <div class="difficulty-step">
+            <strong>Nivel 1: lectura</strong>
+            <span>Formato, hextetos, expansión y compresión.</span>
+          </div>
+          <div class="difficulty-step">
+            <strong>Nivel 2: clasificación</strong>
+            <span>Tipos de dirección, alcance y prefijos.</span>
+          </div>
+          <div class="difficulty-step">
+            <strong>Nivel 3: operación</strong>
+            <span>RS, RA, SLAAC, nodo solicitado y práctica IOS.</span>
+          </div>
+          <div class="difficulty-step">
+            <strong>Nivel 4: examen</strong>
+            <span>Escenarios combinados, distractores y errores frecuentes.</span>
+          </div>
+        </div>
+      </article>
+
       <div class="dua-summary">
         <strong>Resumen fácil</strong>
         Si solo memorizas tres ideas hoy: IPv6 usa 8 hextetos, la LAN recomendada es /64 y
@@ -1349,6 +1784,10 @@
           <button class="btn-tool secondary" type="button" data-speak-target="#imagenes">Escuchar sección</button>
         </div>
         <div class="section-body">
+          <p class="gallery-note">
+            Toca cualquier lámina para verla en grande. Todas las imágenes de esta galería fueron
+            normalizadas a español y ajustadas para evitar recortes o solapes de texto.
+          </p>
           <div class="image-grid">
             <figure class="image-card">
               <img src="../../assets/images/ipv6/address-anatomy.svg" alt="Imagen de anatomia de una direccion IPv6 con prefijo e interfaz" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 1: anatomia IPv6" data-image-caption="Direccion completa, hextetos, prefijo y ID de interfaz en una sola imagen." />
@@ -1372,10 +1811,10 @@
               </figcaption>
             </figure>
             <figure class="image-card">
-              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 4: flujo SLAAC" data-image-caption="Host, router, RS, RA y los datos que permiten formar la GUA." />
+              <img src="../../assets/images/ipv6/slaac-flow.svg" alt="Flujo visual de RS RA y configuracion por SLAAC" loading="lazy" data-zoomable-image="true" data-image-title="Lamina 4: flujo SLAAC" data-image-caption="Equipo, router, RS, RA y los datos que permiten formar la GUA." />
               <figcaption>
                 <strong>Lamina 4: flujo SLAAC</strong>
-                Host, router, RS, RA y los datos que permiten formar la GUA.
+                Equipo, router, RS, RA y los datos que permiten formar la GUA.
               </figcaption>
             </figure>
             <figure class="image-card">
@@ -1515,6 +1954,38 @@
             </details>
           </div>
 
+          <div class="concept-grid" style="margin-top:1rem">
+            <article class="concept-card">
+              <h3>Error frecuente 1</h3>
+              <p>Usar <code>::</code> dos veces en la misma dirección. Si hacemos eso, la expansión deja de ser inequívoca y la dirección se vuelve inválida.</p>
+            </article>
+            <article class="concept-card">
+              <h3>Error frecuente 2</h3>
+              <p>Expandir una dirección sin volver a completar los 8 hextetos. Cuando desarrollamos <code>FE80::1</code>, el objetivo no es “poner algunos ceros”, sino recuperar toda la estructura.</p>
+            </article>
+            <article class="concept-card">
+              <h3>Error frecuente 3</h3>
+              <p>Confundir quitar ceros a la izquierda con borrar grupos completos. Primero simplificamos el hexteto; después, si hay una corrida continua, comprimimos con <code>::</code>.</p>
+            </article>
+          </div>
+
+          <div class="lab-grid" style="margin-top:1rem">
+            <article class="lab-card">
+              <h3>Ejemplo resuelto 1: expansión correcta</h3>
+              <p><strong>Dirección:</strong> <code>FE80::1</code></p>
+              <p><strong>Paso 1:</strong> reconocemos que falta una secuencia de hextetos completos.</p>
+              <p><strong>Paso 2:</strong> reponemos grupos <code>0000</code> hasta recuperar 8 hextetos.</p>
+              <p><strong>Resultado:</strong> <code>FE80:0000:0000:0000:0000:0000:0000:0001</code></p>
+            </article>
+            <article class="lab-card">
+              <h3>Ejemplo resuelto 2: abreviación correcta</h3>
+              <p><strong>Dirección:</strong> <code>2001:0DB8:000A:0000:0000:0000:0000:0001</code></p>
+              <p><strong>Paso 1:</strong> quitamos ceros a la izquierda en cada hexteto.</p>
+              <p><strong>Paso 2:</strong> comprimimos la corrida continua de <code>0000</code>.</p>
+              <p><strong>Resultado:</strong> <code>2001:DB8:A::1</code></p>
+            </article>
+          </div>
+
           <div class="diagram-grid" style="margin-top:1rem">
             <article class="diagram-card">
               <h3>Imagen 3: paso a paso de compresión</h3>
@@ -1632,7 +2103,7 @@ facebook.com</code></pre>
         <div class="section-head">
           <div>
             <h2>4. Todos los tipos principales de IPv6 del material</h2>
-            <p>Aquí se consolida la taxonomía del workbook: unicast global, link-local, unique local, loopback, no especificada, IPv4 integrada, multicast conocida, multicast transitoria, solicited-node y anycast.</p>
+            <p>Aquí se consolida la taxonomía del workbook: unicast global, enlace local, local única, bucle local, no especificada, IPv4 integrada, multicast conocida, multicast transitoria, nodo solicitado y anycast.</p>
           </div>
           <button class="btn-tool secondary" type="button" data-speak-target="#tipos">Escuchar sección</button>
         </div>
@@ -1647,8 +2118,8 @@ facebook.com</code></pre>
               <h3>Imagen 8: árbol rápido de clasificación</h3>
               <p>Una guía visual para mirar una dirección y clasificarla antes de leer más.</p>
               <div class="svg-wrap">
-                <svg viewBox="0 0 760 250" role="img" aria-label="Arbol de clasificacion de direcciones IPv6">
-                  <rect x="18" y="18" width="724" height="214" rx="18" fill="#0d1117" stroke="#30363d" />
+                <svg viewBox="0 0 760 300" role="img" aria-label="Arbol de clasificacion de direcciones IPv6">
+                  <rect x="18" y="18" width="724" height="264" rx="18" fill="#0d1117" stroke="#30363d" />
                   <rect x="290" y="34" width="180" height="38" rx="12" fill="rgba(88,166,255,.18)" stroke="#58a6ff" />
                   <text x="380" y="58" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Dirección IPv6</text>
                   <line x1="380" y1="72" x2="380" y2="100" stroke="#58a6ff" stroke-width="3" />
@@ -1668,9 +2139,21 @@ facebook.com</code></pre>
                     <rect x="540" y="120" width="160" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="#f5a623" />
                     <text x="620" y="147" fill="#e6edf3" font-size="15" font-family="Segoe UI" text-anchor="middle">Anycast</text>
                   </g>
-                  <text x="60" y="198" fill="#8b949e" font-size="13" font-family="Segoe UI">GUA · LLA · ULA · loopback · no especificada · IPv4 integrada</text>
-                  <text x="300" y="198" fill="#8b949e" font-size="13" font-family="Segoe UI">FF00::/12 · all-nodes · all-routers · OSPFv3 · EIGRP · solicited-node</text>
-                  <text x="540" y="198" fill="#8b949e" font-size="13" font-family="Segoe UI">Misma dirección en varios nodos; gana el más cercano</text>
+                  <text x="140" y="194" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
+                    <tspan x="140" dy="0">GUA · LLA · ULA</tspan>
+                    <tspan x="140" dy="18">bucle local</tspan>
+                    <tspan x="140" dy="18">no especificada · IPv4 integrada</tspan>
+                  </text>
+                  <text x="380" y="194" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
+                    <tspan x="380" dy="0">FF00::/12 · todos nodos</tspan>
+                    <tspan x="380" dy="18">todos routers · OSPFv3</tspan>
+                    <tspan x="380" dy="18">EIGRP · nodo solicitado</tspan>
+                  </text>
+                  <text x="620" y="200" fill="#8b949e" font-size="12.5" font-family="Segoe UI" text-anchor="middle">
+                    <tspan x="620" dy="0">Misma direccion</tspan>
+                    <tspan x="620" dy="18">en varios nodos</tspan>
+                    <tspan x="620" dy="18">gana el mas cercano</tspan>
+                  </text>
                 </svg>
               </div>
               <div class="tree-filter-bar" aria-label="Filtro de tarjetas IPv6">
@@ -1691,19 +2174,19 @@ facebook.com</code></pre>
               <span class="type-pill">Global y enrutable</span>
             </article>
             <article class="type-card lla" data-type-family="unicast">
-              <h3>Link-local (LLA)</h3>
+              <h3>Enlace local (LLA)</h3>
               <p><code>FE80::/10</code></p>
               <p>Obligatoria por enlace. Sirve para comunicarse dentro de la misma LAN y no se enruta globalmente.</p>
               <span class="type-pill">Mismo enlace</span>
             </article>
             <article class="type-card ula" data-type-family="unicast">
-              <h3>Unique local (ULA)</h3>
+              <h3>Local única (ULA)</h3>
               <p><code>FC00::/7</code></p>
               <p>Para direccionamiento local limitado. Similar al concepto de privado en IPv4, pero no pensado para NAT tradicional.</p>
               <span class="type-pill">Privada local</span>
             </article>
             <article class="type-card misc" data-type-family="unicast">
-              <h3>Loopback</h3>
+              <h3>Bucle local</h3>
               <p><code>::1/128</code></p>
               <p>Prueba interna del host. Equivalente funcional al 127.0.0.1 de IPv4.</p>
               <span class="type-pill">Auto-prueba</span>
@@ -1792,30 +2275,30 @@ facebook.com</code></pre>
                   <td>Dirección pública IPv6</td>
                 </tr>
                 <tr data-type-family="unicast">
-                  <td>LLA</td>
+                  <td>Enlace local</td>
                   <td><code>FE80::/10</code></td>
                   <td>Mismo enlace</td>
                   <td>No globalmente</td>
                   <td>Vecindad, gateway local, NDP</td>
                 </tr>
                 <tr data-type-family="unicast">
-                  <td>ULA</td>
+                  <td>Local única</td>
                   <td><code>FC00::/7</code></td>
                   <td>Sitio local</td>
                   <td>No globalmente</td>
                   <td>Direcciones internas</td>
                 </tr>
                 <tr data-type-family="unicast">
-                  <td>Loopback</td>
+                  <td>Bucle local</td>
                   <td><code>::1/128</code></td>
-                  <td>Host local</td>
+                  <td>Equipo local</td>
                   <td>No</td>
                   <td>Prueba interna</td>
                 </tr>
                 <tr data-type-family="unicast">
                   <td>No especificada</td>
                   <td><code>::</code></td>
-                  <td>Host local</td>
+                  <td>Equipo local</td>
                   <td>No</td>
                   <td>Ausencia de dirección</td>
                 </tr>
@@ -1930,7 +2413,7 @@ facebook.com</code></pre>
         <div class="section-body">
           <div class="dua-summary">
             <strong>Resumen fácil</strong>
-            Host = RS. Router = RA. El RA puede dar prefijo, gateway y DNS. SLAAC necesita /64 y usa 64 bits para la interfaz.
+            Equipo = RS. Router = RA. El RA puede dar prefijo, gateway y DNS. SLAAC necesita /64 y usa 64 bits para la interfaz.
           </div>
 
           <div class="concept-grid">
@@ -1963,7 +2446,7 @@ facebook.com</code></pre>
                   <rect x="54" y="72" width="150" height="48" rx="14" fill="rgba(245,166,35,.2)" stroke="#f5a623" />
                   <rect x="306" y="72" width="150" height="48" rx="14" fill="rgba(27,161,226,.2)" stroke="#1ba1e2" />
                   <rect x="558" y="72" width="150" height="48" rx="14" fill="rgba(63,185,80,.2)" stroke="#3fb950" />
-                  <text x="129" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Host</text>
+                  <text x="129" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Equipo</text>
                   <text x="381" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Router</text>
                   <text x="633" y="100" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">GUA lista</text>
                   <line x1="204" y1="96" x2="306" y2="96" stroke="#58a6ff" stroke-width="4" />
@@ -2001,7 +2484,7 @@ facebook.com</code></pre>
                   <rect x="48" y="72" width="152" height="56" rx="14" fill="rgba(245,166,35,.2)" stroke="#f5a623" />
                   <rect x="290" y="72" width="176" height="56" rx="14" fill="rgba(27,161,226,.2)" stroke="#1ba1e2" />
                   <rect x="556" y="72" width="152" height="56" rx="14" fill="rgba(63,185,80,.2)" stroke="#3fb950" />
-                  <text x="124" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Host</text>
+                  <text x="124" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Equipo</text>
                   <text x="378" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Router IPv6</text>
                   <text x="632" y="103" fill="#e6edf3" font-size="16" font-family="Segoe UI" text-anchor="middle">Vecino IPv6</text>
                   <line x1="200" y1="90" x2="290" y2="90" stroke="#58a6ff" stroke-width="4" />
@@ -2011,7 +2494,7 @@ facebook.com</code></pre>
                   <polygon points="209,106 194,112 209,118" fill="#58a6ff" />
                   <text x="244" y="132" fill="#8b949e" font-size="13" font-family="Segoe UI">RA</text>
                   <line x1="200" y1="154" x2="556" y2="154" stroke="#f5a623" stroke-width="4" stroke-dasharray="8 8" />
-                  <text x="378" y="178" fill="#f5a623" font-size="13" font-family="Segoe UI" text-anchor="middle">Neighbor Solicitation hacia FF02::1:FFxx:xxxx</text>
+                  <text x="378" y="178" fill="#f5a623" font-size="13" font-family="Segoe UI" text-anchor="middle">Solicitud de vecino hacia FF02::1:FFxx:xxxx</text>
                   <text x="48" y="204" fill="#8b949e" font-size="13" font-family="Segoe UI">Primero se descubre el router; luego la vecindad usa solicited-node multicast en vez de broadcast.</text>
                 </svg>
               </div>
@@ -2077,9 +2560,9 @@ facebook.com</code></pre>
                   <text x="92" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">enable</text>
                   <text x="212" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">conf t</text>
                   <text x="332" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">routing</text>
-                  <text x="452" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">interface</text>
-                  <text x="572" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">address</text>
-                  <text x="688" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">up</text>
+                  <text x="452" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">interfaz</text>
+                  <text x="572" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">direccion</text>
+                  <text x="688" y="145" fill="#8b949e" font-size="12" font-family="Segoe UI" text-anchor="middle">activa</text>
                 </svg>
               </div>
             </article>
@@ -2105,11 +2588,11 @@ facebook.com</code></pre>
             </article>
             <article class="glossary-card">
               <h3>LLA</h3>
-              <p>Dirección link-local. Existe por enlace, no se enruta globalmente. Rango: <code>FE80::/10</code>.</p>
+              <p>Dirección de enlace local. Existe por enlace, no se enruta globalmente. Rango: <code>FE80::/10</code>.</p>
             </article>
             <article class="glossary-card">
               <h3>ULA</h3>
-              <p>Dirección unique local. Útil dentro de un sitio o un conjunto limitado de sitios.</p>
+              <p>Dirección local única. Útil dentro de un sitio o un conjunto limitado de sitios.</p>
             </article>
             <article class="glossary-card">
               <h3>SLAAC</h3>
@@ -2154,6 +2637,29 @@ facebook.com</code></pre>
             <article class="memory-item"><strong>Multicast conocidos:</strong> <code>FF02::1</code>, <code>FF02::2</code>, <code>FF02::5</code>, <code>FF02::A</code> y solicited-node <code>FF02:0:0:0:0:1:FF00::/104</code>.</article>
             <article class="memory-item"><strong>Operación:</strong> host = RS, router = RA, y en Cisco IOS el punto crítico es <code>ipv6 unicast-routing</code>.</article>
           </div>
+          <div class="concept-grid" style="margin-top:1rem">
+            <article class="concept-card">
+              <h3>Antes de una evaluación</h3>
+              <ul>
+                <li>Verificamos si sabemos expandir y abreviar sin mirar apuntes.</li>
+                <li>Comprobamos si distinguimos rápidamente GUA, LLA, ULA, multicast y anycast.</li>
+                <li>Revisamos si entendemos por qué <code>/64</code> es central para SLAAC.</li>
+              </ul>
+            </article>
+            <article class="concept-card">
+              <h3>Si algo falla, revisamos esto</h3>
+              <ul>
+                <li>¿Estamos contando correctamente los 8 hextetos?</li>
+                <li>¿Estamos usando <code>::</code> una sola vez?</li>
+                <li>¿Estamos mezclando tipo de dirección con alcance o uso?</li>
+              </ul>
+            </article>
+          </div>
+          <p class="teaching-note">
+            Recomendación pedagógica: antes de pasar a la práctica grande, intentamos explicar en voz alta
+            una dirección IPv6 completa, un ejemplo de multicast y el flujo RS → RA → SLAAC. Si podemos
+            hacerlo con nuestras palabras, el contenido ya está mejor fijado.
+          </p>
         </div>
       </div>
     </section>
@@ -2256,7 +2762,7 @@ facebook.com</code></pre>
         <button class="lightbox-close" type="button" data-close-lightbox="true">Cerrar</button>
       </div>
       <div class="lightbox-stage">
-        <img id="lightboxImage" src="" alt="" />
+        <div class="lightbox-visual" id="lightboxVisual"></div>
       </div>
       <div class="lightbox-caption" id="lightboxCaption"></div>
     </div>

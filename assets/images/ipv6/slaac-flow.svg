@@ -1,30 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-  <title id="title">SLAAC flow</title>
-  <desc id="desc">Flow of RS, RA and SLAAC host configuration in an IPv6 LAN.</desc>
-  <rect width="960" height="600" rx="28" fill="#0a1323"/>
-  <text x="56" y="72" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">SLAAC flow</text>
-  <text x="56" y="112" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Host discovery, Router Advertisement and /64 interface construction</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Flujo SLAAC</title>
+  <desc id="desc">Secuencia de RS, RA y formacion de GUA por SLAAC en una LAN IPv6.</desc>
+  <rect width="960" height="640" rx="28" fill="#0a1323"/>
+  <text x="56" y="72" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Flujo de SLAAC</text>
+  <text x="56" y="112" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="18">Descubrimiento del router, anuncio RA y formacion de la GUA con /64</text>
 
-  <rect x="72" y="198" width="190" height="94" rx="22" fill="#422d12" stroke="#f59e0b"/>
-  <text x="167" y="248" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">Host</text>
+  <rect x="72" y="204" width="190" height="98" rx="22" fill="#422d12" stroke="#f59e0b"/>
+  <text x="167" y="258" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">Equipo</text>
 
-  <rect x="384" y="198" width="190" height="94" rx="22" fill="#14314a" stroke="#38bdf8"/>
-  <text x="479" y="248" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">Router</text>
+  <rect x="384" y="204" width="190" height="98" rx="22" fill="#14314a" stroke="#38bdf8"/>
+  <text x="479" y="258" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">Router</text>
 
-  <rect x="696" y="198" width="190" height="94" rx="22" fill="#123220" stroke="#4ade80"/>
-  <text x="791" y="248" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">IPv6 host ready</text>
+  <rect x="696" y="204" width="190" height="98" rx="22" fill="#123220" stroke="#4ade80"/>
+  <text x="791" y="248" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" text-anchor="middle">Equipo con GUA</text>
+  <text x="791" y="278" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle">Lista para comunicarse</text>
 
-  <line x1="262" y1="228" x2="384" y2="228" stroke="#60a5fa" stroke-width="6"/>
-  <polygon points="384,228 360,214 360,242" fill="#60a5fa"/>
-  <text x="324" y="206" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle">RS</text>
+  <line x1="262" y1="232" x2="384" y2="232" stroke="#60a5fa" stroke-width="6"/>
+  <polygon points="384,232 360,218 360,246" fill="#60a5fa"/>
+  <text x="324" y="208" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle">RS</text>
 
-  <line x1="574" y1="262" x2="696" y2="262" stroke="#60a5fa" stroke-width="6"/>
-  <polygon points="696,262 672,248 672,276" fill="#60a5fa"/>
-  <text x="636" y="240" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle">RA</text>
+  <line x1="574" y1="274" x2="696" y2="274" stroke="#60a5fa" stroke-width="6"/>
+  <polygon points="696,274 672,260 672,288" fill="#60a5fa"/>
+  <text x="636" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle">RA</text>
 
-  <rect x="116" y="354" width="728" height="160" rx="20" fill="#0b1220" stroke="#243244"/>
-  <text x="148" y="400" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">What the RA can provide</text>
-  <text x="148" y="438" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20">- Network prefix and prefix length</text>
-  <text x="148" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20">- Default gateway</text>
-  <text x="148" y="502" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20">- DNS server and domain information</text>
+  <rect x="116" y="374" width="728" height="184" rx="20" fill="#0b1220" stroke="#243244"/>
+  <text x="148" y="420" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Que puede aportar el RA</text>
+  <text x="148" y="460" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20">- Prefijo de red y longitud de prefijo</text>
+  <text x="148" y="494" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20">- Gateway predeterminado</text>
+  <text x="148" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="20">- DNS y nombre de dominio</text>
 </svg>
