@@ -19,6 +19,7 @@
 | `astro-site/astro.config.mjs` | Config | Astro config + Svelte integration + GitHub Pages base |
 | `astro-site/package.json` | Config | Dependencias del proyecto |
 | `astro-site/src/data/config.json` | Data | Config global: docente, grupos, cursos, entregas |
+| `astro-site/src/content/config.ts` | Config | Schema de Content Collections (requerido por Astro 4) |
 | `astro-site/src/content/ccna1/tareas/comandos-modulo2.json` | Data | Datos completos del ejercicio piloto |
 | `astro-site/src/stores/score.js` | Store | Estado de puntaje compartido entre islands (nanostores) |
 | `astro-site/src/styles/tokens.css` | Styles | Tokens CSS por curso y tipo de página |
@@ -52,7 +53,7 @@
 Desde `/mnt/c/dev/sites-didacticos`:
 ```bash
 mkdir astro-site && cd astro-site
-npm create astro@latest . -- --template minimal --no-git --install --typescript strict
+npm create astro@4 . -- --template minimal --no-git --install --typescript strict
 ```
 Cuando pregunte: usar TypeScript `strict`, no instalar git, sí instalar dependencias.
 
@@ -62,7 +63,7 @@ Cuando pregunte: usar TypeScript `strict`, no instalar git, sí instalar depende
 cd astro-site
 npx astro add svelte --yes
 npm install nanostores @nanostores/svelte
-npm install jspdf
+# jsPDF se carga vía CDN desde BaseLayout — no requiere instalación npm
 ```
 
 - [ ] **Step 1.3: Reemplazar `astro.config.mjs`**
@@ -147,7 +148,7 @@ git commit -m "feat: inicializar proyecto Astro con Svelte y nanostores"
       "fecha_apertura": "2026-03-01T07:00:00",
       "fecha_cierre": "2026-03-28T23:59:00",
       "puntos": 40,
-      "google_form_id": null,
+      "google_form_id": "PENDIENTE_FASE2",
       "parametros": {
         "mostrar_respuestas": true,
         "exportar_pdf": true
@@ -157,7 +158,78 @@ git commit -m "feat: inicializar proyecto Astro con Svelte y nanostores"
 }
 ```
 
-- [ ] **Step 2.2: Crear directorio y `comandos-modulo2.json`**
+- [ ] **Step 2.2: Crear `src/content/config.ts` (requerido por Astro 4)**
+
+Astro 4 reserva `src/content/` para la Content Collections API y requiere un archivo de schema. Crear:
+
+```ts
+// astro-site/src/content/config.ts
+import { defineCollection, z } from 'astro:content';
+
+const ejerciciosCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    id: z.string(),
+    titulo: z.string(),
+    subtitulo: z.string().optional(),
+    contexto: z.string().optional(),
+    curso: z.string(),
+    tipo: z.string(),
+    modos_referencia: z.array(z.object({
+      prompt: z.string(),
+      modo: z.string(),
+      acceso: z.string(),
+    })).optional(),
+    secciones: z.object({
+      fillInBlank: z.object({
+        puntos: z.number(),
+        titulo: z.string().optional(),
+        items: z.array(z.object({
+          id: z.number(),
+          prompt: z.string(),
+          desc: z.string(),
+          post: z.string().optional(),
+          respuestas_validas: z.array(z.string()),
+        })),
+      }).optional(),
+      matching: z.object({
+        puntos: z.number(),
+        titulo: z.string().optional(),
+        pares: z.array(z.object({
+          id: z.string(),
+          comando: z.string(),
+          definicion: z.string(),
+        })),
+      }).optional(),
+      ordering: z.object({
+        puntos: z.number(),
+        titulo: z.string().optional(),
+        contexto: z.string().optional(),
+        pasos: z.array(z.object({
+          orden: z.number(),
+          label: z.string(),
+        })),
+      }).optional(),
+      multipleChoice: z.object({
+        puntos: z.number(),
+        titulo: z.string().optional(),
+        preguntas: z.array(z.object({
+          id: z.string(),
+          texto: z.string(),
+          opciones: z.array(z.string()),
+          correcta: z.number(),
+        })),
+      }).optional(),
+    }),
+  }),
+});
+
+export const collections = {
+  'ccna1/tareas': ejerciciosCollection,
+};
+```
+
+- [ ] **Step 2.3: Crear directorio y `comandos-modulo2.json`**
 
 Crear carpeta `astro-site/src/content/ccna1/tareas/` y el archivo:
 
@@ -281,18 +353,18 @@ Crear carpeta `astro-site/src/content/ccna1/tareas/` y el archivo:
 }
 ```
 
-- [ ] **Step 2.3: Verificar build con los datos**
+- [ ] **Step 2.4: Verificar build con los datos**
 
 ```bash
 cd astro-site && npm run build
 ```
 Esperado: sin errores.
 
-- [ ] **Step 2.4: Commit**
+- [ ] **Step 2.5: Commit**
 
 ```bash
 git add astro-site/src/data/ astro-site/src/content/
-git commit -m "feat: agregar config.json y datos del ejercicio comandos-modulo2"
+git commit -m "feat: agregar config.json, schema de colecciones y datos del ejercicio comandos-modulo2"
 ```
 
 ---
@@ -487,7 +559,7 @@ const year = new Date().getFullYear();
 ---
 
 <!doctype html>
-<html lang="es" data-course={course} data-type={type} style={`--accent:${accentColor}`}>
+<html lang="es" data-course={course} data-type={type} data-clock="normal" style={`--accent:${accentColor}`}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -554,12 +626,13 @@ interface Props {
   fechaCierre: string;
   puntos: number;
   grupos: { id: string; nombre: string; turno: string }[];
+  exportarPdf?: boolean;
 }
 
-const { titulo, subtitulo, curso, entregaId, fechaApertura, fechaCierre, puntos, grupos } = Astro.props;
+const { titulo, subtitulo, curso, entregaId, fechaApertura, fechaCierre, puntos, grupos, exportarPdf = false } = Astro.props;
 ---
 
-<BaseLayout title={titulo} course={curso} type="tarea">
+<BaseLayout title={titulo} course={curso} type="tarea" exportarPdf={exportarPdf}>
   <header class="tarea-header">
     <div class="header-brand">
       <span class="brand-path">CISCO › {curso.toUpperCase()}</span>
@@ -948,7 +1021,7 @@ git commit -m "feat: agregar StudentPanel con grupos dinámicos y auto-save"
                 { icon: '🔁', label: 'NECESITA REFUERZO', color: '#ff3a3a' };
 
   function exportPDF() {
-    const studentKey = [...localStorage.keys?.() ?? Object.keys(localStorage)]
+    const studentKey = Object.keys(localStorage)
       .find(k => k.startsWith('estudiante_v1_'));
     const student = studentKey ? JSON.parse(localStorage.getItem(studentKey) ?? '{}') : {};
 
@@ -1045,7 +1118,7 @@ const { title, course, type, exportarPdf = false } = Astro.props;
 ---
 <!-- Antes de </body>: -->
 {exportarPdf && (
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" is:inline></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 )}
 ```
 
@@ -1266,17 +1339,15 @@ git commit -m "feat: agregar componente FillInBlank con terminal styling"
   function tryMatch() {
     if (!selCmd || !selDef) return;
     const correct = selCmd.id === selDef.id;
-    matched = { ...matched, [selCmd.id]: correct };
+    const wrongCmdId = selCmd.id;
+    matched = { ...matched, [wrongCmdId]: correct };
+    selCmd = null;
+    selDef = null;
     if (!correct) {
       setTimeout(() => {
-        delete matched[selCmd.id];
-        matched = { ...matched };
-        selCmd = null;
-        selDef = null;
+        const { [wrongCmdId]: _, ...rest } = matched;
+        matched = rest;
       }, 800);
-    } else {
-      selCmd = null;
-      selDef = null;
     }
 
     if (Object.values(matched).filter(Boolean).length === pares.length) {
@@ -1695,7 +1766,7 @@ const statusClass = { open: 'badge-open', soon: 'badge-soon', done: 'badge-done'
       {config.entregas.map((entrega) => {
         const status = getStatus(entrega);
         const curso  = config.cursos[entrega.curso as keyof typeof config.cursos];
-        const url    = `/sites-didacticos/${entrega.curso}/${entrega.modulo}/${entrega.tipo}/${entrega.id}`;
+        const url    = `${import.meta.env.BASE_URL}${entrega.curso}/${entrega.modulo}/${entrega.tipo}/${entrega.id}`;
         return (
           <a
             href={status === 'open' ? url : undefined}
@@ -1803,6 +1874,7 @@ Crear `astro-site/src/pages/[curso]/[modulo]/[tipo]/[slug].astro`:
 ```astro
 ---
 // astro-site/src/pages/[curso]/[modulo]/[tipo]/[slug].astro
+import { getCollection } from 'astro:content';
 import config from '../../../../data/config.json';
 import TareaLayout from '../../../../layouts/TareaLayout.astro';
 import FillInBlank from '../../../../components/ejercicios/FillInBlank.svelte';
@@ -1813,30 +1885,26 @@ import ResultPanel from '../../../../components/ui/ResultPanel.svelte';
 import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ejercicioModules = import.meta.glob('../../../../content/**/*.json');
+  // getCollection usa el schema definido en src/content/config.ts para validar en build time
+  const tareas = await getCollection('ccna1/tareas');
 
-  return Promise.all(
-    config.entregas.map(async (entrega) => {
-      const path = `../../../../content/${entrega.curso}/${entrega.tipo}s/${entrega.id}.json`;
-      const mod = ejercicioModules[path] as () => Promise<{ default: unknown }>;
-      const ejercicio = mod ? (await mod()).default : null;
+  return config.entregas.map((entrega) => {
+    const ejercicio = tareas.find((t) => t.id === entrega.id);
 
-      return {
-        params: {
-          curso:  entrega.curso,
-          modulo: entrega.modulo,
-          tipo:   entrega.tipo,
-          slug:   entrega.id,
-        },
-        props: {
-          entrega,
-          ejercicio,
-          grupos:  config.grupos,
-          docente: config.docente,
-        },
-      };
-    })
-  );
+    return {
+      params: {
+        curso:  entrega.curso,
+        modulo: entrega.modulo,
+        tipo:   entrega.tipo,
+        slug:   entrega.id,
+      },
+      props: {
+        entrega,
+        ejercicio: ejercicio?.data ?? null,
+        grupos: config.grupos,
+      },
+    };
+  });
 };
 
 const { entrega, ejercicio, grupos } = Astro.props;
@@ -1852,6 +1920,7 @@ const ej = ejercicio as any;
   fechaCierre={entrega.fecha_cierre}
   puntos={entrega.puntos}
   grupos={grupos}
+  exportarPdf={entrega.parametros.exportar_pdf}
 >
   {ej?.contexto && (
     <div class="card contexto">
