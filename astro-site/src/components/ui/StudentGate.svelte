@@ -7,11 +7,16 @@
   const SK = `estudiante_v1_${entregaId}`;
 
   let nombre  = $state('');
+  let cedula  = $state('');
   let grupo   = $state('');
   let fecha   = $state(new Date().toISOString().split('T')[0]);
-  let visible = $state(false); // whether to show the modal
+  let visible = $state(false);
 
-  let canStart = $derived(nombre.trim().length >= 3 && grupo !== '');
+  let canStart = $derived(
+    nombre.trim().length >= 3 &&
+    cedula.trim().length >= 5 &&
+    grupo !== ''
+  );
 
   function showExercises() {
     const wrap = document.getElementById('exercises-wrap');
@@ -20,7 +25,7 @@
 
   function iniciar() {
     if (!canStart) return;
-    const data = { nombre: nombre.trim(), grupo, fecha };
+    const data = { nombre: nombre.trim(), cedula: cedula.trim(), grupo, fecha };
     localStorage.setItem(SK, JSON.stringify(data));
     studentStore.set(data);
     visible = false;
@@ -32,9 +37,10 @@
     if (stored) {
       const data = JSON.parse(stored);
       nombre = data.nombre ?? '';
+      cedula = data.cedula ?? '';
       grupo  = data.grupo  ?? '';
       fecha  = data.fecha  ?? fecha;
-      studentStore.set({ nombre, grupo, fecha });
+      studentStore.set({ nombre, cedula, grupo, fecha });
       showExercises();
     } else {
       visible = true;
@@ -47,7 +53,7 @@
     <div class="gate-modal card">
       <div class="gate-icon">🖥️</div>
       <h2 class="gate-title">Identificación del Estudiante</h2>
-      <p class="gate-sub">Antes de comenzar, complete sus datos. Esta información se guarda localmente.</p>
+      <p class="gate-sub">Complete sus datos antes de comenzar. Esta información se guarda localmente.</p>
 
       <div class="gate-form">
         <label class="field">
@@ -58,6 +64,18 @@
             placeholder="Apellido Apellido, Nombre"
             required
             autocomplete="name"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Cédula / Documento de identidad *</span>
+          <input
+            type="text"
+            bind:value={cedula}
+            placeholder="Ej: 207890123"
+            required
+            autocomplete="off"
+            inputmode="numeric"
           />
         </label>
 
@@ -82,11 +100,13 @@
         disabled={!canStart}
         onclick={iniciar}
       >
-        ▶ Iniciar Tarea
+        ▶ Iniciar
       </button>
 
       {#if !canStart}
-        <p class="gate-hint">Ingrese su nombre (mínimo 3 caracteres) y seleccione su grupo.</p>
+        <p class="gate-hint">
+          Complete nombre (mín. 3 caracteres), cédula (mín. 5 dígitos) y grupo.
+        </p>
       {/if}
     </div>
   </div>

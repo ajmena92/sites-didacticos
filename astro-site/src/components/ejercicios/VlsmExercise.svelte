@@ -54,12 +54,6 @@
   //  LEVELS CONFIG
   // ═══════════════════════════════════════════════════════
   const LEVELS = {
-    basico: {
-      label: 'Básico', cls: 'basico',
-      lanRanges: [[30,62],[62,126],[126,254]],
-      wan: 0,
-      base() { return { ip:[192,168,ri(1,254),0], prefix:24 }; },
-    },
     intermedio: {
       label: 'Intermedio', cls: 'intermedio',
       lanRanges: [[6,14],[14,30],[30,62],[62,126],[500,1022]],
@@ -77,7 +71,7 @@
   // ═══════════════════════════════════════════════════════
   //  STATE
   // ═══════════════════════════════════════════════════════
-  let selectedLevel = $state('basico');
+  let selectedLevel = $state('intermedio');
   let subnets       = $state([]);
   let hostsGiven    = $state([]);
   let baseNet       = $state('');
@@ -320,7 +314,12 @@
       await submitTarea({
         scriptUrl,
         entregaId,
-        student: { nombre: student.nombre, grupo: student.grupo, fecha: entry.fecha },
+        student: {
+          nombre:  student.nombre,
+          cedula:  student.cedula ?? '',
+          grupo:   student.grupo,
+          fecha:   entry.fecha,
+        },
         scores:  { calificacion, tablasDone, erroresAcumulados: errAcum, nivel: entry.label },
         answers: historial,
       });
@@ -339,14 +338,22 @@
 <section class="vlsm-wrap card" id="sec-vlsm">
   <!-- ── Header ──────────────────────────────────────────── -->
   <header class="ej-header">
-    <h2 class="ej-title">Esquema VLSM — Subnetting Variable</h2>
+    <div class="ej-title-row">
+      <h2 class="ej-title">Esquema VLSM — Subnetting Variable</h2>
+      {#if student.nombre}
+        <div class="student-badge">
+          <span class="student-icon">👤</span>
+          <span class="student-name">{student.nombre}</span>
+          {#if student.cedula}<span class="student-cedula">· {student.cedula}</span>{/if}
+        </div>
+      {/if}
+    </div>
     <div class="vlsm-controls">
       <select
         class="lvl-select"
         bind:value={selectedLevel}
         disabled={activeRow >= 0 && !done}
       >
-        <option value="basico">Básico</option>
         <option value="intermedio">Intermedio</option>
         <option value="avanzado">Avanzado</option>
       </select>
@@ -558,6 +565,9 @@
         {/if}
 
         <div class="done-actions">
+          <button class="btn btn-primary" onclick={generateExercise} disabled={locked}>
+            ↺ Nuevo Ejercicio
+          </button>
           <button class="btn" onclick={() => showReview = !showReview}>
             {showReview ? '✕ Ocultar solución' : '🔍 Revisar solución'}
           </button>
@@ -594,7 +604,16 @@
     justify-content: space-between; align-items: center;
     gap: 0.75rem; margin-bottom: 1rem;
   }
+  .ej-title-row { display: flex; flex-direction: column; gap: 0.3rem; }
   .ej-title  { font-size: 0.95rem; color: var(--accent); margin: 0; }
+
+  .student-badge {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-family: var(--font-mono); font-size: 0.75rem;
+  }
+  .student-icon  { font-size: 0.8rem; }
+  .student-name  { color: var(--text-primary); font-weight: 600; }
+  .student-cedula { color: var(--text-muted); }
   .ej-actions { margin-top: 1rem; display: flex; gap: 0.5rem; }
 
   .vlsm-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
