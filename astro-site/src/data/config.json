@@ -28,6 +28,21 @@
       "id": "2026C1-G08",
       "nombre": "2026C1-G08 Redes de Computadora I",
       "turno": "UMCA"
+    },
+    {
+      "id": "adm-11-1",
+      "nombre": "11-1 Adm. y Soporte",
+      "turno": "CTP PLATANARES"
+    },
+    {
+      "id": "adm-11-2",
+      "nombre": "11-2 Adm. y Soporte",
+      "turno": "CTP PLATANARES"
+    },
+    {
+      "id": "adm-11-3",
+      "nombre": "11-3 Adm. y Soporte",
+      "turno": "CTP PLATANARES"
     }
   ],
   "cursos": {
@@ -46,9 +61,33 @@
     "linux": {
       "nombre": "Linux Básico",
       "color_accent": "#e85d04"
+    },
+    "adm-soporte": {
+      "nombre": "Adm. y Soporte — Informática",
+      "color_accent": "#8b5cf6"
     }
   },
   "entregas": [
+    {
+      "id": "diagnostico-hardware",
+      "curso": "adm-soporte",
+      "modulo": "modulo1",
+      "tipo": "tarea",
+      "tipo_ejercicio": "caso-diagnostico",
+      "titulo": "Tarea 1 — Diagnóstico Técnico Profesional",
+      "grupos_habilitados": ["adm-11-1", "adm-11-2", "adm-11-3"],
+      "activa": true,
+      "fecha_apertura": "2026-03-19T00:00:00",
+      "fecha_cierre": "2026-04-04T23:59:00",
+      "puntos": 0,
+      "google_script_url": "https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec",
+      "parametros": {
+        "mostrar_respuestas": false,
+        "exportar_pdf": true,
+        "mostrar_progreso": false,
+        "permitir_reintento": true
+      }
+    },
     {
       "id": "comandos-modulo2",
       "curso": "ccna1",

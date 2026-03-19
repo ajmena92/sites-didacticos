@@ -1,0 +1,144 @@
+{
+  "id": "diagnostico-hardware",
+  "titulo": "Tarea 1 — Diagnóstico Técnico Profesional",
+  "subtitulo": "Análisis de arquitectura, criterios de actualización y toma de decisiones basadas en hardware real. Se asignan 2 casos de 10 para investigación.",
+  "casos": [
+    {
+      "id": "C-01",
+      "title": "Escalabilidad RAM híbrida",
+      "model": "Lenovo IdeaPad 3 15ALC6",
+      "scenario": "El cliente compró este modelo para edición de fotos. Viene con 8 GB de RAM, pero el sistema indica que solo 5.8 GB son utilizables. Desea subir a 16 GB o 24 GB.",
+      "difficulty": "Media / Arquitectura Mixta",
+      "questions": [
+        "¿Cuánta memoria RAM viene soldada (On-board) y cuántos slots SODIMM están disponibles en este modelo?",
+        "¿Por qué el sistema muestra menos memoria de la instalada? Explica el concepto de VRAM compartida en iGPU Ryzen.",
+        "¿Cuál es el módulo máximo (capacidad y frecuencia) que se puede instalar en el slot libre?"
+      ]
+    },
+    {
+      "id": "C-02",
+      "title": "Restauración Business Class",
+      "model": "HP ProBook 640 G4",
+      "scenario": "Una empresa tiene 50 unidades de este modelo con HDD mecánicos y 4 GB de RAM. El arranque tarda 3 minutos. El presupuesto por equipo es de $100.",
+      "difficulty": "Alta / Gestión de Presupuesto",
+      "questions": [
+        "¿Soporta este modelo discos M.2 NVMe y SATA de 2.5\" simultáneamente?",
+        "Investiga el precio de mercado de un SSD M.2 de 250 GB y un módulo de 8 GB DDR4 2400 MHz.",
+        "¿Es rentable esta actualización en 2026 frente a la compra de una laptop nueva de gama de entrada? Justifica."
+      ]
+    },
+    {
+      "id": "C-03",
+      "title": "Obsolescencia y Windows 11",
+      "model": "Dell Latitude E6410",
+      "scenario": "Un usuario quiere instalar Windows 11 para usar aplicaciones modernas. El equipo tiene un Intel Core i5-520M y 4 GB de DDR3.",
+      "difficulty": "Baja / Restricciones de Software",
+      "questions": [
+        "¿Qué generación de procesadores Intel es el mínimo oficial para Windows 11? ¿Cumple el i5-520M ese requisito?",
+        "¿Tiene esta placa base chip TPM 2.0 integrado? Investiga la fecha de lanzamiento del modelo para determinar la generación de TPM.",
+        "Emite un veredicto técnico sobre la seguridad y estabilidad de forzar la instalación de sistemas operativos modernos en hardware legado."
+      ]
+    },
+    {
+      "id": "C-04",
+      "title": "Reparabilidad en diseño sellado",
+      "model": "Microsoft Surface Laptop 5",
+      "scenario": "La batería está degradada (salud al 60%) y el teclado tiene varias teclas que no funcionan.",
+      "difficulty": "Muy Alta / Diseño Propietario",
+      "questions": [
+        "Busca en iFixit la puntuación de reparabilidad de este modelo. ¿Cómo está sujeta la batería (tornillos o pegamento)?",
+        "Describe el proceso para abrir este equipo sin dañar el panel de vidrio de la pantalla.",
+        "¿Es posible encontrar el Part Number oficial de la batería o es una pieza propietaria sin reemplazo externo?"
+      ]
+    },
+    {
+      "id": "C-05",
+      "title": "Mantenimiento térmico gaming",
+      "model": "Acer Nitro 5 AN515-57",
+      "scenario": "El equipo alcanza los 100 °C en carga y se apaga bruscamente (Thermal Throttling). El cliente nunca le ha hecho mantenimiento en 2 años.",
+      "difficulty": "Media / Soporte Preventivo",
+      "questions": [
+        "¿Qué tipo de material térmico usa este modelo: pasta térmica convencional o Liquid Metal?",
+        "¿Es necesario retirar los ventiladores para limpiar las rejillas de salida de aire en este chasis?",
+        "Recomienda una base refrigerante o configuración de software (Acer NitroSense / Throttlestop) para mitigar la temperatura."
+      ]
+    },
+    {
+      "id": "C-06",
+      "title": "Confusión DDR4 vs DDR5",
+      "model": "ASUS VivoBook 16X M1603",
+      "scenario": "El cliente compró un módulo de RAM DDR5 de 16 GB porque «era el más nuevo» para ampliar su equipo. Al instalarlo, el sistema no arranca.",
+      "difficulty": "Baja / Compatibilidad de Memoria",
+      "questions": [
+        "¿Qué tipo de RAM (DDR4 o DDR5) soporta la plataforma AMD Ryzen 5 5600H presente en este modelo?",
+        "¿Son físicamente compatibles los módulos DDR4 y DDR5 en el mismo socket SODIMM? ¿Por qué el equipo no arrancó?",
+        "Recomienda el módulo correcto (tipo, capacidad, frecuencia) para ampliar este equipo a 24 GB."
+      ]
+    },
+    {
+      "id": "C-07",
+      "title": "Compatibilidad USB-C Power Delivery",
+      "model": "Lenovo ThinkPad X1 Carbon Gen 10",
+      "scenario": "El usuario perdió el cargador original de 65 W y quiere usar un cargador USB-C genérico de 45 W que ya tiene.",
+      "difficulty": "Media / Gestión de Energía",
+      "questions": [
+        "¿Soporta este modelo carga por USB-C con Power Delivery? ¿Cuántos puertos Thunderbolt 4 tiene?",
+        "¿Qué sucede si se alimenta el equipo con un cargador de 45 W en lugar de 65 W bajo carga completa?",
+        "¿Existe riesgo de dañar la batería o la placa base al usar un cargador USB-C de terceros certificado con el wattaje correcto?"
+      ]
+    },
+    {
+      "id": "C-08",
+      "title": "Costo de reemplazo de pantalla",
+      "model": "MacBook Pro 14\" 2021 M1 Pro",
+      "scenario": "La pantalla tiene una fractura en la esquina inferior izquierda. El técnico cotizó la pantalla en $600. El equipo tiene 2 años de uso.",
+      "difficulty": "Alta / Análisis Costo-Beneficio",
+      "questions": [
+        "¿Cuál es el precio oficial de reparación de pantalla en Apple Store para este modelo? ¿Cubre la garantía AppleCare+ este tipo de daño?",
+        "Busca en iFixit la dificultad de reemplazo de pantalla. ¿Qué componentes adicionales pueden dañarse durante el proceso?",
+        "Dado el precio del equipo nuevo (~$2,500) y el costo de reparación, ¿cuál es la recomendación técnica? Calcula el porcentaje que representa la reparación."
+      ]
+    },
+    {
+      "id": "C-09",
+      "title": "Mitos de calibración de batería",
+      "model": "HP Pavilion 15-eh1xxx",
+      "scenario": "El cliente descargó una app de «calibración de batería» que le pide descargar completamente la batería hasta 0% cada semana para «alargar su vida útil».",
+      "difficulty": "Baja / Desmitificación Técnica",
+      "questions": [
+        "¿Es correcto descargar una batería de Litio-Ion hasta 0% regularmente? Explica qué sucede a nivel electroquímico.",
+        "¿Qué rango de carga (% mínimo y % máximo) recomienda HP para maximizar la vida útil de la batería en este modelo?",
+        "¿Existe en el software HP Command Center alguna opción de «Battery Care» o carga adaptativa? Describe cómo funciona."
+      ]
+    },
+    {
+      "id": "C-10",
+      "title": "Riesgos de actualización de BIOS",
+      "model": "Dell Inspiron 15 3520",
+      "scenario": "El usuario vio en YouTube que actualizar el BIOS «mejora el rendimiento». Intenta actualizar desde la versión 1.2.0 a la 1.8.0 saltándose versiones intermedias.",
+      "difficulty": "Alta / Gestión de Firmware",
+      "questions": [
+        "¿Permite Dell actualizar el BIOS saltando múltiples versiones o se requiere actualización secuencial? Investiga en el sitio oficial de Dell soporte para este modelo.",
+        "¿Qué puede ocurrir si se interrumpe el proceso de actualización de BIOS (corte de energía, cierre del laptop)? ¿Tiene este modelo mecanismo de recuperación?",
+        "¿En qué escenarios reales es necesario actualizar el BIOS? ¿Cuándo NO se recomienda hacerlo si el sistema funciona correctamente?"
+      ]
+    }
+  ],
+  "secciones_estaticas": [
+    {
+      "id": "static1",
+      "titulo": "3.1 Diferencia de voltaje en memorias DDR3 (DDR3 vs DDR3L)",
+      "descripcion": "Explica qué sucede si se instala un módulo DDR3 (1.5V) en una placa que solo soporta DDR3L (1.35V) y cómo afecta esto a la vida útil del controlador de memoria."
+    },
+    {
+      "id": "static2",
+      "titulo": "3.2 Criterio de Retorno de Inversión (ROI)",
+      "descripcion": "Si el costo de una reparación (pantalla + batería + SSD) supera el 60% del valor de un equipo nuevo con mejor procesador, ¿cuál debe ser la recomendación oficial al cliente?"
+    },
+    {
+      "id": "static3",
+      "titulo": "3.3 Gestión de Residuos Electrónicos (E-Waste)",
+      "descripcion": "¿Cuál es el procedimiento correcto para desechar una batería de Litio-Ion que presenta abultamiento (bloating) durante el mantenimiento?"
+    }
+  ]
+}

@@ -7,17 +7,21 @@ import Matching from '../../../../components/ejercicios/Matching.svelte';
 import Ordering from '../../../../components/ejercicios/Ordering.svelte';
 import MultipleChoice from '../../../../components/ejercicios/MultipleChoice.svelte';
 import VlsmExercise from '../../../../components/ejercicios/VlsmExercise.svelte';
+import CasoDiagnostico from '../../../../components/ejercicios/CasoDiagnostico.svelte';
 import ResultPanel from '../../../../components/ui/ResultPanel.svelte';
 import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const tareas = await getCollection('ccna1-tareas');
+  const tareas    = await getCollection('ccna1-tareas');
+  const tareasAdm = await getCollection('adm-soporte-tareas');
 
   return config.entregas.map((entrega) => {
-    // VLSM es generativo — no necesita contenido YAML
-    const ejercicio = entrega.tipo_ejercicio === 'vlsm'
-      ? null
-      : (tareas.find(t => t.id.includes(entrega.id)) ?? null);
+    let ejercicio = null;
+    if (entrega.tipo_ejercicio === 'caso-diagnostico') {
+      ejercicio = tareasAdm.find(t => t.id.includes(entrega.id)) ?? null;
+    } else if (entrega.tipo_ejercicio !== 'vlsm') {
+      ejercicio = tareas.find(t => t.id.includes(entrega.id)) ?? null;
+    }
 
     return {
       params: {
@@ -36,8 +40,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { entrega, ejercicio, grupos } = Astro.props;
-const ej = ejercicio as any;
-const esVlsm = (entrega as any).tipo_ejercicio === 'vlsm';
+const ej      = ejercicio as any;
+const tipoEj  = (entrega as any).tipo_ejercicio;
+const esVlsm  = tipoEj === 'vlsm';
+const esCasoDiag = tipoEj === 'caso-diagnostico';
 
 // Filtrar solo los grupos habilitados para esta entrega
 const gruposHabilitados = grupos.filter((g: any) =>
@@ -63,6 +69,18 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
   mostrarProgreso={entrega.parametros.mostrar_progreso ?? true}
   activa={activa}
 >
+
+  {/* ── Caso Diagnóstico (open-response, adm-soporte) ── */}
+  {esCasoDiag && ej && (
+    <CasoDiagnostico
+      client:visible
+      casos={ej.casos}
+      seccionesEstaticas={ej.secciones_estaticas ?? []}
+      entregaId={entrega.id}
+      scriptUrl={(entrega as any).google_script_url ?? ''}
+      exportarPdf={(entrega as any).parametros.exportar_pdf}
+    />
+  )}
 
   {/* ── Ejercicio VLSM (generativo) ── */}
   {esVlsm && (
@@ -142,7 +160,7 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
     />
   )}
 
-  {!esVlsm && (
+  {!esVlsm && !esCasoDiag && (
     <ResultPanel
       client:visible
       totalPuntos={entrega.puntos}

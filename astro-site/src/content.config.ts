@@ -59,6 +59,29 @@ const ejerciciosCollection = defineCollection({
   }),
 });
 
+const admSoporteTareasCollection = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/adm-soporte/tareas' }),
+  schema: z.object({
+    id: z.string(),
+    titulo: z.string(),
+    subtitulo: z.string().optional(),
+    casos: z.array(z.object({
+      id: z.string(),
+      title: z.string(),
+      model: z.string(),
+      scenario: z.string(),
+      difficulty: z.string(),
+      questions: z.array(z.string()),
+    })),
+    secciones_estaticas: z.array(z.object({
+      id: z.string(),
+      titulo: z.string(),
+      descripcion: z.string(),
+    })).optional(),
+  }),
+});
+
 export const collections = {
   'ccna1-tareas': ejerciciosCollection,
+  'adm-soporte-tareas': admSoporteTareasCollection,
 };
