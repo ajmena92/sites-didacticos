@@ -23,6 +23,11 @@
       "id": "11-4",
       "nombre": "11-4 Redes",
       "turno": "mañana"
+    },
+    {
+      "id": "2026C1-G08",
+      "nombre": "2026C1-G08 Redes de Computadora I",
+      "turno": "universitario"
     }
   ],
   "cursos": {
@@ -49,6 +54,7 @@
       "curso": "ccna1",
       "modulo": "modulo2",
       "tipo": "tarea",
+      "tipo_ejercicio": "estatico",
       "titulo": "Tarea 1 — Comandos Básicos Switch",
       "grupos_habilitados": [
         "11-2",
@@ -63,6 +69,28 @@
         "mostrar_respuestas": true,
         "exportar_pdf": true,
         "mostrar_progreso": true,
+        "permitir_reintento": true
+      }
+    },
+    {
+      "id": "vlsm-subnetting",
+      "curso": "ccna1",
+      "modulo": "modulo7",
+      "tipo": "practica",
+      "tipo_ejercicio": "vlsm",
+      "titulo": "Práctica — Esquema VLSM Completo",
+      "grupos_habilitados": [
+        "2026C1-G08"
+      ],
+      "activa": true,
+      "fecha_apertura": "2026-03-18T00:00:00",
+      "fecha_cierre": "2026-06-30T23:59:00",
+      "puntos": 40,
+      "google_script_url": "",
+      "parametros": {
+        "mostrar_respuestas": true,
+        "exportar_pdf": false,
+        "mostrar_progreso": false,
         "permitir_reintento": true
       }
     }

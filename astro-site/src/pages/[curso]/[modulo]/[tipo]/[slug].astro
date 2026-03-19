@@ -6,6 +6,7 @@ import FillInBlank from '../../../../components/ejercicios/FillInBlank.svelte';
 import Matching from '../../../../components/ejercicios/Matching.svelte';
 import Ordering from '../../../../components/ejercicios/Ordering.svelte';
 import MultipleChoice from '../../../../components/ejercicios/MultipleChoice.svelte';
+import VlsmExercise from '../../../../components/ejercicios/VlsmExercise.svelte';
 import ResultPanel from '../../../../components/ui/ResultPanel.svelte';
 import type { GetStaticPaths } from 'astro';
 
@@ -13,7 +14,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const tareas = await getCollection('ccna1-tareas');
 
   return config.entregas.map((entrega) => {
-    const ejercicio = tareas.find(t => t.id.includes(entrega.id)) ?? tareas[0] ?? null;
+    // VLSM es generativo — no necesita contenido YAML
+    const ejercicio = entrega.tipo_ejercicio === 'vlsm'
+      ? null
+      : (tareas.find(t => t.id.includes(entrega.id)) ?? null);
 
     return {
       params: {
@@ -33,6 +37,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const { entrega, ejercicio, grupos } = Astro.props;
 const ej = ejercicio as any;
+const esVlsm = (entrega as any).tipo_ejercicio === 'vlsm';
 ---
 
 <TareaLayout
@@ -47,13 +52,25 @@ const ej = ejercicio as any;
   exportarPdf={entrega.parametros.exportar_pdf}
   mostrarProgreso={entrega.parametros.mostrar_progreso ?? true}
 >
-  {ej?.contexto && (
+
+  {/* ── Ejercicio VLSM (generativo) ── */}
+  {esVlsm && (
+    <VlsmExercise
+      client:load
+      entregaId={entrega.id}
+      puntos={entrega.puntos}
+      scriptUrl={(entrega as any).google_script_url ?? ''}
+    />
+  )}
+
+  {/* ── Ejercicios estáticos ── */}
+  {!esVlsm && ej?.contexto && (
     <div class="card contexto">
       <p>{ej.contexto}</p>
     </div>
   )}
 
-  {ej?.modos_referencia && (
+  {!esVlsm && ej?.modos_referencia && (
     <details class="card referencia">
       <summary>📋 Referencia de modos IOS</summary>
       <table>
@@ -71,7 +88,7 @@ const ej = ejercicio as any;
     </details>
   )}
 
-  {ej?.secciones?.fillInBlank && (
+  {!esVlsm && ej?.secciones?.fillInBlank && (
     <FillInBlank
       client:visible
       items={ej.secciones.fillInBlank.items}
@@ -81,7 +98,7 @@ const ej = ejercicio as any;
     />
   )}
 
-  {ej?.secciones?.matching && (
+  {!esVlsm && ej?.secciones?.matching && (
     <Matching
       client:visible
       pares={ej.secciones.matching.pares}
@@ -90,7 +107,7 @@ const ej = ejercicio as any;
     />
   )}
 
-  {ej?.secciones?.ordering && (
+  {!esVlsm && ej?.secciones?.ordering && (
     <Ordering
       client:visible
       pasos={ej.secciones.ordering.pasos}
@@ -100,7 +117,7 @@ const ej = ejercicio as any;
     />
   )}
 
-  {ej?.secciones?.multipleChoice && (
+  {!esVlsm && ej?.secciones?.multipleChoice && (
     <MultipleChoice
       client:visible
       preguntas={ej.secciones.multipleChoice.preguntas}
@@ -110,14 +127,17 @@ const ej = ejercicio as any;
     />
   )}
 
-  <ResultPanel
-    client:visible
-    totalPuntos={entrega.puntos}
-    exportarPdf={entrega.parametros.exportar_pdf}
-    tituloTarea={entrega.titulo}
-    entregaId={entrega.id}
-    scriptUrl={entrega.google_script_url ?? ''}
-  />
+  {!esVlsm && (
+    <ResultPanel
+      client:visible
+      totalPuntos={entrega.puntos}
+      exportarPdf={entrega.parametros.exportar_pdf}
+      tituloTarea={entrega.titulo}
+      entregaId={entrega.id}
+      scriptUrl={(entrega as any).google_script_url ?? ''}
+    />
+  )}
+
 </TareaLayout>
 
 <style>

@@ -44,7 +44,7 @@ const {
   <div id="exercises-wrap" style="display:none">
     <ResumeBanner client:load entregaId={entregaId} />
     {mostrarProgreso && <ProgressBar client:load />}
-    <SectionNav client:load />
+    {mostrarProgreso && <SectionNav client:load />}
     <main>
       <slot />
     </main>
