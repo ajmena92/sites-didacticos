@@ -38,6 +38,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { entrega, ejercicio, grupos } = Astro.props;
 const ej = ejercicio as any;
 const esVlsm = (entrega as any).tipo_ejercicio === 'vlsm';
+
+// Filtrar solo los grupos habilitados para esta entrega
+const gruposHabilitados = grupos.filter((g: any) =>
+  (entrega as any).grupos_habilitados?.includes(g.id)
+);
+
+const permitirReintento = (entrega as any).parametros?.permitir_reintento ?? true;
+const activa            = (entrega as any).activa ?? true;
 ---
 
 <TareaLayout
@@ -48,9 +56,10 @@ const esVlsm = (entrega as any).tipo_ejercicio === 'vlsm';
   fechaApertura={entrega.fecha_apertura}
   fechaCierre={entrega.fecha_cierre}
   puntos={entrega.puntos}
-  grupos={grupos}
+  grupos={gruposHabilitados}
   exportarPdf={entrega.parametros.exportar_pdf}
   mostrarProgreso={entrega.parametros.mostrar_progreso ?? true}
+  activa={activa}
 >
 
   {/* ── Ejercicio VLSM (generativo) ── */}
@@ -60,6 +69,7 @@ const esVlsm = (entrega as any).tipo_ejercicio === 'vlsm';
       entregaId={entrega.id}
       puntos={entrega.puntos}
       scriptUrl={(entrega as any).google_script_url ?? ''}
+      permitirReintento={permitirReintento}
     />
   )}
 

@@ -3,7 +3,7 @@
   import { studentStore, updateSection, isLocked, markVerified } from '../../stores/score.js';
   import { submitTarea } from '../../lib/submitTarea.js';
 
-  let { entregaId = '', puntos = 40, scriptUrl = '' } = $props();
+  let { entregaId = '', puntos = 40, scriptUrl = '', permitirReintento = true } = $props();
 
   // ═══════════════════════════════════════════════════════
   //  NET UTILS (inlined from net-utils.js)
@@ -87,6 +87,7 @@
   let historial     = $state([]);
   let submitStatus  = $state('idle');  // idle | sending | sent | error
   let answers       = $state([]);      // answers[i] = {h, net, px, mk, first, last, bc}
+  let mejorNota     = $state(0);       // mejor nota histórica (persiste en localStorage)
 
   let student = $state(studentStore.get());
   let locked  = $state(isLocked.get());
@@ -131,6 +132,8 @@
       }
       const hist = JSON.parse(localStorage.getItem(`vlsm_hist_${entregaId}`) ?? 'null');
       if (hist) historial = hist;
+      const best = parseInt(localStorage.getItem(`vlsm_best_${entregaId}`) ?? '0', 10);
+      if (!isNaN(best)) mejorNota = best;
     } catch(e) {}
 
     document.addEventListener('keydown', handleKeydown);
@@ -138,11 +141,41 @@
   });
 
   // Ctrl+Shift+Enter — rellenar todo automáticamente (debug/demo)
+  // Ctrl+Shift+-     — reset completo (docente)
   function handleKeydown(e) {
     if (e.ctrlKey && e.shiftKey && e.key === 'Enter' && subnets.length > 0 && !done) {
       e.preventDefault();
       autoFillAll();
     }
+    if (e.ctrlKey && e.shiftKey && e.key === '-') {
+      e.preventDefault();
+      resetAll();
+    }
+  }
+
+  function resetAll() {
+    try {
+      sessionStorage.removeItem(`vlsm_${entregaId}`);
+      localStorage.removeItem(`vlsm_hist_${entregaId}`);
+      localStorage.removeItem(`vlsm_best_${entregaId}`);
+    } catch(e) {}
+    selectedLevel = 'intermedio';
+    subnets       = [];
+    hostsGiven    = [];
+    baseNet       = '';
+    activeRow     = -1;
+    done          = false;
+    totalErrors   = 0;
+    rowAttempts   = {};
+    rowFeedback   = {};
+    shakingRow    = null;
+    showReview    = false;
+    tablasDone    = 0;
+    errAcum       = 0;
+    historial     = [];
+    submitStatus  = 'idle';
+    answers       = [];
+    mejorNota     = 0;
   }
 
   // ═══════════════════════════════════════════════════════
@@ -240,6 +273,13 @@
         const cal        = Math.max(0, Math.round(100 - errAcum * 10 / tablasDone));
         const finalScore = Math.round(cal / 100 * puntos);
 
+        // Actualizar mejor nota histórica
+        const esNuevaMejor = cal > mejorNota;
+        if (esNuevaMejor) {
+          mejorNota = cal;
+          try { localStorage.setItem(`vlsm_best_${entregaId}`, String(mejorNota)); } catch(e) {}
+        }
+
         try {
           sessionStorage.setItem(`vlsm_${entregaId}`, JSON.stringify({
             tablasDone, errAcum,
@@ -255,11 +295,12 @@
         historial = [entry, ...historial].slice(0, 3);
         try { localStorage.setItem(`vlsm_hist_${entregaId}`, JSON.stringify(historial)); } catch(e) {}
 
-        updateSection('fillInBlank', finalScore);
+        updateSection('fillInBlank', Math.round(mejorNota / 100 * puntos));
         markVerified('fillInBlank');
 
-        if (tablasDone >= 2 && scriptUrl) {
-          doSubmit(cal, entry);
+        // Enviar solo cuando mejora la nota (o al llegar a 2 tablas por primera vez)
+        if (tablasDone >= 2 && scriptUrl && esNuevaMejor) {
+          doSubmit(mejorNota, entry);
         }
       }
     } else {
@@ -308,7 +349,7 @@
   //  ENVÍO AL PROFESOR
   // ═══════════════════════════════════════════════════════
   async function doSubmit(calificacion, entry) {
-    if (submitStatus === 'sending' || submitStatus === 'sent') return;
+    if (submitStatus === 'sending') return;
     submitStatus = 'sending';
     try {
       await submitTarea({
@@ -363,7 +404,7 @@
       <button
         class="btn btn-primary"
         onclick={generateExercise}
-        disabled={locked}
+        disabled={locked || (activeRow >= 0 && !done && !permitirReintento)}
       >
         {activeRow < 0 ? '▶ Iniciar Ejercicio' : '↺ Nuevo Ejercicio'}
       </button>
@@ -541,11 +582,23 @@
               </div>
             {:else}
               <div class="cum-ok">
-                ✓ Nota acumulada: <strong>{calAcum}/100</strong>
-                &nbsp;·&nbsp; {tablasDone} tablas
-                &nbsp;·&nbsp; {errAcum} errores totales
-                {#if totalErrors > 0}
-                  <br><span class="cum-hint">Haz otra tabla para reducir la penalización.</span>
+                {#if calAcum >= mejorNota}
+                  🏆 Mejor nota: <strong>{mejorNota}/100</strong>
+                  {#if calAcum > (mejorNota - (calAcum === mejorNota ? 0 : 1))}
+                    &nbsp;<span class="cum-new">¡Nueva mejor!</span>
+                  {/if}
+                {:else}
+                  ✓ Nota registrada: <strong>{mejorNota}/100</strong>
+                  <br><span class="cum-hint">Esta tabla bajó la nota — se conserva tu mejor nota ({mejorNota}/100).</span>
+                {/if}
+                <br>
+                <span class="cum-sub">
+                  Nota esta sesión: {calAcum}/100 ·
+                  {tablasDone} tabla{tablasDone !== 1 ? 's' : ''} ·
+                  {errAcum} error{errAcum !== 1 ? 'es' : ''}
+                </span>
+                {#if calAcum < 100}
+                  <br><span class="cum-hint">Haz más tablas para mejorar la nota.</span>
                 {/if}
               </div>
             {/if}
@@ -565,7 +618,7 @@
         {/if}
 
         <div class="done-actions">
-          <button class="btn btn-primary" onclick={generateExercise} disabled={locked}>
+          <button class="btn btn-primary" onclick={generateExercise} disabled={locked || !permitirReintento}>
             ↺ Nuevo Ejercicio
           </button>
           <button class="btn" onclick={() => showReview = !showReview}>
@@ -780,8 +833,10 @@
   .hi-err     { color: var(--color-error, #ff3a3a); white-space: nowrap; }
   .hi-date    { color: var(--text-muted); white-space: nowrap; }
   .cum-pending { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
-  .cum-ok      { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-correct, #00ff41); }
+  .cum-ok      { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-correct, #00ff41); line-height: 1.7; }
   .cum-hint    { font-size: 0.75rem; color: var(--text-muted); }
+  .cum-sub     { font-size: 0.72rem; color: var(--text-muted); }
+  .cum-new     { font-size: 0.72rem; background: rgba(0,255,65,.15); color: var(--color-correct,#00ff41); border: 1px solid rgba(0,255,65,.3); border-radius: 4px; padding: 0.1rem 0.4rem; }
 
   /* ── Submit indicators ────────────────────────────────── */
   .submit-ind        { font-family: var(--font-mono); font-size: 0.8rem; }

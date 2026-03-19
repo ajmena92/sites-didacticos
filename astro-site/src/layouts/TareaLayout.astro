@@ -18,6 +18,7 @@ interface Props {
   grupos: { id: string; nombre: string; turno: string }[];
   exportarPdf?: boolean;
   mostrarProgreso?: boolean;
+  activa?: boolean;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   fechaApertura, fechaCierre, puntos, grupos,
   exportarPdf = false,
   mostrarProgreso = true,
+  activa = true,
 } = Astro.props;
 ---
 
@@ -39,16 +41,24 @@ const {
   </header>
 
   <CountdownClock client:load fechaApertura={fechaApertura} fechaCierre={fechaCierre} />
-  <StudentGate client:load grupos={grupos} entregaId={entregaId} />
 
-  <div id="exercises-wrap" style="display:none">
-    <ResumeBanner client:load entregaId={entregaId} />
-    {mostrarProgreso && <ProgressBar client:load />}
-    {mostrarProgreso && <SectionNav client:load />}
-    <main>
-      <slot />
-    </main>
-  </div>
+  {!activa ? (
+    <div class="entrega-inactiva">
+      🔒 Esta entrega no está disponible en este momento.
+    </div>
+  ) : (
+    <>
+      <StudentGate client:load grupos={grupos} entregaId={entregaId} />
+          <div id="exercises-wrap" style="display:none">
+        <ResumeBanner client:load entregaId={entregaId} />
+        {mostrarProgreso && <ProgressBar client:load />}
+        {mostrarProgreso && <SectionNav client:load />}
+        <main>
+          <slot />
+        </main>
+      </div>
+    </>
+  )}
 </BaseLayout>
 
 <style>
@@ -80,4 +90,13 @@ const {
     color: var(--text-muted);
   }
   main { display: flex; flex-direction: column; gap: 2rem; }
+  .entrega-inactiva {
+    margin: 2rem 0; padding: 1.5rem;
+    background: var(--surface, #161b22);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--color-error, #ff3a3a);
+    border-radius: var(--radius, 8px);
+    font-family: var(--font-mono); font-size: 0.9rem;
+    color: var(--text-muted); text-align: center;
+  }
 </style>
