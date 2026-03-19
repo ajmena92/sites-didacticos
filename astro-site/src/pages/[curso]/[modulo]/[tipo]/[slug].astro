@@ -46,6 +46,8 @@ const gruposHabilitados = grupos.filter((g: any) =>
 
 const permitirReintento = (entrega as any).parametros?.permitir_reintento ?? true;
 const activa            = (entrega as any).activa ?? true;
+const cursoNombre       = (config.cursos as any)[(entrega as any).curso]?.nombre ?? '';
+const docenteNombre     = (config as any).docente?.nombre ?? '';
 ---
 
 <TareaLayout
@@ -70,6 +72,9 @@ const activa            = (entrega as any).activa ?? true;
       puntos={entrega.puntos}
       scriptUrl={(entrega as any).google_script_url ?? ''}
       permitirReintento={permitirReintento}
+      exportarPdf={(entrega as any).parametros.exportar_pdf}
+      cursoNombre={cursoNombre}
+      docenteNombre={docenteNombre}
     />
   )}
 
@@ -145,6 +150,9 @@ const activa            = (entrega as any).activa ?? true;
       tituloTarea={entrega.titulo}
       entregaId={entrega.id}
       scriptUrl={(entrega as any).google_script_url ?? ''}
+      secciones={ej?.secciones ?? null}
+      cursoNombre={cursoNombre}
+      docenteNombre={docenteNombre}
     />
   )}
 

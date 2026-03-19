@@ -9,6 +9,9 @@
     tituloTarea = '',
     entregaId = '',
     scriptUrl = '',
+    secciones = null,
+    cursoNombre = '',
+    docenteNombre = '',
   } = $props();
 
   let score    = $state(totalScore.get());
@@ -93,7 +96,7 @@
 
     const line = (text, fontSize = 11, indent = 20) => {
       doc.setFontSize(fontSize);
-      const lines = doc.splitTextToSize(text, 170);
+      const lines = doc.splitTextToSize(String(text), 170);
       lines.forEach(l => {
         if (y > 270) { doc.addPage(); y = 20; }
         doc.text(l, indent, y);
@@ -102,48 +105,93 @@
       y += 2;
     };
 
-    line(tituloTarea || 'Resultado', 16);
-    y += 4;
-    line(`Estudiante: ${student.nombre ?? 'N/D'}`);
-    line(`Grupo: ${student.grupo ?? 'N/D'}   Fecha: ${student.fecha ?? 'N/D'}`);
-    line(`Puntaje: ${score} / ${totalPuntos} pts (${pct}%) — ${rating.label}`, 12);
+    const sep = (label = '') => {
+      if (y > 260) { doc.addPage(); y = 20; }
+      y += 2;
+      line(label ? `--- ${label} ---` : '---', 9);
+    };
+
+    // Header
+    line(`TAREA: ${tituloTarea || 'Resultado'}`, 15);
+    y += 2;
+    line(`Docente: ${docenteNombre || 'N/D'}   Curso: ${cursoNombre || 'N/D'}`);
+    line(`Estudiante: ${student.nombre ?? 'N/D'}   Cedula: ${student.cedula ?? 'N/D'}`);
+    line(`Grupo: ${student.grupo ?? 'N/D'}   Institucion: ${student.turno ?? 'N/D'}   Fecha entrega: ${student.fecha ?? 'N/D'}`);
+    line(`Generado: ${new Date().toLocaleString('es-CR')}`);
     y += 4;
 
-    line('Detalle por sección:', 11);
-    line(`  Fill-in-the-blank: ${sections.fillInBlank} pts`, 10, 25);
-    line(`  Relacionar columnas: ${sections.matching} pts`, 10, 25);
-    line(`  Ordenar secuencia: ${sections.ordering} pts`, 10, 25);
-    line(`  Selección múltiple: ${sections.multipleChoice} pts`, 10, 25);
+    // Final score
+    line(`NOTA FINAL: ${score} / ${totalPuntos} pts (${pct}%) -- ${rating.label}`, 13);
     y += 4;
 
-    // Include student answers per section
+    // Section summary
+    sep('Resumen de Secciones');
+    Object.entries(sectionLabels).forEach(([key, label]) => {
+      const prog = progress[key] ? '[+]' : '[ ]';
+      line(`  ${prog} ${label}: ${sections[key] ?? 0} pts`, 10, 25);
+    });
+    y += 4;
+
+    // Detailed answers per section
     const answerKeys = ['fillInBlank', 'matching', 'ordering', 'multipleChoice'];
     answerKeys.forEach(sec => {
       const raw = localStorage.getItem(`respuestas_v1_${entregaId}_${sec}`);
       if (!raw) return;
       const d = JSON.parse(raw);
 
-      if (y > 250) { doc.addPage(); y = 20; }
-      line(`— ${sectionLabels[sec]} —`, 10);
+      sep(sectionLabels[sec]);
 
       if (sec === 'fillInBlank' && d.answers) {
         d.answers.forEach((ans, i) => {
           const ok = d.results?.[i];
-          line(`  [${ok === true ? '✓' : ok === false ? '✗' : '?'}] ${ans || '(vacío)'}`, 9, 25);
+          const marker = ok === true ? '[+]' : ok === false ? '[--]' : '[ ?]';
+          let text = `  ${marker} ${ans || '(vacio)'}`;
+          if (ok === false) {
+            const correcto = secciones?.fillInBlank?.items?.[i]?.respuestas_validas?.[0];
+            if (correcto) text += `  (correcto: ${correcto})`;
+          }
+          line(text, 9, 25);
         });
+
       } else if (sec === 'ordering' && d.selections) {
         d.selections.forEach((sel, i) => {
           const ok = d.results?.[i];
-          line(`  [${ok === true ? '✓' : ok === false ? '✗' : '?'}] Paso ${sel || '?'}`, 9, 25);
+          const marker = ok === true ? '[+]' : ok === false ? '[--]' : '[ ?]';
+          const stepLabel = secciones?.ordering?.pasos?.find(p => p.orden === parseInt(sel))?.label ?? '';
+          let text = `  ${marker} ${sel || '?'}. ${stepLabel}`;
+          if (ok === false) {
+            const correctOrden = secciones?.ordering?.pasos?.[i]?.orden ?? (i + 1);
+            text += `  (correcto: posicion ${correctOrden})`;
+          }
+          line(text, 9, 25);
         });
+
       } else if (sec === 'multipleChoice' && d.selections) {
         d.selections.forEach((sel, i) => {
           const ok = d.results?.[i];
-          line(`  P${i+1}: opción ${sel !== null ? sel + 1 : '?'} [${ok === true ? '✓' : ok === false ? '✗' : '?'}]`, 9, 25);
+          const marker = ok === true ? '[+]' : ok === false ? '[--]' : '[ ?]';
+          const pregunta = secciones?.multipleChoice?.preguntas?.[i];
+          const opcionText = pregunta?.opciones?.[sel] ?? '';
+          const numOp = sel !== null && sel !== undefined ? sel + 1 : '?';
+          let text = `  ${marker} P${i+1}: opcion ${numOp}${opcionText ? ' - ' + opcionText : ''}`;
+          if (ok === false && pregunta?.correcta !== undefined) {
+            text += `  (correcta: opcion ${pregunta.correcta + 1})`;
+          }
+          line(text, 9, 25);
         });
-      } else if (sec === 'matching' && d.matched) {
-        const correctCount = Object.values(d.matched).filter(Boolean).length;
-        line(`  ${correctCount} pares correctos de ${Object.keys(d.matched).length} intentados`, 9, 25);
+
+      } else if (sec === 'matching') {
+        if (secciones?.matching?.pares) {
+          secciones.matching.pares.forEach(par => {
+            const attempted = d.matched?.[par.id] !== undefined;
+            const correct   = d.matched?.[par.id] === true;
+            const marker = correct ? '[+]' : attempted ? '[--]' : '[ ]';
+            line(`  ${marker} ${par.comando} -> ${par.definicion}`, 9, 25);
+          });
+        } else if (d.matched) {
+          const correctCount = Object.values(d.matched).filter(Boolean).length;
+          line(`  ${correctCount} pares correctos de ${Object.keys(d.matched).length} intentados`, 9, 25);
+        }
       }
       y += 2;
     });

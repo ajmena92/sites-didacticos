@@ -89,7 +89,7 @@
       "google_script_url": "https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec",
       "parametros": {
         "mostrar_respuestas": true,
-        "exportar_pdf": false,
+        "exportar_pdf": true,
         "mostrar_progreso": false,
         "permitir_reintento": true
       }

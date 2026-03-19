@@ -3,7 +3,15 @@
   import { studentStore, updateSection, isLocked, markVerified } from '../../stores/score.js';
   import { submitTarea } from '../../lib/submitTarea.js';
 
-  let { entregaId = '', puntos = 40, scriptUrl = '', permitirReintento = true } = $props();
+  let {
+    entregaId = '',
+    puntos = 40,
+    scriptUrl = '',
+    permitirReintento = true,
+    exportarPdf = false,
+    cursoNombre = '',
+    docenteNombre = '',
+  } = $props();
 
   // ═══════════════════════════════════════════════════════
   //  NET UTILS (inlined from net-utils.js)
@@ -374,6 +382,57 @@
     const entry = historial[0] ?? { label: '', fecha: new Date().toLocaleDateString('es-CR') };
     await doSubmit(calAcum ?? 0, entry);
   }
+
+  function exportPdfVlsm() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+
+    const line = (text, fontSize = 11, indent = 20) => {
+      doc.setFontSize(fontSize);
+      const lines = doc.splitTextToSize(String(text), 170);
+      lines.forEach(l => {
+        if (y > 270) { doc.addPage(); y = 20; }
+        doc.text(l, indent, y);
+        y += fontSize * 0.5 + 2;
+      });
+      y += 2;
+    };
+
+    const sep = (label = '') => {
+      if (y > 260) { doc.addPage(); y = 20; }
+      y += 2;
+      line(label ? `--- ${label} ---` : '---', 9);
+    };
+
+    const finalScore = Math.round(mejorNota / 100 * puntos);
+
+    // Header
+    line('PRACTICA VLSM: Esquema VLSM Completo', 15);
+    y += 2;
+    line(`Docente: ${docenteNombre || 'N/D'}   Curso: ${cursoNombre || 'N/D'}`);
+    line(`Estudiante: ${student.nombre ?? 'N/D'}   Cedula: ${student.cedula ?? 'N/D'}`);
+    line(`Grupo: ${student.grupo ?? 'N/D'}   Institucion: ${student.turno ?? 'N/D'}   Fecha: ${student.fecha ?? 'N/D'}`);
+    line(`Generado: ${new Date().toLocaleString('es-CR')}`);
+    y += 4;
+
+    // Summary
+    line(`Nivel: ${LEVELS[selectedLevel].label}`, 12);
+    line(`Mejor nota: ${mejorNota}/100 -- ${finalScore} pts de ${puntos}`);
+    line(`Tablas completadas: ${tablasDone}   Errores acumulados: ${errAcum}`);
+    y += 4;
+
+    // Historial
+    if (historial.length > 0) {
+      sep('Historial de ejercicios');
+      historial.forEach((entry, idx) => {
+        line(`  #${idx+1}  ${entry.label}   ${entry.errores} error${entry.errores !== 1 ? 'es' : ''}   ${entry.fecha}`, 9, 25);
+      });
+    }
+
+    const nombre = (student.nombre ?? 'resultado').replace(/\s+/g, '_');
+    doc.save(`${nombre}_vlsm-subnetting.pdf`);
+  }
 </script>
 
 <section class="vlsm-wrap card" id="sec-vlsm">
@@ -544,14 +603,6 @@
       </table>
     </div>
 
-    <!-- ── Botón revisar (durante ejercicio) ─────────────── -->
-    {#if !done}
-      <div class="ej-actions">
-        <button class="btn" onclick={() => showReview = !showReview}>
-          {showReview ? '✕ Ocultar solución' : '🔍 Revisar solución'}
-        </button>
-      </div>
-    {/if}
 
     <!-- ── Banner de completado ───────────────────────────── -->
     {#if done}
@@ -621,9 +672,9 @@
           <button class="btn btn-primary" onclick={generateExercise} disabled={locked || !permitirReintento}>
             ↺ Nuevo Ejercicio
           </button>
-          <button class="btn" onclick={() => showReview = !showReview}>
-            {showReview ? '✕ Ocultar solución' : '🔍 Revisar solución'}
-          </button>
+          {#if exportarPdf}
+            <button class="btn" onclick={exportPdfVlsm}>&#x2B07; Exportar PDF</button>
+          {/if}
         </div>
       </div>
     {/if}
