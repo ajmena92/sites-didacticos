@@ -50,7 +50,9 @@
       "Bash(find /mnt/c/dev/sites-didacticos/astro-site/src/pages -name *tarea* -o -name *slug*)",
       "Bash(npx --yes astro build)",
       "Bash(command -v node22)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(gh run:*)",
+      "Bash(git remote:*)"
     ]
   }
 }
