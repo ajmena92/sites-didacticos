@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { totalScore, sectionScores, sectionProgress } from '../../stores/score.js';
   import { submitTarea } from '../../lib/submitTarea.js';
+  import Toast from './Toast.svelte';
 
   let {
     totalPuntos = 0,
@@ -42,6 +43,7 @@
   // Submit state
   let submitStatus = $state('idle'); // idle | sending | sent | error
   let submitError  = $state('');
+  let toast        = $state(null);
 
   onMount(() => {
     if (entregaId && localStorage.getItem(`enviado_v1_${entregaId}`)) {
@@ -68,9 +70,20 @@
       await submitTarea({ scriptUrl, ...payload });
       localStorage.setItem(`enviado_v1_${entregaId}`, 'true');
       submitStatus = 'sent';
+      const student = JSON.parse(localStorage.getItem(`estudiante_v1_${entregaId}`) ?? '{}');
+      toast = {
+        tipo: 'success',
+        titulo: 'TAREA ENTREGADA',
+        mensaje: `Registrada el ${student.fecha ?? new Date().toLocaleDateString('es-CR')}`,
+      };
     } catch (e) {
       submitStatus = 'error';
       submitError  = String(e);
+      toast = {
+        tipo: 'error',
+        titulo: 'ERROR DE ENVÍO',
+        mensaje: 'Descargue el JSON como respaldo.',
+      };
     }
   }
 
@@ -255,14 +268,21 @@
       {:else if submitStatus === 'sent'}
         <span class="submit-ok">✓ Tarea entregada</span>
       {:else if submitStatus === 'error'}
-        <div class="submit-error-wrap">
-          <span class="submit-err">✗ Error al enviar. Descargue el JSON y envíelo por correo.</span>
-          <button class="btn" onclick={handleSubmit}>↺ Reintentar</button>
-        </div>
+        <button class="btn" onclick={handleSubmit}>↺ Reintentar envío</button>
       {/if}
     {/if}
   </div>
 </div>
+
+{#if toast}
+  <Toast
+    tipo={toast.tipo}
+    titulo={toast.titulo}
+    mensaje={toast.mensaje}
+    onReintentar={toast.tipo === 'error' ? handleSubmit : null}
+    onClose={() => { toast = null; }}
+  />
+{/if}
 
 <style>
   .result { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }

@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { studentStore, updateSection, isLocked, markVerified } from '../../stores/score.js';
   import { submitTarea } from '../../lib/submitTarea.js';
+  import Toast from '../ui/Toast.svelte';
 
   let {
     entregaId = '',
@@ -94,6 +95,7 @@
   let errAcum       = $state(0);
   let historial     = $state([]);
   let submitStatus  = $state('idle');  // idle | sending | sent | error
+  let toast         = $state(null);
   let answers       = $state([]);      // answers[i] = {h, net, px, mk, first, last, bc}
   let mejorNota     = $state(0);       // mejor nota histórica (persiste en localStorage)
 
@@ -373,8 +375,18 @@
         answers: historial,
       });
       submitStatus = 'sent';
+      toast = {
+        tipo: 'success',
+        titulo: 'NOTA REGISTRADA',
+        mensaje: `${calificacion}/100 — ${entry.fecha}`,
+      };
     } catch(e) {
       submitStatus = 'error';
+      toast = {
+        tipo: 'error',
+        titulo: 'ERROR DE ENVÍO',
+        mensaje: 'No se pudo registrar automáticamente.',
+      };
     }
   }
 
@@ -663,7 +675,6 @@
           {:else if submitStatus === 'sent'}
             <span class="submit-ind ok">✓ Registrado automáticamente</span>
           {:else if submitStatus === 'error'}
-            <span class="submit-ind err">⚠ No se pudo registrar automáticamente</span>
             <button class="btn btn-primary" onclick={resubmit}>📤 Reenviar al profesor</button>
           {/if}
         {/if}
@@ -700,6 +711,16 @@
     </div>
   {/if}
 </section>
+
+{#if toast}
+  <Toast
+    tipo={toast.tipo}
+    titulo={toast.titulo}
+    mensaje={toast.mensaje}
+    onReintentar={toast.tipo === 'error' ? resubmit : null}
+    onClose={() => { toast = null; }}
+  />
+{/if}
 
 <style>
   /* ── Header ──────────────────────────────────────────── */
