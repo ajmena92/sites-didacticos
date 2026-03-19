@@ -38,6 +38,13 @@ jobs:
       - name: Build Astro
         run: cd astro-site && npm run build
 
+      - name: Copy static HTML site into dist
+        run: |
+          rsync -av --exclude='astro-site/' --exclude='.git/' --exclude='.github/' \
+            --exclude='.claude/' --exclude='.worktrees/' --exclude='node_modules/' \
+            --exclude='dist/' --exclude='*.md' \
+            ./ astro-site/dist/
+
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3

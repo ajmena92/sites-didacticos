@@ -48,8 +48,11 @@ function doPost(e) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
 
-    // Extras: scores + answers como JSON compacto
-    const extras = JSON.stringify({ scores: data.scores, answers: data.answers });
+    // Extras: usa data.extras si viene pre-serializado (tarea libre),
+    // si no construye desde scores + answers (evaluaciones autocorregibles)
+    const extras = data.extras
+      ? data.extras
+      : JSON.stringify({ scores: data.scores, answers: data.answers });
 
     sheet.appendRow([
       new Date(),
