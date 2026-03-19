@@ -29,7 +29,7 @@ const base = import.meta.env.BASE_URL;
       {config.entregas.map((entrega) => {
         const status = getStatus(entrega);
         const curso  = config.cursos[entrega.curso as keyof typeof config.cursos];
-        const url    = `${base}${entrega.curso}/${entrega.modulo}/${entrega.tipo}/${entrega.id}`;
+        const url    = `${base}/${entrega.curso}/${entrega.modulo}/${entrega.tipo}/${entrega.id}`;
         return (
           <a
             href={status === 'open' ? url : undefined}
