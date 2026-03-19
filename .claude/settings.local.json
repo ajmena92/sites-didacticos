@@ -55,7 +55,17 @@
       "Bash(git remote:*)",
       "Bash(NVM_DIR=$HOME/.nvm)",
       "Bash(source $NVM_DIR/nvm.sh)",
-      "Bash(source $HOME/.nvm/nvm.sh)"
+      "Bash(source $HOME/.nvm/nvm.sh)",
+      "Bash(NODE_NO_WARNINGS=1 npx --yes astro build)",
+      "Bash(ls /usr/local/bin/node*)",
+      "Bash(~/.nvm/versions/node/v22.22.1/bin/node ~/.nvm/versions/node/v22.22.1/bin/npm run build)",
+      "Bash(~/.nvm/versions/node/v22.22.1/bin/npx astro:*)",
+      "Bash(~/.nvm/versions/node/v22.22.1/bin/node node_modules/.bin/astro build)",
+      "Bash(find /mnt/c/dev/sites-didacticos -name *.gs -o -name Code.gs -o -name appscript*)",
+      "Bash(find /mnt/c/dev/sites-didacticos -name *.gs)",
+      "Bash(find /mnt/c/dev/sites-didacticos -name *.js -path */appscript* -o -name *.js -path */script*)",
+      "WebFetch(domain:script.google.com)",
+      "WebFetch(domain:script.googleusercontent.com)"
     ]
   }
 }

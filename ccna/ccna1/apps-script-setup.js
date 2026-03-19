@@ -20,22 +20,22 @@
  *   son añadidos automáticamente por Apps Script cuando se despliega como pública.
  */
 
-const SHEET_NAME   = 'Respuestas';           // hoja por defecto (fallback)
-const TEACHER_KEY  = 'clave-secreta-aqui';   // ← cambiar por una clave real
+const SHEET_NAME = '2026_tarea_VLSM';           // hoja por defecto (fallback)
+const TEACHER_KEY = 'T34ch3r-M3n4-2026!';   // ← cambiar por una clave real
 
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
 
     // Normalizar campos — soporta formato legado y nuevo (Astro)
-    const nombre       = data.nombre       || data.student?.nombre || '';
-    const cedula       = data.cedula       || data.student?.cedula || '';
-    const grupo        = data.grupo        || data.student?.grupo  || '';
-    const fecha        = data.fecha        || data.student?.fecha  || new Date().toLocaleDateString('es-CR');
-    const tipo         = data.tipo         || data.entregaId       || '';
+    const nombre = data.nombre || data.student?.nombre || '';
+    const cedula = data.cedula || data.student?.cedula || '';
+    const grupo = data.grupo || data.student?.grupo || '';
+    const fecha = data.fecha || data.student?.fecha || new Date().toLocaleDateString('es-CR');
+    const tipo = data.tipo || data.entregaId || '';
     // calificacion: puede venir a nivel raíz o dentro de scores
     const calificacion = data.calificacion ?? data.scores?.calificacion ?? '';
-    const errores      = data.errores      ?? data.scores?.erroresAcumulados ?? '';
+    const errores = data.errores ?? data.scores?.erroresAcumulados ?? '';
 
     if (!nombre) {
       return ContentService
@@ -45,7 +45,7 @@ function doPost(e) {
 
     // Enrutar a hoja del grupo (o fallback a SHEET_NAME)
     const sheetName = grupo ? String(grupo).trim() : SHEET_NAME;
-    const ss    = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
 
     // Extras: scores + answers como JSON compacto
@@ -67,7 +67,7 @@ function doPost(e) {
       .createTextOutput(JSON.stringify({ ok: true }))
       .setMimeType(ContentService.MimeType.JSON);
 
-  } catch(err) {
+  } catch (err) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: err.message }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -83,7 +83,7 @@ function doGet(e) {
 
   // Leer hoja principal o la hoja especificada por ?sheet=NombreGrupo
   const requestedSheet = e.parameter.sheet || SHEET_NAME;
-  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(requestedSheet);
 
   if (!sheet) {
@@ -104,42 +104,42 @@ function doGet(e) {
     // v1.2: [ts, nombre, cedula, grupo, fecha, tipo, calificacion, errores, extras]
     if (r.length >= 9) {
       return {
-        timestamp:    r[0],
-        nombre:       r[1],
-        cedula:       r[2],
-        grupo:        r[3],
-        fecha:        r[4],
-        tipo:         r[5],
+        timestamp: r[0],
+        nombre: r[1],
+        cedula: r[2],
+        grupo: r[3],
+        fecha: r[4],
+        tipo: r[5],
         calificacion: r[6],
-        errores:      r[7],
-        extras:       r[8],
+        errores: r[7],
+        extras: r[8],
       };
     }
     // v1.1: [ts, nombre, grupo, fecha, tipo, completados, errores, calificacion]
     if (r.length >= 8) {
       return {
-        timestamp:    r[0],
-        nombre:       r[1],
-        cedula:       '',
-        grupo:        r[2],
-        fecha:        r[3],
-        tipo:         r[4],
+        timestamp: r[0],
+        nombre: r[1],
+        cedula: '',
+        grupo: r[2],
+        fecha: r[3],
+        tipo: r[4],
         calificacion: r[7],
-        errores:      r[6],
-        extras:       '',
+        errores: r[6],
+        extras: '',
       };
     }
     // v1.0 (legado sin grupo): [ts, nombre, fecha, tipo, completados, errores, calificacion]
     return {
-      timestamp:    r[0],
-      nombre:       r[1],
-      cedula:       '',
-      grupo:        '',
-      fecha:        r[2],
-      tipo:         r[3],
+      timestamp: r[0],
+      nombre: r[1],
+      cedula: '',
+      grupo: '',
+      fecha: r[2],
+      tipo: r[3],
       calificacion: r[6],
-      errores:      r[5],
-      extras:       '',
+      errores: r[5],
+      extras: '',
     };
   });
 
