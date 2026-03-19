@@ -57,6 +57,22 @@
           "estado": "proximamente"
         }
       ]
+    },
+    {
+      "id": "adm-soporte",
+      "titulo": "🖥️ Informática — Soporte",
+      "cursos": [
+        {
+          "id": "adm-soporte-computadoras",
+          "titulo": "Administración y Soporte",
+          "descripcion": "Diagnóstico de hardware, reparabilidad, actualización de equipos y criterios de inversión técnica.",
+          "icono": "🖥️",
+          "color": "adm",
+          "url": "administracion_y_soporte_computadoras/index.html",
+          "nivel": "Técnico",
+          "estado": "activo"
+        }
+      ]
     }
   ]
 }

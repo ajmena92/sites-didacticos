@@ -155,6 +155,7 @@ a.card:hover {
 .card-icon.python { background: rgba(53,114,165,.2); }
 .card-icon.linux  { background: rgba(245,166,35,.2); }
 .card-icon.ccna   { background: rgba(27,161,226,.2); }
+.card-icon.adm    { background: rgba(139, 92, 246, .2); }   /* púrpura hardware */
 
 .card h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
 .card p  { color: var(--muted); font-size: .9rem; flex: 1; }
@@ -171,6 +172,7 @@ a.card:hover {
 .tag.python { border-color: var(--python); color: var(--python); }
 .tag.linux  { border-color: var(--linux);  color: var(--linux); }
 .tag.ccna   { border-color: var(--ccna);   color: var(--ccna); }
+.tag.adm    { border-color: #8b5cf6; color: #8b5cf6; }
 
 /* ════════════════════════════════════════
    TOPIC HERO — páginas de tema (full-width)

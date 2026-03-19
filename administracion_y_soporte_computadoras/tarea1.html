@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarea 1 — Diagnóstico Técnico Profesional</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    /* Variables y layout del módulo */
+    .tarea-body { padding: 2rem 2.5rem 5rem; max-width: 900px; margin: 0 auto; }
+    @media (max-width: 700px) { .tarea-body { padding: 1.25rem 1rem 4rem; } }
+
+    /* Panel de identificación */
+    .id-panel { background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; }
+    .id-grid { display: grid; grid-template-columns: 2fr 1fr auto; gap: 1rem; align-items: end; }
+    @media (max-width: 600px) { .id-grid { grid-template-columns: 1fr; } }
+    .field-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--muted); font-weight: 700; margin-bottom: .35rem; }
+    .field-input, .field-select { width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .6rem .85rem; border-radius: 6px; font-size: .95rem;
+      outline: none; transition: border-color .2s; }
+    .field-input:focus, .field-select:focus { border-color: var(--accent); }
+
+    /* Botón asignar */
+    .btn-assign { background: var(--accent); color: #fff; border: none;
+      padding: .65rem 1.4rem; border-radius: var(--radius); font-weight: 700;
+      font-size: .9rem; cursor: pointer; white-space: nowrap; transition: opacity .2s, transform .15s; }
+    .btn-assign:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* Nota pedagógica */
+    .pedagogic-note { margin-top: 1rem; padding: .75rem 1rem;
+      background: rgba(88,166,255,.08); border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0; font-size: .82rem; color: var(--muted); }
+
+    /* Barra de progreso */
+    .progress-bar-wrap { margin-bottom: 1.5rem; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: .75rem 1rem; display: flex; align-items: center; gap: 1rem; }
+    .progress-track { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width .3s ease; }
+    .progress-label { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+
+    /* Tarjeta de caso */
+    .case-card { background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent); border-radius: var(--radius);
+      padding: 1.5rem; margin-bottom: 2rem; }
+    .case-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
+    .case-id { background: var(--accent); color: #fff; font-weight: 800; font-size: .9rem;
+      padding: .3rem .75rem; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+    .case-title { font-size: 1.05rem; font-weight: 700; }
+    .difficulty-badge { display: inline-block; margin-top: .25rem; font-size: .7rem;
+      padding: .15rem .55rem; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
+    .case-scenario { background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: .85rem 1rem; font-size: .88rem; color: var(--muted);
+      margin-bottom: 1.25rem; font-style: italic; }
+    .case-model { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--muted); margin-bottom: .4rem; }
+    .case-model strong { color: var(--accent); font-size: .9rem; }
+
+    /* Preguntas y textareas */
+    .question-block { margin-bottom: 1.25rem; }
+    .question-label { font-size: .88rem; font-weight: 600; margin-bottom: .4rem; color: var(--text); }
+    .question-label span { color: var(--accent); margin-right: .35rem; }
+    .resp-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: .65rem .9rem; border-radius: 6px; font-size: .88rem;
+      outline: none; transition: border-color .2s; resize: vertical; min-height: 90px;
+      font-family: var(--font); box-sizing: border-box; }
+    .resp-textarea:focus { border-color: var(--accent); }
+    .resp-textarea.filled { border-color: rgba(63,185,80,.5); }
+
+    /* Dictamen final del caso */
+    .dictamen-block { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+    .dictamen-label { font-size: .82rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--accent); margin-bottom: .5rem; }
+
+    /* Sección de criterio técnico */
+    .section-final { background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; }
+    .section-final h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: .5rem; }
+
+    /* Barra de acciones */
+    .action-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .btn-submit { background: var(--green); color: #fff; border: none;
+      padding: .65rem 1.4rem; border-radius: var(--radius);
+      font-weight: 700; font-size: .9rem; cursor: pointer; transition: opacity .2s; }
+    .btn-submit:hover { opacity: .88; }
+    .btn-print { background: none; border: 1px solid var(--border); color: var(--text);
+      padding: .65rem 1.4rem; border-radius: var(--radius);
+      font-weight: 600; font-size: .9rem; cursor: pointer; transition: border-color .2s; }
+    .btn-print:hover { border-color: var(--muted); }
+
+    /* Indicador de envío */
+    .submit-ind { font-size: .85rem; }
+    .submit-ind.pending { color: var(--muted); }
+    .submit-ind.ok      { color: var(--green); }
+    .submit-ind.err     { color: var(--red); }
+
+    /* Alerta de validación */
+    .warn-banner { background: rgba(248,81,73,.1); border: 1px solid rgba(248,81,73,.3);
+      border-radius: 6px; padding: .65rem 1rem; font-size: .83rem; color: var(--red);
+      margin-bottom: 1rem; display: none; }
+
+    /* Print */
+    @media print {
+      header, .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      .case-card, .section-final { border: 1px solid #ccc !important; background: #fff !important; }
+      .resp-textarea { border: 1px solid #888 !important; background: #fff !important;
+        color: #000 !important; min-height: 80px; }
+      .action-bar { display: none !important; }
+      .topic-hero { background: #fff !important; border-bottom: 1px solid #ccc !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <span class="nav-brand">🖥️ Adm. y Soporte</span>
+      <div class="nav-divider"></div>
+      <a class="back-to-catalog" href="../index.html">← Catálogo</a>
+    </nav>
+  </header>
+
+  <div class="topic-hero">
+    <div class="breadcrumb">Catálogo / Administración y Soporte / Tarea 1</div>
+    <h1>🖥️ Tarea 1 — Diagnóstico Técnico Profesional</h1>
+    <p class="hero-sub">
+      Análisis de arquitectura, criterios de actualización y toma de decisiones
+      basadas en hardware real. Se asignan 2 casos de 10 para investigación.
+    </p>
+    <span class="author-chip">✍️ Prof. Andrés Mena Abarca</span>
+  </div>
+
+  <div class="tarea-body">
+
+    <!-- Panel de identificación -->
+    <div class="id-panel no-print">
+      <div class="id-grid">
+        <div>
+          <div class="field-label">Nombre del estudiante</div>
+          <input type="text" id="studentName" class="field-input"
+                 placeholder="Nombre completo" maxlength="100" autocomplete="off" />
+        </div>
+        <div>
+          <div class="field-label">Sección</div>
+          <select id="studentSection" class="field-select">
+            <option>11-1</option>
+            <option>11-2</option>
+            <option>11-3</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn-assign" id="btnAssign" onclick="assignCases()">
+            Asignar casos →
+          </button>
+        </div>
+      </div>
+      <div class="pedagogic-note">
+        <strong>Nota pedagógica:</strong> Investiga cada modelo en
+        <em>Intel ARK, Crucial Advisor o iFixit</em> antes de responder.
+        Las respuestas se guardan automáticamente en este dispositivo.
+      </div>
+    </div>
+
+    <div class="warn-banner" id="warnBanner"></div>
+
+    <!-- Contenido dinámico (oculto hasta asignar) -->
+    <div id="taskContent" style="display:none">
+
+      <!-- Barra de progreso -->
+      <div class="progress-bar-wrap no-print">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <span class="progress-label" id="progressLabel">0 / 0 campos completados</span>
+      </div>
+
+      <!-- Casos inyectados por JS -->
+      <div id="casesContainer"></div>
+
+      <!-- Criterio Técnico y Ética Profesional -->
+      <div class="section-final">
+        <h2>⚖️ Criterio Técnico y Ética Profesional</h2>
+
+        <div class="question-block">
+          <div class="question-label">
+            <span>3.1</span> Diferencia de voltaje en memorias DDR3
+            <span style="font-size:.82rem; font-weight:400; color:var(--muted)">(DDR3 vs DDR3L)</span>
+          </div>
+          <p style="font-size:.83rem; color:var(--muted); margin-bottom:.5rem;">
+            Explica qué sucede si se instala un módulo DDR3 (1.5V) en una placa que solo soporta DDR3L (1.35V)
+            y cómo afecta esto a la vida útil del controlador de memoria.
+          </p>
+          <textarea class="resp-textarea" data-field="static1"
+            placeholder="Explica el riesgo técnico y las consecuencias a largo plazo…"></textarea>
+        </div>
+
+        <div class="question-block">
+          <div class="question-label">
+            <span>3.2</span> Criterio de Retorno de Inversión (ROI)
+          </div>
+          <p style="font-size:.83rem; color:var(--muted); margin-bottom:.5rem;">
+            Si el costo de una reparación (pantalla + batería + SSD) supera el 60% del valor de un equipo nuevo
+            con mejor procesador, ¿cuál debe ser la recomendación oficial al cliente?
+          </p>
+          <textarea class="resp-textarea" data-field="static2"
+            placeholder="Justifica tu recomendación con base en costos, rendimiento y vida útil esperada…"></textarea>
+        </div>
+
+        <div class="question-block">
+          <div class="question-label">
+            <span>3.3</span> Gestión de Residuos Electrónicos (E-Waste)
+          </div>
+          <p style="font-size:.83rem; color:var(--muted); margin-bottom:.5rem;">
+            ¿Cuál es el procedimiento correcto para desechar una batería de Litio-Ion que presenta
+            abultamiento (bloating) durante el mantenimiento?
+          </p>
+          <textarea class="resp-textarea" data-field="static3"
+            placeholder="Describe el procedimiento seguro y la normativa aplicable en Costa Rica…"></textarea>
+        </div>
+
+        <!-- Barra de acciones -->
+        <div class="action-bar no-print">
+          <button class="btn-submit" onclick="submitTarea()">📤 Enviar al profesor</button>
+          <button class="btn-print" onclick="printTarea()">🖨️ Imprimir / PDF</button>
+          <span class="submit-ind" id="submitIndicator"></span>
+        </div>
+      </div>
+
+    </div><!-- /taskContent -->
+  </div><!-- /tarea-body -->
+
+  <footer>
+    <span>Administración y Soporte — Tarea 1</span>
+    <span class="footer-author">
+      ✍️ Material elaborado por el <strong>Prof. Andrés Mena Abarca</strong>
+    </span>
+  </footer>
+
+  <script>
+    /* ═══════════════════════════════════════
+       BANCO DE CASOS (10 casos pedagógicos)
+    ═══════════════════════════════════════ */
+    const CASOS = [
+      {
+        id: 'C-01',
+        title: 'Escalabilidad RAM híbrida',
+        model: 'Lenovo IdeaPad 3 15ALC6',
+        scenario: 'El cliente compró este modelo para edición de fotos. Viene con 8 GB de RAM, pero el sistema indica que solo 5.8 GB son utilizables. Desea subir a 16 GB o 24 GB.',
+        difficulty: 'Media / Arquitectura Mixta',
+        questions: [
+          '¿Cuánta memoria RAM viene soldada (On-board) y cuántos slots SODIMM están disponibles en este modelo?',
+          '¿Por qué el sistema muestra menos memoria de la instalada? Explica el concepto de VRAM compartida en iGPU Ryzen.',
+          '¿Cuál es el módulo máximo (capacidad y frecuencia) que se puede instalar en el slot libre?'
+        ]
+      },
+      {
+        id: 'C-02',
+        title: 'Restauración Business Class',
+        model: 'HP ProBook 640 G4',
+        scenario: 'Una empresa tiene 50 unidades de este modelo con HDD mecánicos y 4 GB de RAM. El arranque tarda 3 minutos. El presupuesto por equipo es de $100.',
+        difficulty: 'Alta / Gestión de Presupuesto',
+        questions: [
+          '¿Soporta este modelo discos M.2 NVMe y SATA de 2.5" simultáneamente?',
+          'Investiga el precio de mercado de un SSD M.2 de 250 GB y un módulo de 8 GB DDR4 2400 MHz.',
+          '¿Es rentable esta actualización en 2026 frente a la compra de una laptop nueva de gama de entrada? Justifica.'
+        ]
+      },
+      {
+        id: 'C-03',
+        title: 'Obsolescencia y Windows 11',
+        model: 'Dell Latitude E6410',
+        scenario: 'Un usuario quiere instalar Windows 11 para usar aplicaciones modernas. El equipo tiene un Intel Core i5-520M y 4 GB de DDR3.',
+        difficulty: 'Baja / Restricciones de Software',
+        questions: [
+          '¿Qué generación de procesadores Intel es el mínimo oficial para Windows 11? ¿Cumple el i5-520M ese requisito?',
+          '¿Tiene esta placa base chip TPM 2.0 integrado? Investiga la fecha de lanzamiento del modelo para determinar la generación de TPM.',
+          'Emite un veredicto técnico sobre la seguridad y estabilidad de forzar la instalación de sistemas operativos modernos en hardware legado.'
+        ]
+      },
+      {
+        id: 'C-04',
+        title: 'Reparabilidad en diseño sellado',
+        model: 'Microsoft Surface Laptop 5',
+        scenario: 'La batería está degradada (salud al 60%) y el teclado tiene varias teclas que no funcionan.',
+        difficulty: 'Muy Alta / Diseño Propietario',
+        questions: [
+          'Busca en iFixit la puntuación de reparabilidad de este modelo. ¿Cómo está sujeta la batería (tornillos o pegamento)?',
+          'Describe el proceso para abrir este equipo sin dañar el panel de vidrio de la pantalla.',
+          '¿Es posible encontrar el Part Number oficial de la batería o es una pieza propietaria sin reemplazo externo?'
+        ]
+      },
+      {
+        id: 'C-05',
+        title: 'Mantenimiento térmico gaming',
+        model: 'Acer Nitro 5 AN515-57',
+        scenario: 'El equipo alcanza los 100 °C en carga y se apaga bruscamente (Thermal Throttling). El cliente nunca le ha hecho mantenimiento en 2 años.',
+        difficulty: 'Media / Soporte Preventivo',
+        questions: [
+          '¿Qué tipo de material térmico usa este modelo: pasta térmica convencional o Liquid Metal?',
+          '¿Es necesario retirar los ventiladores para limpiar las rejillas de salida de aire en este chasis?',
+          'Recomienda una base refrigerante o configuración de software (Acer NitroSense / Throttlestop) para mitigar la temperatura.'
+        ]
+      },
+      {
+        id: 'C-06',
+        title: 'Confusión DDR4 vs DDR5',
+        model: 'ASUS VivoBook 16X M1603',
+        scenario: 'El cliente compró un módulo de RAM DDR5 de 16 GB porque "era el más nuevo" para ampliar su equipo. Al instalarlo, el sistema no arranca.',
+        difficulty: 'Baja / Compatibilidad de Memoria',
+        questions: [
+          '¿Qué tipo de RAM (DDR4 o DDR5) soporta la plataforma AMD Ryzen 5 5600H presente en este modelo?',
+          '¿Son físicamente compatibles los módulos DDR4 y DDR5 en el mismo socket SODIMM? ¿Por qué el equipo no arrancó?',
+          'Recomienda el módulo correcto (tipo, capacidad, frecuencia) para ampliar este equipo a 24 GB.'
+        ]
+      },
+      {
+        id: 'C-07',
+        title: 'Compatibilidad USB-C Power Delivery',
+        model: 'Lenovo ThinkPad X1 Carbon Gen 10',
+        scenario: 'El usuario perdió el cargador original de 65W y quiere usar un cargador USB-C genérico de 45W que ya tiene.',
+        difficulty: 'Media / Gestión de Energía',
+        questions: [
+          '¿Soporta este modelo carga por USB-C con Power Delivery? ¿Cuántos puertos Thunderbolt 4 tiene?',
+          '¿Qué sucede si se alimenta el equipo con un cargador de 45W en lugar de 65W bajo carga completa?',
+          '¿Existe riesgo de dañar la batería o la placa base al usar un cargador USB-C de terceros certificado con el wattaje correcto?'
+        ]
+      },
+      {
+        id: 'C-08',
+        title: 'Costo de reemplazo de pantalla',
+        model: 'MacBook Pro 14" 2021 M1 Pro',
+        scenario: 'La pantalla tiene una fractura en la esquina inferior izquierda. El técnico cotizó la pantalla en $600. El equipo tiene 2 años de uso.',
+        difficulty: 'Alta / Análisis Costo-Beneficio',
+        questions: [
+          '¿Cuál es el precio oficial de reparación de pantalla en Apple Store para este modelo? ¿Cubre la garantía AppleCare+ este tipo de daño?',
+          'Busca en iFixit la dificultad de reemplazo de pantalla. ¿Qué componentes adicionales pueden dañarse durante el proceso?',
+          'Dado el precio del equipo nuevo (~$2,500) y el costo de reparación, ¿cuál es la recomendación técnica? Calcula el porcentaje que representa la reparación.'
+        ]
+      },
+      {
+        id: 'C-09',
+        title: 'Mitos de calibración de batería',
+        model: 'HP Pavilion 15-eh1xxx',
+        scenario: 'El cliente descargó una app de "calibración de batería" que le pide descargar completamente la batería hasta 0% cada semana para "alargar su vida útil".',
+        difficulty: 'Baja / Desmitificación Técnica',
+        questions: [
+          '¿Es correcto descargar una batería de Litio-Ion hasta 0% regularmente? Explica qué sucede a nivel electroquímico.',
+          '¿Qué rango de carga (% mínimo y % máximo) recomienda HP para maximizar la vida útil de la batería en este modelo?',
+          '¿Existe en el software HP Command Center alguna opción de "Battery Care" o carga adaptativa? Describe cómo funciona.'
+        ]
+      },
+      {
+        id: 'C-10',
+        title: 'Riesgos de actualización de BIOS',
+        model: 'Dell Inspiron 15 3520',
+        scenario: 'El usuario vio en YouTube que actualizar el BIOS "mejora el rendimiento". Intenta actualizar desde la versión 1.2.0 a la 1.8.0 saltándose versiones intermedias.',
+        difficulty: 'Alta / Gestión de Firmware',
+        questions: [
+          '¿Permite Dell actualizar el BIOS saltando múltiples versiones o se requiere actualización secuencial? Investiga en el sitio oficial de Dell soporte para este modelo.',
+          '¿Qué puede ocurrir si se interrumpe el proceso de actualización de BIOS (corte de energía, cierre del laptop)? ¿Tiene este modelo mecanismo de recuperación?',
+          '¿En qué escenarios reales es necesario actualizar el BIOS? ¿Cuándo NO se recomienda hacerlo si el sistema funciona correctamente?'
+        ]
+      }
+    ];
+
+    /* ═══════════════════════════════════════
+       PERSISTENCIA
+    ═══════════════════════════════════════ */
+    const STORAGE_KEY = 'tarea1_adm_estado';
+
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+    }
+
+    function saveState() {
+      const state = {
+        nombre: document.getElementById('studentName').value,
+        grupo:  document.getElementById('studentSection').value,
+        casosAsignados: window._assignedCaseIds || [],
+        respuestas: collectResponses(),
+        fecha: new Date().toLocaleDateString('es-CR')
+      };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    }
+
+    function collectResponses() {
+      const out = {};
+      document.querySelectorAll('textarea[data-field]').forEach(function(ta) {
+        out[ta.dataset.field] = ta.value;
+      });
+      return out;
+    }
+
+    function restoreResponses(respuestas) {
+      if (!respuestas) return;
+      Object.entries(respuestas).forEach(function([k, v]) {
+        const el = document.querySelector('textarea[data-field="' + k + '"]');
+        if (el) { el.value = v; el.classList.toggle('filled', v.trim().length > 0); }
+      });
+    }
+
+    /* ═══════════════════════════════════════
+       ASIGNACIÓN DETERMINISTA
+    ═══════════════════════════════════════ */
+    function nameHash(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+      return Math.abs(h);
+    }
+
+    function seededShuffle(arr, seed) {
+      let s = seed; const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        s = (s * 1664525 + 1013904223) & 0xffffffff;
+        const j = Math.abs(s) % (i + 1);
+        const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+
+    function assignCases() {
+      const nombre = document.getElementById('studentName').value.trim();
+      const grupo  = document.getElementById('studentSection').value;
+      if (!nombre) { showWarn('Debes ingresar tu nombre completo.'); return; }
+      hideWarn();
+      const seed = nameHash(nombre + grupo);
+      const selected = seededShuffle(CASOS, seed).slice(0, 2);
+      window._assignedCaseIds = selected.map(function(c) { return c.id; });
+      renderCases(selected);
+      document.getElementById('taskContent').style.display = '';
+      document.getElementById('taskContent').scrollIntoView({ behavior: 'smooth' });
+      const saved = loadState();
+      if (saved && JSON.stringify(saved.casosAsignados) === JSON.stringify(window._assignedCaseIds)) {
+        restoreResponses(saved.respuestas);
+      }
+      updateProgress();
+      saveState();
+    }
+
+    /* ═══════════════════════════════════════
+       RENDER DE CASOS
+    ═══════════════════════════════════════ */
+    function renderCases(casos) {
+      const container = document.getElementById('casesContainer');
+      let html = '';
+      casos.forEach(function(c, idx) {
+        const fieldBase = c.id.toLowerCase().replace('-', '');
+        html += '<div class="case-card">';
+        html += '  <div class="case-header">';
+        html += '    <span class="case-id">' + c.id + '</span>';
+        html += '    <div>';
+        html += '      <div class="case-title">' + c.title + '</div>';
+        html += '      <span class="difficulty-badge">' + c.difficulty + '</span>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '  <div class="case-model">Modelo de investigación: <strong>' + c.model + '</strong></div>';
+        html += '  <div class="case-scenario">"' + c.scenario + '"</div>';
+        c.questions.forEach(function(q, i) {
+          const fieldName = fieldBase + '-q' + (i + 1);
+          html += '  <div class="question-block">';
+          html += '    <div class="question-label"><span>' + (idx + 1) + '.' + (i + 1) + '</span> ' + escapeHtml(q) + '</div>';
+          html += '    <textarea class="resp-textarea" data-field="' + fieldName + '"';
+          html += '      placeholder="Ingresa los datos técnicos encontrados e indica tu fuente (URL o manual)…"></textarea>';
+          html += '  </div>';
+        });
+        // Dictamen final
+        html += '  <div class="dictamen-block">';
+        html += '    <div class="dictamen-label">💡 Dictamen técnico final del analista</div>';
+        html += '    <textarea class="resp-textarea" data-field="' + fieldBase + '-dictamen"';
+        html += '      style="min-height:110px;" placeholder="Redacta tu recomendación profesional. ¿Es viable la intervención? Justifica con base en arquitectura física, costos y rendimiento esperado…"></textarea>';
+        html += '  </div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ═══════════════════════════════════════
+       PROGRESO
+    ═══════════════════════════════════════ */
+    function updateProgress() {
+      const all    = document.querySelectorAll('textarea[data-field]');
+      const filled = [].filter.call(all, function(ta) { return ta.value.trim().length > 0; }).length;
+      const total  = all.length;
+      const pct    = total > 0 ? Math.round((filled / total) * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = filled + ' / ' + total + ' campos completados';
+    }
+
+    /* Autosave + progreso al tipear */
+    document.getElementById('taskContent').addEventListener('input', function(e) {
+      if (e.target.tagName === 'TEXTAREA') {
+        e.target.classList.toggle('filled', e.target.value.trim().length > 0);
+        updateProgress();
+        saveState();
+      }
+    });
+
+    /* ═══════════════════════════════════════
+       UTILIDADES UI
+    ═══════════════════════════════════════ */
+    function showWarn(msg) {
+      const el = document.getElementById('warnBanner');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideWarn() {
+      document.getElementById('warnBanner').style.display = 'none';
+    }
+
+    /* ═══════════════════════════════════════
+       ENVÍO A APPS SCRIPT
+    ═══════════════════════════════════════ */
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec';
+
+    async function submitTarea() {
+      const nombre = document.getElementById('studentName').value.trim();
+      const grupo  = document.getElementById('studentSection').value;
+      if (!nombre) { showWarn('Completa tu nombre antes de enviar.'); return; }
+
+      const empty = [].filter.call(
+        document.querySelectorAll('textarea[data-field]'),
+        function(ta) { return ta.value.trim().length === 0; }
+      ).length;
+      if (empty > 0) showWarn('Advertencia: ' + empty + ' campo(s) vacío(s). Puedes enviar de todas formas.');
+
+      const indicator = document.getElementById('submitIndicator');
+      if (indicator) { indicator.textContent = '⏳ Registrando…'; indicator.className = 'submit-ind pending'; }
+
+      const payload = {
+        nombre: nombre,
+        grupo:  grupo,
+        fecha:  new Date().toLocaleDateString('es-CR'),
+        tipo:   'tarea1-adm-soporte',
+        calificacion: 0,
+        errores: 0,
+        extras: JSON.stringify({
+          casosAsignados: window._assignedCaseIds || [],
+          respuestas: collectResponses()
+        })
+      };
+
+      try {
+        const res  = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json().catch(function() { return { ok: res.ok }; });
+        if (res.ok && json.ok !== false) {
+          if (indicator) { indicator.textContent = '✓ Registrado correctamente'; indicator.className = 'submit-ind ok'; }
+        } else {
+          throw new Error(json.error || 'HTTP ' + res.status);
+        }
+      } catch(err) {
+        if (indicator) { indicator.textContent = '⚠ No se pudo registrar (' + err.message + ')'; indicator.className = 'submit-ind err'; }
+      }
+    }
+
+    function printTarea() {
+      if (!document.getElementById('studentName').value.trim()) {
+        showWarn('Completa tu nombre antes de imprimir.'); return;
+      }
+      window.print();
+    }
+
+    /* ═══════════════════════════════════════
+       RESTAURAR AL CARGAR
+    ═══════════════════════════════════════ */
+    window.addEventListener('DOMContentLoaded', function() {
+      const saved = loadState();
+      if (!saved) return;
+      if (saved.nombre) document.getElementById('studentName').value = saved.nombre;
+      if (saved.grupo)  document.getElementById('studentSection').value = saved.grupo;
+      if (saved.casosAsignados && saved.casosAsignados.length === 2) {
+        const objs = saved.casosAsignados.map(function(id) {
+          return CASOS.find(function(c) { return c.id === id; });
+        }).filter(Boolean);
+        if (objs.length === 2) {
+          window._assignedCaseIds = saved.casosAsignados;
+          renderCases(objs);
+          document.getElementById('taskContent').style.display = '';
+          restoreResponses(saved.respuestas);
+          updateProgress();
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
