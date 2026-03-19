@@ -52,7 +52,10 @@
       "Bash(command -v node22)",
       "Bash(curl:*)",
       "Bash(gh run:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "Bash(NVM_DIR=$HOME/.nvm)",
+      "Bash(source $NVM_DIR/nvm.sh)",
+      "Bash(source $HOME/.nvm/nvm.sh)"
     ]
   }
 }
