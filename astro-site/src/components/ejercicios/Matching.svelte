@@ -216,6 +216,7 @@
     background: var(--surface, #0d1117); border: 1px solid var(--border);
     border-radius: var(--radius-sm, 4px); color: var(--text-primary);
     font-family: var(--font-mono); font-size: 0.78rem; padding: 0.35rem 0.5rem;
+    width: 100%; box-sizing: border-box;
   }
   .match-mobile select:disabled { opacity: 0.5; }
 

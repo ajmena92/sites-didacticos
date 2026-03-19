@@ -124,9 +124,15 @@
     background: var(--surface, #0d1117); border: 1px solid var(--border);
     border-radius: var(--radius-sm, 4px); color: var(--text-primary);
     font-family: var(--font-mono); font-size: 0.82rem;
-    padding: 0.3rem 0.4rem; width: 3rem;
+    padding: 0.3rem 0.4rem; width: 3.5rem; flex-shrink: 0;
   }
   select:disabled { opacity: 0.6; cursor: not-allowed; }
   .order-cmd { font-family: var(--font-mono); font-size: 0.82rem; color: #00e5ff; flex: 1; }
+
+  @media (max-width: 480px) {
+    .order-item { flex-wrap: wrap; }
+    select { width: 100%; }
+    .order-cmd { width: 100%; }
+  }
   .dup-warn  { font-size: 0.75rem; color: #ffb800; }
 </style>

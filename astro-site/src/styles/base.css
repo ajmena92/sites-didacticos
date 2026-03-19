@@ -11,9 +11,13 @@ html {
 
 body {
   min-height: 100vh;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.5rem 2rem;
+}
+
+@media (max-width: 900px) {
+  body { padding: 1rem; }
 }
 
 a { color: var(--accent, #00b4d8); text-decoration: none; }
