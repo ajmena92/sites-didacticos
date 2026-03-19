@@ -16,7 +16,7 @@ export function updateSection(section, points) {
   sectionScores.set({ ...sectionScores.get(), [section]: points });
 }
 
-export const studentStore = atom({ nombre: '', grupo: '', fecha: '', cedula: '' });
+export const studentStore = atom({ nombre: '', grupo: '', fecha: '', cedula: '', turno: '' });
 
 export const sectionProgress = atom({
   fillInBlank: false,

@@ -1,5 +1,6 @@
 ---
 import config from '../data/config.json';
+import FooterInfo from '../components/ui/FooterInfo.svelte';
 import '../styles/tokens.css';
 import '../styles/base.css';
 
@@ -30,7 +31,7 @@ const year = new Date().getFullYear();
   <body>
     <slot />
     <footer>
-      <p>© {year} Ing. Andrés Mena Abarca · CTP Platanares</p>
+      <p>© {year} Ing. Andrés Mena Abarca · <FooterInfo client:load /></p>
       <p>{cursoNombre} · Contenido bajo licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></p>
     </footer>
     {exportarPdf && (

@@ -25,7 +25,8 @@
 
   function iniciar() {
     if (!canStart) return;
-    const data = { nombre: nombre.trim(), cedula: cedula.trim(), grupo, fecha };
+    const turno = grupos.find(g => g.id === grupo)?.turno ?? '';
+    const data = { nombre: nombre.trim(), cedula: cedula.trim(), grupo, fecha, turno };
     localStorage.setItem(SK, JSON.stringify(data));
     studentStore.set(data);
     visible = false;
