@@ -7,27 +7,27 @@
     {
       "id": "10-1",
       "nombre": "10-1 Redes",
-      "turno": "mañana"
+      "turno": "CTP PLATANARES"
     },
     {
       "id": "10-2",
       "nombre": "10-2 Redes",
-      "turno": "tarde"
+      "turno": "CTP PLATANARES"
     },
     {
       "id": "11-2",
       "nombre": "11-3 Redes",
-      "turno": "mañana"
+      "turno": "CTP PLATANARES"
     },
     {
       "id": "11-4",
       "nombre": "11-4 Redes",
-      "turno": "mañana"
+      "turno": "CTP PLATANARES"
     },
     {
       "id": "2026C1-G08",
       "nombre": "2026C1-G08 Redes de Computadora I",
-      "turno": "universitario"
+      "turno": "UMCA"
     }
   ],
   "cursos": {
@@ -86,7 +86,7 @@
       "fecha_apertura": "2026-03-18T00:00:00",
       "fecha_cierre": "2026-06-30T23:59:00",
       "puntos": 40,
-      "google_script_url": "",
+      "google_script_url": "https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec",
       "parametros": {
         "mostrar_respuestas": true,
         "exportar_pdf": false,
