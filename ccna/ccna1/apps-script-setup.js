@@ -11,134 +11,139 @@
  *    - Ejecutar como: Yo
  *    - Acceso: Cualquier persona
  * 6. Copiar la URL del web app
- * 7. Pegar esa URL en las dos líneas que dicen PASTE_SCRIPT_URL_HERE
- *    en subnetting-practica-final.html, subnetting-vlsm.html y dashboard.html
  *
- * ESQUEMA DE COLUMNAS:
+ * ESQUEMA DE COLUMNAS (v1.2, 9 columnas):
+ *   [0] timestamp | [1] nombre | [2] cedula | [3] grupo | [4] fecha
+ *   [5] tipo/entregaId | [6] calificacion | [7] errores | [8] extras (JSON)
  *
- *   Formato nuevo (v1.1, 8 columnas) — filas escritas por doPost:
- *     [0] timestamp | [1] nombre | [2] grupo | [3] fecha | [4] tipo | [5] completados | [6] errores | [7] calificacion
- *
- *   Formato legado (v1.0, 7 columnas) — filas antiguas sin campo grupo:
- *     [0] timestamp | [1] nombre | [2] fecha | [3] tipo | [4] completados | [5] errores | [6] calificacion
- *
- *   doGet detecta el largo de cada fila y mapea en consecuencia; grupo queda '' para filas legadas.
- *   Si data.grupo está presente en doPost, se enruta a la hoja con ese nombre; si no, a SHEET_NAME.
+ * NOTA: .setHeaders() NO existe en ContentService.TextOutput — los headers CORS
+ *   son añadidos automáticamente por Apps Script cuando se despliega como pública.
  */
 
-const SHEET_NAME   = 'Respuestas';           // nombre de la hoja destino
+const SHEET_NAME   = 'Respuestas';           // hoja por defecto (fallback)
 const TEACHER_KEY  = 'clave-secreta-aqui';   // ← cambiar por una clave real
 
 function doPost(e) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json'
-  };
   try {
     const data = JSON.parse(e.postData.contents);
 
-    // #5 — Validación de campos requeridos
-    const required = ['nombre', 'tipo', 'calificacion'];
-    for (const field of required) {
-      if (data[field] === undefined || data[field] === null || data[field] === '') {
-        return ContentService
-          .createTextOutput(JSON.stringify({ ok: false, error: `Campo requerido faltante: ${field}` }))
-          .setMimeType(ContentService.MimeType.JSON)
-          .setHeaders(headers);
-      }
+    // Normalizar campos — soporta formato legado y nuevo (Astro)
+    const nombre       = data.nombre       || data.student?.nombre || '';
+    const cedula       = data.cedula       || data.student?.cedula || '';
+    const grupo        = data.grupo        || data.student?.grupo  || '';
+    const fecha        = data.fecha        || data.student?.fecha  || new Date().toLocaleDateString('es-CR');
+    const tipo         = data.tipo         || data.entregaId       || '';
+    // calificacion: puede venir a nivel raíz o dentro de scores
+    const calificacion = data.calificacion ?? data.scores?.calificacion ?? '';
+    const errores      = data.errores      ?? data.scores?.erroresAcumulados ?? '';
+
+    if (!nombre) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: false, error: 'Campo requerido faltante: nombre' }))
+        .setMimeType(ContentService.MimeType.JSON);
     }
 
-    // #13 — Soporte para grupos: enrutar a hoja por nombre de grupo
-    const sheetName = (data.grupo && String(data.grupo).trim())
-      ? String(data.grupo).trim()
-      : SHEET_NAME;
+    // Enrutar a hoja del grupo (o fallback a SHEET_NAME)
+    const sheetName = grupo ? String(grupo).trim() : SHEET_NAME;
     const ss    = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
 
+    // Extras: scores + answers como JSON compacto
+    const extras = JSON.stringify({ scores: data.scores, answers: data.answers });
+
     sheet.appendRow([
       new Date(),
-      data.nombre       || '',
-      data.grupo        || '',   // columna grupo (nueva)
-      data.fecha        || '',
-      data.tipo         || '',
-      data.completados  || '',
-      data.errores      ?? '',
-      data.calificacion ?? '',
+      nombre,
+      cedula,
+      grupo,
+      fecha,
+      tipo,
+      calificacion,
+      errores,
+      extras,
     ]);
-
-    // #14 — Alerta por email para evaluaciones finales
-    if (String(data.tipo || '').startsWith('Evaluación') || String(data.tipo || '').startsWith('Evaluacion')) {
-      try {
-        const owner = Session.getActiveUser().getEmail();
-        if (owner) {
-          MailApp.sendEmail({
-            to: owner,
-            subject: `[CCNA1] Nueva evaluación: ${data.nombre}`,
-            body: `Estudiante: ${data.nombre}\nTipo: ${data.tipo}\nCalificación: ${data.calificacion}\nFecha: ${data.fecha}\nGrupo: ${data.grupo || 'General'}`
-          });
-        }
-      } catch(mailErr) { /* silenciar errores de email */ }
-    }
 
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+      .setMimeType(ContentService.MimeType.JSON);
+
   } catch(err) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: err.message }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 function doGet(e) {
-  const headers = { 'Access-Control-Allow-Origin': '*' };
   if (e.parameter.key !== TEACHER_KEY) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: 'Unauthorized' }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+      .setMimeType(ContentService.MimeType.JSON);
   }
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+
+  // Leer hoja principal o la hoja especificada por ?sheet=NombreGrupo
+  const requestedSheet = e.parameter.sheet || SHEET_NAME;
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(requestedSheet);
+
   if (!sheet) {
-    // #17 — version en respuesta vacía
     return ContentService
-      .createTextOutput(JSON.stringify({ ok: true, version: '1.1', rows: [] }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+      .createTextOutput(JSON.stringify({ ok: true, version: '1.2', rows: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
-  const [, ...rows] = sheet.getDataRange().getValues();
+
+  const allValues = sheet.getDataRange().getValues();
+  if (allValues.length <= 1) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, version: '1.2', rows: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const [, ...rows] = allValues;
   const result = rows.map(r => {
-    if (r.length >= 8) {
-      // New format (with grupo): [ts, nombre, grupo, fecha, tipo, completados, errores, calif]
+    // v1.2: [ts, nombre, cedula, grupo, fecha, tipo, calificacion, errores, extras]
+    if (r.length >= 9) {
       return {
         timestamp:    r[0],
         nombre:       r[1],
+        cedula:       r[2],
+        grupo:        r[3],
+        fecha:        r[4],
+        tipo:         r[5],
+        calificacion: r[6],
+        errores:      r[7],
+        extras:       r[8],
+      };
+    }
+    // v1.1: [ts, nombre, grupo, fecha, tipo, completados, errores, calificacion]
+    if (r.length >= 8) {
+      return {
+        timestamp:    r[0],
+        nombre:       r[1],
+        cedula:       '',
         grupo:        r[2],
         fecha:        r[3],
         tipo:         r[4],
-        completados:  r[5],
-        errores:      r[6],
         calificacion: r[7],
-      };
-    } else {
-      // Legacy format (without grupo): [ts, nombre, fecha, tipo, completados, errores, calif]
-      return {
-        timestamp:    r[0],
-        nombre:       r[1],
-        grupo:        '',
-        fecha:        r[2],
-        tipo:         r[3],
-        completados:  r[4],
-        errores:      r[5],
-        calificacion: r[6],
+        errores:      r[6],
+        extras:       '',
       };
     }
+    // v1.0 (legado sin grupo): [ts, nombre, fecha, tipo, completados, errores, calificacion]
+    return {
+      timestamp:    r[0],
+      nombre:       r[1],
+      cedula:       '',
+      grupo:        '',
+      fecha:        r[2],
+      tipo:         r[3],
+      calificacion: r[6],
+      errores:      r[5],
+      extras:       '',
+    };
   });
-  // #17 — version en respuesta con datos
+
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: true, version: '1.1', rows: result }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .createTextOutput(JSON.stringify({ ok: true, version: '1.2', rows: result }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
