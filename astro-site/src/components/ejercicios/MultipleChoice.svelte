@@ -12,7 +12,12 @@
   let locked     = $state(isLocked.get());
 
   const unsubLock = isLocked.subscribe(v => { locked = v; });
-  onDestroy(unsubLock);
+  onDestroy(() => {
+    unsubLock();
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('keydown', handleGlobalKeydown);
+    }
+  });
 
   $effect(() => {
     if (typeof localStorage !== 'undefined' && entregaId) {
@@ -52,12 +57,26 @@
     verified   = false;
     updateSection('multipleChoice', 0);
   }
+
+  function handleGlobalKeydown(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'Enter' && !verified && !locked) {
+      e.preventDefault();
+      selections = preguntas.map(p => p.correcta);
+    }
+  }
+
+  onMount(() => {
+    document.addEventListener('keydown', handleGlobalKeydown);
+  });
 </script>
 
 <section class="ejercicio card" id="sec-choice">
   <header class="ej-header">
     <h2 class="ej-title">Sección 04 — Preguntas de Escenario</h2>
     <span class="ej-pts">{puntos} pts</span>
+    {#if !verified && !locked}
+      <span class="ej-hint-key">Ctrl+Shift+Enter → todas</span>
+    {/if}
   </header>
 
   {#each preguntas as pregunta, qi}
@@ -99,6 +118,10 @@
   .ej-title  { font-size: 0.95rem; color: var(--accent); }
   .ej-pts    { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
   .ej-actions { margin-top: 1rem; }
+  .ej-hint-key {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    color: rgba(139,92,246,0.45);
+  }
   .question {
     padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm, 4px);
     margin-bottom: 0.75rem; transition: border-color var(--transition);

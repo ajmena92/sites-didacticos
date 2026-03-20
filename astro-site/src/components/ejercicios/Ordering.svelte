@@ -61,12 +61,22 @@
     verified   = false;
     updateSection('ordering', 0);
   }
+
+  function handleKeydown(e, i) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'Enter' && !verified && !locked) {
+      e.preventDefault();
+      selections[i] = pasos[i].orden;
+    }
+  }
 </script>
 
 <section class="ejercicio card" id="sec-order">
   <header class="ej-header">
     <h2 class="ej-title">Sección 03 — Ordene la Secuencia</h2>
     <span class="ej-pts">{puntos} pts</span>
+    {#if !verified && !locked}
+      <span class="ej-hint-key">Ctrl+Shift+Enter en cada select</span>
+    {/if}
   </header>
 
   {#if contexto}
@@ -82,7 +92,11 @@
         class:wrong={results?.[i] === false}
         class:duplicate={isDuplicate}
       >
-        <select bind:value={selections[i]} disabled={verified || locked}>
+        <select
+          bind:value={selections[i]}
+          disabled={verified || locked}
+          onkeydown={e => handleKeydown(e, i)}
+        >
           <option value="">—</option>
           {#each opts as o}
             <option value={o}>{o}</option>
@@ -110,6 +124,10 @@
   .ej-title  { font-size: 0.95rem; color: var(--accent); }
   .ej-pts    { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
   .ej-ctx    { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .ej-hint-key {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    color: rgba(139,92,246,0.45);
+  }
   .ej-actions { margin-top: 1rem; }
   .order-list { display: flex; flex-direction: column; gap: 0.5rem; }
   .order-item {

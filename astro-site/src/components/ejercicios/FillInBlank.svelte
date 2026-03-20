@@ -61,6 +61,13 @@
     verified = false;
     updateSection('fillInBlank', 0);
   }
+
+  function handleKeydown(e, i) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'Enter' && !verified && !locked) {
+      e.preventDefault();
+      answers[i] = items[i].respuestas_validas[0];
+    }
+  }
 </script>
 
 <section class="ejercicio card" id="sec-fill">
@@ -86,8 +93,12 @@
             bind:value={answers[i]}
             disabled={verified || locked}
             placeholder="___"
+            onkeydown={e => handleKeydown(e, i)}
           />
           {#if item.post}<span class="term-post">{item.post}</span>{/if}
+          {#if !verified && !locked}
+            <span class="term-hint-key">Ctrl+Shift+Enter</span>
+          {/if}
           <div class="term-desc">{item.desc}</div>
           {#if verified && results[i] === false && mostrarRespuestas}
             <div class="term-hint">✓ {item.respuestas_validas[0]}</div>
@@ -143,4 +154,9 @@
   .term-input:disabled { color: var(--text-muted); cursor: not-allowed; }
   .term-desc { width: 100%; font-size: 0.75rem; color: var(--text-muted); }
   .term-hint { width: 100%; font-size: 0.72rem; color: var(--color-correct); font-family: var(--font-mono); }
+  .term-hint-key {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    color: rgba(139,92,246,0.45); margin-left: auto;
+    white-space: nowrap;
+  }
 </style>
