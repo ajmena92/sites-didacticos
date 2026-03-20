@@ -57,6 +57,7 @@
         };
         localStorage.setItem(SK, JSON.stringify(data));
 
+        let hayRespuestas = false;
         if (row.extras) {
           try {
             const extras = JSON.parse(row.extras);
@@ -67,10 +68,18 @@
                     `respuestas_v1_${entregaId}_${sec}`,
                     JSON.stringify(extras.answers[sec])
                   );
+                  hayRespuestas = true;
                 }
               });
             }
           } catch { /* extras no parseable, se ignora */ }
+        }
+
+        // Si se restauraron respuestas, recargar para que los componentes las lean
+        if (hayRespuestas && typeof window !== 'undefined') {
+          recuperando = false;
+          window.location.reload();
+          return;
         }
       }
     } catch { /* fallo de red, se ignora */ }
