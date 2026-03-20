@@ -61,6 +61,17 @@
         if (row.extras) {
           try {
             const extras = JSON.parse(row.extras);
+
+            // Caso diagnóstico: { casosAsignados, respuestas }
+            if (extras.casosAsignados && extras.respuestas) {
+              localStorage.setItem(
+                `caso_diag_${entregaId}`,
+                JSON.stringify({ casosAsignados: extras.casosAsignados, respuestas: extras.respuestas })
+              );
+              hayRespuestas = true;
+            }
+
+            // Ejercicios estáticos: { answers: { fillInBlank, matching, ... } }
             if (extras.answers) {
               ['fillInBlank', 'matching', 'ordering', 'multipleChoice'].forEach(sec => {
                 if (extras.answers[sec]) {
