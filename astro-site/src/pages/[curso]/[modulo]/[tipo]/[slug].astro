@@ -68,6 +68,7 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
   exportarPdf={entrega.parametros.exportar_pdf}
   mostrarProgreso={entrega.parametros.mostrar_progreso ?? true}
   activa={activa}
+  scriptUrl={(entrega as any).google_script_url ?? ''}
 >
 
   {/* ── Caso Diagnóstico (open-response, adm-soporte) ── */}
@@ -79,6 +80,9 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
       entregaId={entrega.id}
       scriptUrl={(entrega as any).google_script_url ?? ''}
       exportarPdf={(entrega as any).parametros.exportar_pdf}
+      tituloTarea={entrega.titulo}
+      cursoNombre={cursoNombre}
+      docenteNombre={docenteNombre}
     />
   )}
 
@@ -168,6 +172,7 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
       tituloTarea={entrega.titulo}
       entregaId={entrega.id}
       scriptUrl={(entrega as any).google_script_url ?? ''}
+      fechaCierre={(entrega as any).fecha_cierre ?? ''}
       secciones={ej?.secciones ?? null}
       cursoNombre={cursoNombre}
       docenteNombre={docenteNombre}
