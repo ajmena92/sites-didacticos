@@ -20,8 +20,8 @@
       "turno": "CTP PLATANARES"
     },
     {
-      "id": "11-4",
-      "nombre": "11-4 Redes",
+      "id": "11-3",
+      "nombre": "11-3 Redes",
       "turno": "CTP PLATANARES"
     },
     {
@@ -92,13 +92,13 @@
       "modulo": "modulo2",
       "tipo": "tarea",
       "tipo_ejercicio": "estatico",
-      "titulo": "Tarea 1 — Comandos Básicos Switch",
+      "titulo": "Tarea 1 I Semestre Undécimo CYSR — Comandos Básicos Switch",
       "grupos_habilitados": [
         "11-2",
         "11-3"
       ],
       "activa": true,
-      "fecha_apertura": "2026-03-18T00:00:00",
+      "fecha_apertura": "2026-03-19T00:00:00",
       "fecha_cierre": "2026-03-26T07:00:00",
       "puntos": 40,
       "google_script_url": "https://script.google.com/macros/s/AKfycbwc0mvRvRMA2wXuczGg0p_6JZjpA7j5e807ZbKHzwVRONYn-cNjgZ7ARXRsBlGlo7q6/exec",
