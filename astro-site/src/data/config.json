@@ -19,14 +19,89 @@
       "nombre": "11-2 Redes",
       "turno": "CTP PLATANARES",
       "estudiantes": [
-        { "cedula": "207890123", "nombre": "Pérez López, Juan",   "nivel": "11°" },
-        { "cedula": "115430987", "nombre": "Vargas Mora, Andrea", "nivel": "11°" }
+        {
+          "cedula": "120530696",
+          "nombre": "Acuña Ramírez, Yojan Daniel",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120670044",
+          "nombre": "Araya Salas, Yariel Stif",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120580916",
+          "nombre": "Fallas Navarro, Leonardo",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120630371",
+          "nombre": "Masis Cascante, José Ignacio",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120540324",
+          "nombre": "Monge Ureña, Emerson Enrique",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120490346",
+          "nombre": "Quesada Hernández, Matías",
+          "nivel": "11°"
+        }
       ]
     },
     {
       "id": "redes-11-3",
       "nombre": "11-3 Redes",
-      "turno": "CTP PLATANARES"
+      "turno": "CTP PLATANARES",
+      "estudiantes": [
+        {
+          "cedula": "120480774",
+          "nombre": "Acuña Rojas, Derian Isaac",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120410193",
+          "nombre": "Jiménez Castro, Keneth Steff",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120450711",
+          "nombre": "Mata Jiménez, Carlos Felipe",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120410833",
+          "nombre": "Meza Aguilar, Yeiner Johan",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120580151",
+          "nombre": "Monge Fernández, Samuel Josué",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120540497",
+          "nombre": "Navarro Camacho, Josué David",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120710370",
+          "nombre": "Varela Ureña, Ismael Alejandro",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "605130259",
+          "nombre": "Zuñiga Chinchilla, Yariel Omar",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "888888888",
+          "nombre": "Estudiante de Pruebas",
+          "nivel": "11°"
+        }
+      ]
     },
     {
       "id": "2026C1-G08",
@@ -36,12 +111,133 @@
     {
       "id": "adm-11-2",
       "nombre": "11-2 Adm. y Soporte",
-      "turno": "CTP PLATANARES"
+      "turno": "CTP PLATANARES",
+      "estudiantes": [
+        {
+          "cedula": "120530696",
+          "nombre": "Acuña Ramírez, Yojan Daniel",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120670044",
+          "nombre": "Araya Salas, Yariel Stif",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120580916",
+          "nombre": "Fallas Navarro, Leonardo",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120630371",
+          "nombre": "Masis Cascante, José Ignacio",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120540324",
+          "nombre": "Monge Ureña, Emerson Enrique",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120490346",
+          "nombre": "Quesada Hernández, Matías",
+          "nivel": "11°"
+        }
+      ]
     },
     {
       "id": "adm-11-3",
       "nombre": "11-3 Adm. y Soporte",
-      "turno": "CTP PLATANARES"
+      "turno": "CTP PLATANARES",
+      "estudiantes": [
+        {
+          "cedula": "120480774",
+          "nombre": "Acuña Rojas, Derian Isaac",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120410193",
+          "nombre": "Jiménez Castro, Keneth Steff",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120450711",
+          "nombre": "Mata Jiménez, Carlos Felipe",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120410833",
+          "nombre": "Meza Aguilar, Yeiner Johan",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120580151",
+          "nombre": "Monge Fernández, Samuel Josué",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120540497",
+          "nombre": "Navarro Camacho, Josué David",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120710370",
+          "nombre": "Varela Ureña, Ismael Alejandro",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "605130259",
+          "nombre": "Zuñiga Chinchilla, Yariel Omar",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "888888888",
+          "nombre": "Estudiante de Pruebas",
+          "nivel": "11°"
+        }
+      ]
+    },
+    {
+      "id": "2026C1-G08",
+      "nombre": "2026C1-G08 Redes de Computadora I",
+      "turno": "UMCA"
+    },
+    {
+      "id": "adm-11-2",
+      "nombre": "11-2 Adm. y Soporte",
+      "turno": "CTP PLATANARES",
+      "estudiantes": [
+        {
+          "cedula": "120530696",
+          "nombre": "Acuña Ramírez, Yojan Daniel",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120670044",
+          "nombre": "Araya Salas, Yariel Stif",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120580916",
+          "nombre": "Fallas Navarro, Leonardo",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120630371",
+          "nombre": "Masis Cascante, José Ignacio",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120540324",
+          "nombre": "Monge Ureña, Emerson Enrique",
+          "nivel": "11°"
+        },
+        {
+          "cedula": "120490346",
+          "nombre": "Quesada Hernández, Matías",
+          "nivel": "11°"
+        }
+      ]
     }
   ],
   "cursos": {

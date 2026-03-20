@@ -59,17 +59,24 @@ function doPost(e) {
       ? data.extras
       : JSON.stringify({ scores: data.scores, answers: data.answers });
 
-    sheet.appendRow([
-      new Date(),
-      nombre,
-      cedula,
-      grupo,
-      fecha,
-      tipo,
-      calificacion,
-      errores,
-      extras,
-    ]);
+    // Upsert: actualizar fila existente (cedula + tipo) o insertar nueva
+    const allValues = sheet.getDataRange().getValues();
+    let targetRow = -1;
+    for (let i = 0; i < allValues.length; i++) {
+      if (String(allValues[i][2]).trim() === String(cedula).trim() &&
+          String(allValues[i][5]).trim() === String(tipo).trim()) {
+        targetRow = i + 1; // 1-indexed
+        break;
+      }
+    }
+
+    const rowData = [new Date(), nombre, cedula, grupo, fecha, tipo, calificacion, errores, extras];
+
+    if (targetRow > 0) {
+      sheet.getRange(targetRow, 1, 1, 9).setValues([rowData]);
+    } else {
+      sheet.appendRow(rowData);
+    }
 
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true }))
@@ -83,13 +90,43 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // ── ?action=student → recuperación pública del progreso del estudiante ────
+  // Endpoint público: cualquiera con cedula + tipo puede consultar sus propias respuestas.
+  if (e.parameter.action === 'student') {
+    const cedula = (e.parameter.cedula || '').trim();
+    const tipo   = (e.parameter.tipo   || '').trim();
+
+    if (!cedula || !tipo) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: false, error: 'Faltan parámetros cedula y tipo' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const allSheets = ss.getSheets();
+    for (let s = 0; s < allSheets.length; s++) {
+      const values = allSheets[s].getDataRange().getValues();
+      for (let i = 0; i < values.length; i++) {
+        if (String(values[i][2]).trim() === cedula &&
+            String(values[i][5]).trim() === tipo) {
+          return ContentService
+            .createTextOutput(JSON.stringify({ ok: true, row: parseRow(values[i]) }))
+            .setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, row: null }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   if (e.parameter.key !== TEACHER_KEY) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: 'Unauthorized' }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
 
   // ── ?action=sheets → lista todas las hojas disponibles ──────────────────
   if (e.parameter.action === 'sheets') {

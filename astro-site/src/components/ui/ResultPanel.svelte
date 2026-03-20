@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { totalScore, sectionScores, sectionProgress } from '../../stores/score.js';
   import { submitTarea } from '../../lib/submitTarea.js';
   import Toast from './Toast.svelte';
@@ -10,6 +10,7 @@
     tituloTarea = '',
     entregaId = '',
     scriptUrl = '',
+    fechaCierre = '',
     secciones = null,
     cursoNombre = '',
     docenteNombre = '',
@@ -33,6 +34,10 @@
 
   let allDone = $derived(Object.values(progress).every(Boolean));
 
+  let puedeReenviar = $derived(
+    fechaCierre ? new Date() < new Date(fechaCierre) : true
+  );
+
   const sectionLabels = {
     fillInBlank:    'Complete el Comando',
     matching:       'Relacione Columnas',
@@ -46,11 +51,6 @@
   let pdfRequired  = $state(false);
   let toast        = $state(null);
 
-  onMount(() => {
-    if (entregaId && localStorage.getItem(`enviado_v1_${entregaId}`)) {
-      submitStatus = 'sent';
-    }
-  });
 
   function buildPayload() {
     const student = JSON.parse(localStorage.getItem(`estudiante_v1_${entregaId}`) ?? '{}');
@@ -78,7 +78,6 @@
     try {
       const payload = buildPayload();
       await submitTarea({ scriptUrl, ...payload });
-      localStorage.setItem(`enviado_v1_${entregaId}`, 'true');
       submitStatus = 'sent';
       pdfRequired  = false;
       const student = JSON.parse(localStorage.getItem(`estudiante_v1_${entregaId}`) ?? '{}');
@@ -290,7 +289,14 @@
       {:else if submitStatus === 'sending'}
         <button class="btn btn-submit" disabled>⏳ Enviando…</button>
       {:else if submitStatus === 'sent'}
-        <span class="submit-ok">✓ Tarea entregada</span>
+        <div class="submit-sent-wrap">
+          <span class="submit-ok">✓ Tarea entregada</span>
+          {#if puedeReenviar}
+            <button class="btn btn-reenviar" onclick={() => { submitStatus = 'idle'; }}>
+              ↺ Corregir y reenviar
+            </button>
+          {/if}
+        </div>
       {:else if submitStatus === 'error'}
         <button class="btn" onclick={handleSubmit}>↺ Reintentar envío</button>
       {/if}
@@ -377,6 +383,15 @@
     color: var(--color-correct, #00ff41);
     padding: 0.4rem 0.8rem;
   }
+
+  .submit-sent-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+  .btn-reenviar {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    background: none; border: 1px solid var(--border);
+    color: var(--text-muted); padding: 0.3rem 0.7rem; border-radius: var(--radius-sm, 4px);
+    cursor: pointer; transition: border-color var(--transition);
+  }
+  .btn-reenviar:hover { border-color: var(--text-muted); color: var(--text-primary); }
 
   .submit-error-wrap {
     display: flex;

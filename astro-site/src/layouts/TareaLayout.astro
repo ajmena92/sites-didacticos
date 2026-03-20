@@ -19,6 +19,7 @@ interface Props {
   exportarPdf?: boolean;
   mostrarProgreso?: boolean;
   activa?: boolean;
+  scriptUrl?: string;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   exportarPdf = false,
   mostrarProgreso = true,
   activa = true,
+  scriptUrl = '',
 } = Astro.props;
 ---
 
@@ -48,7 +50,7 @@ const {
     </div>
   ) : (
     <>
-      <StudentGate client:load grupos={grupos} entregaId={entregaId} />
+      <StudentGate client:load grupos={grupos} entregaId={entregaId} scriptUrl={scriptUrl} />
           <div id="exercises-wrap" style="display:none">
         <ResumeBanner client:load entregaId={entregaId} />
         {mostrarProgreso && <ProgressBar client:load />}
