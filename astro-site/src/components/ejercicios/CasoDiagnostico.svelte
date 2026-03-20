@@ -141,18 +141,28 @@
     };
 
     try {
-      const res  = await fetch(scriptUrl, {
+      const res = await fetch(scriptUrl, {
         method:  'POST',
         headers: { 'Content-Type': 'text/plain' },
         body:    JSON.stringify(payload),
       });
-      const json = await res.json().catch(() => ({ ok: res.ok }));
-      if (res.ok && json.ok !== false) {
+
+      // Leer respuesta como texto primero para poder diagnosticar
+      const rawText = await res.text().catch(() => '');
+      let json = null;
+      try { json = JSON.parse(rawText); } catch { /* no es JSON */ }
+
+      // Solo éxito si el script devolvió JSON con ok:true explícito
+      if (json && json.ok === true) {
         submitStatus = 'ok';
         submitMsg    = '✓ Tarea entregada al docente correctamente';
         pdfRequired  = false;
       } else {
-        throw new Error(json.error || `HTTP ${res.status}`);
+        // Construir mensaje de error útil
+        const detalle = json?.error
+          ?? (rawText.length < 200 ? rawText : `HTTP ${res.status} — respuesta no reconocida`)
+          ?? `HTTP ${res.status}`;
+        throw new Error(detalle);
       }
     } catch (err) {
       submitStatus = 'err';
