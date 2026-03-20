@@ -69,10 +69,10 @@
       "modulo": "modulo1",
       "tipo": "tarea",
       "tipo_ejercicio": "caso-diagnostico",
-      "titulo": "Tarea 1 I Semestre — Diagnóstico Técnico Profesional",
+      "titulo": "Tarea 1 I Semestre nuevo e— Diagnóstico Técnico Profesional",
       "grupos_habilitados": [
-        "adm-11-3",
-        "adm-11-4"
+        "adm-11-2",
+        "adm-11-3"
       ],
       "activa": true,
       "fecha_apertura": "2026-03-19T00:00:00",
