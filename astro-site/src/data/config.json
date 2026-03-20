@@ -17,7 +17,11 @@
     {
       "id": "redes-11-2",
       "nombre": "11-2 Redes",
-      "turno": "CTP PLATANARES"
+      "turno": "CTP PLATANARES",
+      "estudiantes": [
+        { "cedula": "207890123", "nombre": "Pérez López, Juan",   "nivel": "11°" },
+        { "cedula": "115430987", "nombre": "Vargas Mora, Andrea", "nivel": "11°" }
+      ]
     },
     {
       "id": "redes-11-3",
