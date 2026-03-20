@@ -64,6 +64,14 @@
 
   async function handleSubmit() {
     if (submitStatus === 'sent' || submitStatus === 'sending') return;
+
+    if (!allDone) {
+      const ok = window.confirm(
+        '⚠ Hay secciones sin completar.\n\n¿Confirmas que deseas entregar la tarea en este estado?\n\nSe registrará con la nota parcial obtenida hasta ahora.'
+      );
+      if (!ok) return;
+    }
+
     submitStatus = 'sending';
     submitError  = '';
     pdfRequired  = false;
@@ -246,7 +254,7 @@
   </div>
 
   {#if !allDone}
-    <p class="checklist-note">Complete todas las secciones antes de entregar.</p>
+    <p class="checklist-note">⚠ Hay secciones sin completar. Puedes entregar, pero se registrará como incompleta.</p>
   {/if}
 
   <!-- Banner PDF obligatorio cuando el envío falla -->
@@ -275,9 +283,9 @@
       {#if submitStatus === 'idle'}
         <button
           class="btn btn-submit"
+          class:incomplete={!allDone}
           onclick={handleSubmit}
-          disabled={!allDone}
-          title={allDone ? 'Enviar al profesor' : 'Complete todas las secciones primero'}
+          title={allDone ? 'Enviar al profesor' : 'Entregar con secciones incompletas'}
         >
           ✉ Entregar Tarea
         </button>
@@ -358,6 +366,12 @@
     opacity: 0.4;
     cursor: not-allowed;
   }
+  .btn-submit.incomplete {
+    background: #b08020;
+    border-color: #b08020;
+    opacity: 0.85;
+  }
+  .btn-submit.incomplete:hover { opacity: 1; }
 
   .submit-ok {
     font-family: var(--font-mono);

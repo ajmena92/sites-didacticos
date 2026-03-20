@@ -121,7 +121,13 @@
     pdfRequired = false;
 
     const empty = getAllFieldKeys().filter(k => !respuestas[k]?.trim()).length;
-    if (empty > 0) warnMsg = `Advertencia: ${empty} campo(s) vacío(s). Puedes enviar de todas formas.`;
+    if (empty > 0) {
+      const ok = window.confirm(
+        `⚠ Hay ${empty} campo(s) sin completar.\n\n¿Confirmas que deseas entregar la tarea en este estado?\n\nSe registrará con los campos que llenaste hasta ahora.`
+      );
+      if (!ok) return;
+      warnMsg = `Entregada con ${empty} campo(s) vacío(s).`;
+    }
 
     submitStatus = 'pending';
     submitMsg    = '⏳ Registrando…';
