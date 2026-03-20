@@ -10,6 +10,7 @@
   let results    = $state(null);
   let verified   = $state(false);
   let locked     = $state(isLocked.get());
+  let mounted    = $state(false);
 
   const unsubLock = isLocked.subscribe(v => { locked = v; });
   onDestroy(() => {
@@ -20,15 +21,15 @@
   });
 
   $effect(() => {
-    if (typeof localStorage !== 'undefined' && entregaId) {
+    if (typeof localStorage !== 'undefined' && entregaId && mounted) {
       localStorage.setItem(SK, JSON.stringify({ selections, verified, results }));
     }
   });
 
   onMount(() => {
-    if (!entregaId) return;
+    if (!entregaId) { mounted = true; return; }
     const raw = localStorage.getItem(SK);
-    if (!raw) return;
+    if (!raw) { mounted = true; return; }
     const d = JSON.parse(raw);
     selections = d.selections ?? Array(preguntas.length).fill(null);
     verified   = d.verified  ?? false;
@@ -38,6 +39,7 @@
       updateSection('multipleChoice', Math.round((correct / preguntas.length) * puntos));
       markVerified('multipleChoice');
     }
+    mounted = true;
   });
 
   function check() {

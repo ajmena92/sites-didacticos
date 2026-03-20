@@ -11,6 +11,7 @@
   let verified = $state(false);
   let locked   = $state(isLocked.get());
   const opts   = pasos.map((_, i) => i + 1);
+  let mounted  = $state(false);
 
   const unsubLock = isLocked.subscribe(v => { locked = v; });
   onDestroy(unsubLock);
@@ -24,15 +25,15 @@
   );
 
   $effect(() => {
-    if (typeof localStorage !== 'undefined' && entregaId) {
+    if (typeof localStorage !== 'undefined' && entregaId && mounted) {
       localStorage.setItem(SK, JSON.stringify({ selections, verified, results }));
     }
   });
 
   onMount(() => {
-    if (!entregaId) return;
+    if (!entregaId) { mounted = true; return; }
     const raw = localStorage.getItem(SK);
-    if (!raw) return;
+    if (!raw) { mounted = true; return; }
     const d = JSON.parse(raw);
     selections = d.selections ?? Array(pasos.length).fill('');
     verified   = d.verified  ?? false;
@@ -42,6 +43,7 @@
       updateSection('ordering', allCorrect ? puntos : 0);
       markVerified('ordering');
     }
+    mounted = true;
   });
 
   function check() {
