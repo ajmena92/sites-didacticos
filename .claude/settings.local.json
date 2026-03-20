@@ -70,7 +70,9 @@
       "Bash(NODE_OPTIONS=\"\" node -e \"process.exit\\(0\\)\")",
       "Bash(fnm use:*)",
       "Bash(~/.nvm/versions/node/v22.22.1/bin/npm run:*)",
-      "Bash(PATH=\"$HOME/.nvm/versions/node/v22.22.1/bin:$PATH\" npm run build 2>&1)"
+      "Bash(PATH=\"$HOME/.nvm/versions/node/v22.22.1/bin:$PATH\" npm run build 2>&1)",
+      "Bash(git status:*)",
+      "Bash(git -C /mnt/c/dev/sites-didacticos worktree list)"
     ]
   }
 }
