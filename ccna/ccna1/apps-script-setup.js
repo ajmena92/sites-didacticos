@@ -1,27 +1,32 @@
 /**
- * Apps Script para recibir y servir datos del Dashboard Docente CCNA 1
+ * Apps Script — Sites Didácticos (CTP Platanares)
+ * Recibe entregas de todas las materias y sirve datos al Dashboard Docente.
  *
- * INSTRUCCIONES:
- * 1. Abrir script.google.com y seleccionar el proyecto vinculado al Google Sheet
- * 2. Reemplazar TODO el contenido del editor con este código
- * 3. Cambiar TEACHER_KEY por una clave segura de tu elección
- * 4. Cambiar SHEET_NAME si el nombre de tu hoja es diferente
- * 5. Menú: Implementar → Nueva implementación
- *    - Tipo: Aplicación web
- *    - Ejecutar como: Yo
- *    - Acceso: Cualquier persona
- * 6. Copiar la URL del web app
+ * INSTRUCCIONES DE DEPLOY:
+ * 1. script.google.com → proyecto vinculado al Sheet
+ * 2. Reemplazar TODO el contenido con este código
+ * 3. Implementar → Administrar implementaciones → ✏️ → Nueva versión → Implementar
+ *    (NO crear nueva implementación; se perdería la URL)
+ *
+ * ENRUTAMIENTO DE HOJAS:
+ *   doPost enruta por `grupo` → hoja con ese nombre (se crea si no existe).
+ *   Ejemplos: "11-2", "adm-11-1", "2026C1-G08"
  *
  * ESQUEMA DE COLUMNAS (v1.2, 9 columnas):
  *   [0] timestamp | [1] nombre | [2] cedula | [3] grupo | [4] fecha
  *   [5] tipo/entregaId | [6] calificacion | [7] errores | [8] extras (JSON)
  *
- * NOTA: .setHeaders() NO existe en ContentService.TextOutput — los headers CORS
- *   son añadidos automáticamente por Apps Script cuando se despliega como pública.
+ * ENDPOINTS doGet (requieren ?key=TEACHER_KEY):
+ *   ?sheet=NOMBRE        → filas de esa hoja
+ *   ?tipo=ENTREGA_ID     → busca en TODAS las hojas y filtra por tipo (cross-sheet)
+ *   ?action=sheets       → lista nombres de todas las hojas del spreadsheet
+ *
+ * NOTA: .setHeaders() no existe en ContentService.TextOutput; CORS es automático
+ *   en web apps desplegadas como públicas.
  */
 
-const SHEET_NAME = '2026_tarea_VLSM';           // hoja por defecto (fallback)
-const TEACHER_KEY = 'T34ch3r-M3n4-2026!';   // ← cambiar por una clave real
+const SHEET_NAME  = '2026_entregas';        // hoja fallback si grupo viene vacío
+const TEACHER_KEY = 'T34ch3r-M3n4-2026!';  // ← cambiar por una clave real
 
 function doPost(e) {
   try {
@@ -84,9 +89,36 @@ function doGet(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  // Leer hoja principal o la hoja especificada por ?sheet=NombreGrupo
-  const requestedSheet = e.parameter.sheet || SHEET_NAME;
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // ── ?action=sheets → lista todas las hojas disponibles ──────────────────
+  if (e.parameter.action === 'sheets') {
+    const names = ss.getSheets().map(s => s.getName());
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, sheets: names }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // ── ?tipo=ENTREGA_ID → busca en TODAS las hojas y filtra por tipo ────────
+  if (e.parameter.tipo) {
+    const tipoFiltro = e.parameter.tipo;
+    const allRows = [];
+    ss.getSheets().forEach(function(sheet) {
+      const values = sheet.getDataRange().getValues();
+      if (values.length <= 1) return;
+      const [, ...data] = values;
+      data.forEach(function(r) {
+        const row = parseRow(r);
+        if (row.tipo === tipoFiltro) allRows.push(row);
+      });
+    });
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, version: '1.2', tipo: tipoFiltro, rows: allRows }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // ── ?sheet=NOMBRE → hoja específica (o fallback) ─────────────────────────
+  const requestedSheet = e.parameter.sheet || SHEET_NAME;
   const sheet = ss.getSheetByName(requestedSheet);
 
   if (!sheet) {
@@ -103,50 +135,38 @@ function doGet(e) {
   }
 
   const [, ...rows] = allValues;
-  const result = rows.map(r => {
-    // v1.2: [ts, nombre, cedula, grupo, fecha, tipo, calificacion, errores, extras]
-    if (r.length >= 9) {
-      return {
-        timestamp: r[0],
-        nombre: r[1],
-        cedula: r[2],
-        grupo: r[3],
-        fecha: r[4],
-        tipo: r[5],
-        calificacion: r[6],
-        errores: r[7],
-        extras: r[8],
-      };
-    }
-    // v1.1: [ts, nombre, grupo, fecha, tipo, completados, errores, calificacion]
-    if (r.length >= 8) {
-      return {
-        timestamp: r[0],
-        nombre: r[1],
-        cedula: '',
-        grupo: r[2],
-        fecha: r[3],
-        tipo: r[4],
-        calificacion: r[7],
-        errores: r[6],
-        extras: '',
-      };
-    }
-    // v1.0 (legado sin grupo): [ts, nombre, fecha, tipo, completados, errores, calificacion]
-    return {
-      timestamp: r[0],
-      nombre: r[1],
-      cedula: '',
-      grupo: '',
-      fecha: r[2],
-      tipo: r[3],
-      calificacion: r[6],
-      errores: r[5],
-      extras: '',
-    };
-  });
-
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: true, version: '1.2', rows: result }))
+    .createTextOutput(JSON.stringify({ ok: true, version: '1.2', rows: rows.map(parseRow) }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Normaliza una fila del sheet al schema v1.2 ──────────────────────────────
+function parseRow(r) {
+  // v1.2: [ts, nombre, cedula, grupo, fecha, tipo, calificacion, errores, extras]
+  if (r.length >= 9) {
+    return {
+      timestamp:   r[0],
+      nombre:      r[1],
+      cedula:      r[2],
+      grupo:       r[3],
+      fecha:       r[4],
+      tipo:        r[5],
+      calificacion:r[6],
+      errores:     r[7],
+      extras:      r[8],
+    };
+  }
+  // v1.1: [ts, nombre, grupo, fecha, tipo, completados, errores, calificacion]
+  if (r.length >= 8) {
+    return {
+      timestamp: r[0], nombre: r[1], cedula: '',
+      grupo: r[2], fecha: r[3], tipo: r[4],
+      calificacion: r[7], errores: r[6], extras: '',
+    };
+  }
+  // v1.0 legado: [ts, nombre, fecha, tipo, completados, errores, calificacion]
+  return {
+    timestamp: r[0], nombre: r[1], cedula: '', grupo: '',
+    fecha: r[2], tipo: r[3], calificacion: r[6], errores: r[5], extras: '',
+  };
 }
