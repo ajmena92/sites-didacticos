@@ -1,6 +1,7 @@
 <script>
   import { onDestroy } from 'svelte';
   import { studentStore } from '../../stores/score.js';
+  import Toast from '../ui/Toast.svelte';
 
   let {
     casos = [],
@@ -20,6 +21,7 @@
   let submitMsg     = $state('');
   let warnMsg       = $state('');
   let pdfRequired   = $state(false);
+  let toast         = $state(null);
 
   // ── Hash determinista ────────────────────────────────────────
   function nameHash(str) {
@@ -116,6 +118,7 @@
 
   // ── Envío ────────────────────────────────────────────────────
   async function handleSubmit() {
+    if (submitStatus === 'ok' || submitStatus === 'pending') return;
     if (!student?.nombre) { warnMsg = 'Completa tu identificación antes de enviar.'; return; }
     warnMsg = '';
     pdfRequired = false;
@@ -163,6 +166,11 @@
         submitStatus = 'ok';
         submitMsg    = '✓ Tarea entregada al docente correctamente';
         pdfRequired  = false;
+        toast = {
+          tipo:    'success',
+          titulo:  'TAREA ENTREGADA AL DOCENTE',
+          mensaje: `Registrada el ${student.fecha || new Date().toLocaleDateString('es-CR')}`,
+        };
       } else {
         // Construir mensaje de error útil
         const detalle = json?.error
@@ -174,6 +182,11 @@
       submitStatus = 'err';
       submitMsg    = `Error: ${err.message}`;
       pdfRequired  = true;
+      toast = {
+        tipo:    'error',
+        titulo:  'ERROR DE ENVÍO',
+        mensaje: 'Entrega el PDF físicamente al docente.',
+      };
     }
   }
 
@@ -344,30 +357,32 @@
   {/if}
 
   <div class="action-bar no-print">
-    <button
-      class="btn btn-submit"
-      onclick={handleSubmit}
-      disabled={submitStatus === 'pending'}
-    >
-      📤 Enviar al docente
-    </button>
+    {#if submitStatus === ''}
+      <button class="btn btn-submit" onclick={handleSubmit}>📤 Enviar al docente</button>
+    {:else if submitStatus === 'pending'}
+      <button class="btn btn-submit" disabled>⏳ Enviando…</button>
+    {:else if submitStatus === 'ok'}
+      <span class="submit-ok">✓ Tarea entregada</span>
+    {:else if submitStatus === 'err'}
+      <button class="btn btn-retry" onclick={handleSubmit}>↺ Reintentar envío</button>
+    {/if}
 
     {#if exportarPdf}
       <button class="btn btn-print" onclick={handlePrint}>
         🖨️ Imprimir / PDF
       </button>
     {/if}
-
-    {#if submitMsg}
-      <span
-        class="submit-ind"
-        class:ok={submitStatus === 'ok'}
-        class:err={submitStatus === 'err'}
-      >
-        {submitMsg}
-      </span>
-    {/if}
   </div>
+{/if}
+
+{#if toast}
+  <Toast
+    tipo={toast.tipo}
+    titulo={toast.titulo}
+    mensaje={toast.mensaje}
+    onReintentar={toast.tipo === 'error' ? handleSubmit : null}
+    onClose={() => { toast = null; }}
+  />
 {/if}
 
 <style>
@@ -647,11 +662,14 @@
   .btn-print  { background: none; border: 1px solid var(--border); color: var(--text-primary); }
   .btn-print:hover { border-color: var(--text-muted); }
 
-  .submit-ind {
-    font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted);
+  .btn-retry { background: none; border: 1px solid var(--color-warn, #ffb800); color: var(--color-warn, #ffb800); }
+  .btn-retry:hover { background: var(--color-warn, #ffb800); color: #000; }
+
+  .submit-ok {
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--color-correct, #00ff41);
+    padding: 0.4rem 0.8rem;
   }
-  .submit-ind.ok  { color: #3fb950; font-weight: 700; }
-  .submit-ind.err { color: #ff6b6b; }
 
   /* Print */
   @media print {

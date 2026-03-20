@@ -4,8 +4,9 @@ html {
   background-color: var(--surface, #0d1117);
   color: var(--text-primary, #d0e8d0);
   font-family: var(--font-body, sans-serif);
-  font-size: 16px;
-  line-height: 1.6;
+  /* móvil 375px → ~15.5px | tablet 768px → ~16.8px | desktop 1440px → ~18px */
+  font-size: clamp(15px, 0.8vw + 12.5px, 18px);
+  line-height: 1.65;
   scroll-behavior: smooth;
 }
 
@@ -66,4 +67,19 @@ code, pre { font-family: var(--font-mono); }
 
 @media (max-width: 640px) {
   body { padding: 0.75rem; }
+  .card { padding: 1rem; }
+
+  /* Evitar texto menor a 12px en móvil */
+  .key-hint,
+  .prog-label,
+  .diff-badge,
+  .case-num-badge,
+  .spec-key,
+  .fuente-pista,
+  .clock-label,
+  .clock-dates,
+  .progress-step,
+  .checklist-note {
+    font-size: max(0.75rem, 12px);
+  }
 }

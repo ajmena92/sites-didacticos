@@ -13,6 +13,13 @@
   --color-correct: #00ff41;
   --color-error:   #ff3a3a;
   --color-warn:    #ffb800;
+
+  /* Escala tipográfica — referencias para nuevos componentes */
+  --text-xs:   0.72rem;   /* labels, hints — ~11-13px según viewport */
+  --text-sm:   0.82rem;   /* body secundario */
+  --text-base: 1rem;      /* cuerpo principal */
+  --text-lg:   1.15rem;
+  --text-xl:   1.4rem;
 }
 
 [data-type="tarea"]    { --surface: #0d1117; --surface-card: #161b22; }
