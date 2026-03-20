@@ -81,7 +81,7 @@
     const val = e.target.value.trim();
     cedulaNoEncontrada = false;
     bloqueado = false;
-    if (!hayRoster || val.length < 5) return;
+    if (!hayRoster || val.length < 9) return;
 
     const found = buscarEnRoster(val);
     if (found) {
@@ -136,7 +136,10 @@
         <label class="field">
           <span class="field-label">Cédula / Documento de identidad *</span>
           <input type="text" bind:value={cedula} oninput={onCedulaInput}
-                 placeholder="Ej: 207890123" required autocomplete="off" inputmode="numeric" />
+                 placeholder="9 dígitos sin guiones — Ej: 207890123" required autocomplete="off" inputmode="numeric" />
+          {#if cedula.trim().length > 0 && cedula.trim().length < 9}
+            <span class="field-hint">Ingresa los 9 dígitos tal como aparece en la cédula (sin guiones).</span>
+          {/if}
           {#if cedulaNoEncontrada}
             <span class="field-error">Cédula no registrada en esta tarea. Consulta al docente.</span>
           {/if}
