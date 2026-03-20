@@ -38,8 +38,13 @@
   }
 
   async function restoreFromSheet(ced) {
-    if (localStorage.getItem(SK)) return;
     if (!scriptUrl) return;
+    // Skip if any answer key is already in localStorage (nothing to restore)
+    const hasAnswers =
+      ['fillInBlank', 'matching', 'ordering', 'multipleChoice'].some(
+        sec => localStorage.getItem(`respuestas_v1_${entregaId}_${sec}`) !== null
+      ) || localStorage.getItem(`caso_diag_${entregaId}`) !== null;
+    if (hasAnswers) return;
 
     try {
       recuperando = true;
@@ -130,7 +135,7 @@
     showExercises();
   }
 
-  onMount(() => {
+  onMount(async () => {
     const stored = localStorage.getItem(SK);
     if (stored) {
       const data = JSON.parse(stored);
@@ -141,6 +146,8 @@
       nivel  = data.nivel  ?? '';
       const turno = grupos.find(g => g.id === grupo)?.turno ?? data.turno ?? '';
       studentStore.set({ nombre, cedula, grupo, fecha, turno, nivel });
+      // If answers were cleared but student is still identified, restore from Sheets
+      await restoreFromSheet(data.cedula);
       showExercises();
     } else {
       visible = true;
