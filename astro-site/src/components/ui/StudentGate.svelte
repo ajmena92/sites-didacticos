@@ -86,6 +86,9 @@
           } catch { /* extras no parseable, se ignora */ }
         }
 
+        // Marcar como ya enviado (hay datos en Sheets = entrega previa)
+        if (hayRespuestas) localStorage.setItem(`enviado_v1_${entregaId}`, 'true');
+
         // Si se restauraron respuestas, recargar para que los componentes las lean
         if (hayRespuestas && typeof window !== 'undefined') {
           recuperando = false;

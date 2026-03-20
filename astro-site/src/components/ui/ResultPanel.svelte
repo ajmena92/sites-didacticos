@@ -1,5 +1,5 @@
 <script>
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { totalScore, sectionScores, sectionProgress } from '../../stores/score.js';
   import { submitTarea } from '../../lib/submitTarea.js';
   import Toast from './Toast.svelte';
@@ -46,10 +46,16 @@
   };
 
   // Submit state
-  let submitStatus = $state('idle'); // idle | sending | sent | error
+  let submitStatus = $state('idle'); // idle | sending | sent | resend | error
   let submitError  = $state('');
   let pdfRequired  = $state(false);
   let toast        = $state(null);
+
+  onMount(() => {
+    if (entregaId && localStorage.getItem(`enviado_v1_${entregaId}`)) {
+      submitStatus = 'resend';
+    }
+  });
 
 
   function buildPayload() {
@@ -63,7 +69,7 @@
   }
 
   async function handleSubmit() {
-    if (submitStatus === 'sent' || submitStatus === 'sending') return;
+    if (submitStatus === 'sending') return;
 
     if (!allDone) {
       const ok = window.confirm(
@@ -78,6 +84,7 @@
     try {
       const payload = buildPayload();
       await submitTarea({ scriptUrl, ...payload });
+      localStorage.setItem(`enviado_v1_${entregaId}`, 'true');
       submitStatus = 'sent';
       pdfRequired  = false;
       const student = JSON.parse(localStorage.getItem(`estudiante_v1_${entregaId}`) ?? '{}');
@@ -288,6 +295,10 @@
         </button>
       {:else if submitStatus === 'sending'}
         <button class="btn btn-submit" disabled>⏳ Enviando…</button>
+      {:else if submitStatus === 'resend'}
+        <button class="btn btn-reenviar-main" onclick={handleSubmit}>
+          ↺ Reenviar tarea
+        </button>
       {:else if submitStatus === 'sent'}
         <div class="submit-sent-wrap">
           <span class="submit-ok">✓ Tarea entregada</span>
@@ -383,6 +394,14 @@
     color: var(--color-correct, #00ff41);
     padding: 0.4rem 0.8rem;
   }
+
+  .btn-reenviar-main {
+    font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+    background: #b45309; border: 1px solid #d97706;
+    color: #fff; padding: 0.55rem 1.2rem; border-radius: var(--radius-sm, 4px);
+    cursor: pointer; transition: background var(--transition);
+  }
+  .btn-reenviar-main:hover { background: #d97706; }
 
   .submit-sent-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
   .btn-reenviar {

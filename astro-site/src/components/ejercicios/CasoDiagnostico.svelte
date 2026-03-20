@@ -1,5 +1,5 @@
 <script>
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { studentStore } from '../../stores/score.js';
   import Toast from '../ui/Toast.svelte';
 
@@ -19,7 +19,7 @@
   let assignedCases = $state([]);
   let respuestas    = $state({});
   let progress      = $state(0);
-  let submitStatus  = $state('');   // '' | 'pending' | 'ok' | 'err'
+  let submitStatus  = $state('');   // '' | 'pending' | 'ok' | 'resend' | 'err'
   let warnMsg       = $state('');
   let pdfRequired   = $state(false);
   let toast         = $state(null);
@@ -131,6 +131,12 @@
     updateProgress();
   }
 
+  onMount(() => {
+    if (entregaId && localStorage.getItem(`enviado_v1_${entregaId}`)) {
+      submitStatus = 'resend';
+    }
+  });
+
   let student = $state(studentStore.get());
   const unsubStudent = studentStore.subscribe(v => {
     student = v;
@@ -140,7 +146,7 @@
 
   // ── Envío ────────────────────────────────────────────────────
   async function handleSubmit() {
-    if (submitStatus === 'ok' || submitStatus === 'pending') return;
+    if (submitStatus === 'pending') return;
     if (!student?.nombre) { warnMsg = 'Completa tu identificación antes de enviar.'; return; }
     warnMsg = '';
     pdfRequired = false;
@@ -184,6 +190,7 @@
 
       // Solo éxito si el script devolvió JSON con ok:true explícito
       if (json && json.ok === true) {
+        localStorage.setItem(`enviado_v1_${entregaId}`, 'true');
         submitStatus = 'ok';
         pdfRequired  = false;
         toast = {
@@ -476,6 +483,8 @@
       {/if}
       {#if submitStatus === ''}
         <button class="btn btn-submit" onclick={handleSubmit}>📤 Enviar al docente</button>
+      {:else if submitStatus === 'resend'}
+        <button class="btn btn-reenviar-main" onclick={handleSubmit}>↺ Reenviar tarea</button>
       {:else if submitStatus === 'pending'}
         <button class="btn btn-submit" disabled>⏳ Enviando…</button>
       {:else if submitStatus === 'ok'}
@@ -766,6 +775,13 @@
   .btn-pdf-urgent:hover { opacity: 0.88; }
 
   .btn-submit { background: #3fb950; color: #fff; }
+  .btn-reenviar-main {
+    font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+    background: #b45309; border: 1px solid #d97706;
+    color: #fff; padding: 0.55rem 1.2rem; border-radius: var(--radius-sm, 4px);
+    cursor: pointer; transition: background var(--transition);
+  }
+  .btn-reenviar-main:hover { background: #d97706; }
   .btn-print  { background: none; border: 1px solid var(--border); color: var(--text-primary); }
   .btn-print:hover { border-color: var(--text-muted); }
 
