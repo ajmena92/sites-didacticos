@@ -277,9 +277,7 @@
       <button class="btn btn-primary" onclick={exportPDF}>⬇ Exportar PDF</button>
     {/if}
 
-    <button class="btn" onclick={descargarJson}>⬇ Descargar JSON</button>
-
-    {#if scriptUrl}
+{#if scriptUrl}
       {#if submitStatus === 'idle'}
         <button
           class="btn btn-submit"
