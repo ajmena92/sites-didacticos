@@ -16,12 +16,32 @@
   let assignedCases = $state([]);
   let respuestas    = $state({});
   let progress      = $state(0);
-  let progressLabel = $state('0 / 0 campos completados');
   let submitStatus  = $state('');   // '' | 'pending' | 'ok' | 'err'
-  let submitMsg     = $state('');
   let warnMsg       = $state('');
   let pdfRequired   = $state(false);
   let toast         = $state(null);
+
+  // ── Derivados reactivos para el card de resultado ─────────────
+  let allFieldKeys = $derived(
+    [
+      ...assignedCases.flatMap(c => {
+        const base = c.id.toLowerCase().replace('-', '');
+        return [
+          ...c.questions.map((_, i) => `${base}-q${i + 1}`),
+          `${base}-dictamen`,
+        ];
+      }),
+      ...seccionesEstaticas.map(s => s.id),
+    ]
+  );
+  let filled = $derived(allFieldKeys.filter(k => respuestas[k]?.trim()).length);
+  let total  = $derived(allFieldKeys.length);
+  let rating = $derived(
+    submitStatus === 'err'  ? { icon: '🔁', label: 'ERROR DE ENVÍO', color: '#ff3a3a' } :
+    progress === 100        ? { icon: '🏆', label: 'COMPLETO',        color: '#00ff41' } :
+    progress >= 50          ? { icon: '⚠️', label: 'INCOMPLETO',      color: '#ffb800' } :
+                              { icon: '🔁', label: 'SIN COMPLETAR',   color: '#ff3a3a' }
+  );
 
   // ── Hash determinista ────────────────────────────────────────
   function nameHash(str) {
@@ -70,10 +90,9 @@
 
   function updateProgress() {
     const allFields = getAllFieldKeys();
-    const filled = allFields.filter(k => respuestas[k]?.trim()).length;
-    const total  = allFields.length;
-    progress      = total > 0 ? Math.round((filled / total) * 100) : 0;
-    progressLabel = `${filled} / ${total} campos completados`;
+    const f = allFields.filter(k => respuestas[k]?.trim()).length;
+    const t = allFields.length;
+    progress = t > 0 ? Math.round((f / t) * 100) : 0;
   }
 
   function setResponse(key, value) {
@@ -133,7 +152,6 @@
     }
 
     submitStatus = 'pending';
-    submitMsg    = '⏳ Registrando…';
 
     const payload = {
       nombre:       student.nombre,
@@ -164,7 +182,6 @@
       // Solo éxito si el script devolvió JSON con ok:true explícito
       if (json && json.ok === true) {
         submitStatus = 'ok';
-        submitMsg    = '✓ Tarea entregada al docente correctamente';
         pdfRequired  = false;
         toast = {
           tipo:    'success',
@@ -180,7 +197,6 @@
       }
     } catch (err) {
       submitStatus = 'err';
-      submitMsg    = `Error: ${err.message}`;
       pdfRequired  = true;
       toast = {
         tipo:    'error',
@@ -202,7 +218,7 @@
     <div class="prog-track">
       <div class="prog-fill" style="width:{progress}%"></div>
     </div>
-    <span class="prog-label">{progressLabel}</span>
+    <span class="prog-label">{filled} / {total} campos completados</span>
   </div>
 {:else}
   <div class="waiting-msg">
@@ -338,40 +354,48 @@
 
 <!-- ── Barra de acciones ───────────────────────────────────────  -->
 {#if assignedCases.length > 0}
-  {#if warnMsg}
-    <div class="warn-banner">{warnMsg}</div>
-  {/if}
-
-  <!-- Banner de error con PDF obligatorio -->
-  {#if pdfRequired}
-    <div class="pdf-required-banner no-print">
-      <div class="pdf-req-icon">⚠️</div>
-      <div class="pdf-req-content">
-        <strong>No se pudo entregar en línea.</strong>
-        <span>Debes imprimir el PDF y entregarlo físicamente al docente. El registro en línea falló.</span>
-      </div>
-      <button class="btn btn-pdf-urgent" onclick={handlePrint}>
-        🖨️ Imprimir PDF ahora
-      </button>
+  <div class="result card no-print" style="border-color:{rating.color}">
+    <div class="result-rating">
+      <span class="result-icon">{rating.icon}</span>
+      <span class="result-label" style="color:{rating.color}">{rating.label}</span>
     </div>
-  {/if}
+    <div class="result-score">{filled} <span class="result-of">/ {total} campos</span></div>
+    <div class="result-bar-wrap">
+      <div class="result-bar" style="width:{progress}%; background:{rating.color}"></div>
+    </div>
+    <div class="result-pct">{progress}%</div>
 
-  <div class="action-bar no-print">
-    {#if submitStatus === ''}
-      <button class="btn btn-submit" onclick={handleSubmit}>📤 Enviar al docente</button>
-    {:else if submitStatus === 'pending'}
-      <button class="btn btn-submit" disabled>⏳ Enviando…</button>
-    {:else if submitStatus === 'ok'}
-      <span class="submit-ok">✓ Tarea entregada</span>
-    {:else if submitStatus === 'err'}
-      <button class="btn btn-retry" onclick={handleSubmit}>↺ Reintentar envío</button>
+    {#if warnMsg}
+      <div class="warn-banner">{warnMsg}</div>
     {/if}
 
-    {#if exportarPdf}
-      <button class="btn btn-print" onclick={handlePrint}>
-        🖨️ Imprimir / PDF
-      </button>
+    {#if pdfRequired}
+      <div class="pdf-required-banner">
+        <div class="pdf-req-icon">⚠️</div>
+        <div class="pdf-req-content">
+          <strong>No se pudo entregar en línea.</strong>
+          <span>Debes imprimir el PDF y entregarlo físicamente al docente. El registro en línea falló.</span>
+        </div>
+        <button class="btn btn-pdf-urgent" onclick={handlePrint}>
+          🖨️ Imprimir PDF ahora
+        </button>
+      </div>
     {/if}
+
+    <div class="result-actions">
+      {#if exportarPdf}
+        <button class="btn btn-print" onclick={handlePrint}>🖨️ Imprimir / PDF</button>
+      {/if}
+      {#if submitStatus === ''}
+        <button class="btn btn-submit" onclick={handleSubmit}>📤 Enviar al docente</button>
+      {:else if submitStatus === 'pending'}
+        <button class="btn btn-submit" disabled>⏳ Enviando…</button>
+      {:else if submitStatus === 'ok'}
+        <span class="submit-ok">✓ Tarea entregada</span>
+      {:else if submitStatus === 'err'}
+        <button class="btn btn-retry" onclick={handleSubmit}>↺ Reintentar envío</button>
+      {/if}
+    </div>
   </div>
 {/if}
 
@@ -653,11 +677,6 @@
   }
   .btn-pdf-urgent:hover { opacity: 0.88; }
 
-  /* Barra de acciones */
-  .action-bar {
-    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-    padding-top: 0.5rem; margin-bottom: 0.5rem;
-  }
   .btn-submit { background: #3fb950; color: #fff; }
   .btn-print  { background: none; border: 1px solid var(--border); color: var(--text-primary); }
   .btn-print:hover { border-color: var(--text-muted); }
@@ -670,6 +689,24 @@
     color: var(--color-correct, #00ff41);
     padding: 0.4rem 0.8rem;
   }
+
+  /* Card de resultado */
+  .result {
+    text-align: center; display: flex; flex-direction: column;
+    align-items: center; gap: 0.8rem;
+  }
+  .result-rating { display: flex; align-items: center; gap: 0.5rem; }
+  .result-icon   { font-size: 1.8rem; }
+  .result-label  { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.1em; }
+  .result-score  { font-family: var(--font-display); font-size: 2rem; color: var(--text-primary); }
+  .result-of     { font-size: 1rem; color: var(--text-muted); }
+  .result-bar-wrap {
+    width: 100%; max-width: 400px;
+    background: var(--border); border-radius: 100px; height: 8px; overflow: hidden;
+  }
+  .result-bar    { height: 100%; border-radius: 100px; transition: width 0.8s ease; }
+  .result-pct    { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); }
+  .result-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
 
   /* Print */
   @media print {
