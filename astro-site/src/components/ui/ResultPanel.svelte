@@ -43,6 +43,7 @@
   // Submit state
   let submitStatus = $state('idle'); // idle | sending | sent | error
   let submitError  = $state('');
+  let pdfRequired  = $state(false);
   let toast        = $state(null);
 
   onMount(() => {
@@ -65,24 +66,27 @@
     if (submitStatus === 'sent' || submitStatus === 'sending') return;
     submitStatus = 'sending';
     submitError  = '';
+    pdfRequired  = false;
     try {
       const payload = buildPayload();
       await submitTarea({ scriptUrl, ...payload });
       localStorage.setItem(`enviado_v1_${entregaId}`, 'true');
       submitStatus = 'sent';
+      pdfRequired  = false;
       const student = JSON.parse(localStorage.getItem(`estudiante_v1_${entregaId}`) ?? '{}');
       toast = {
         tipo: 'success',
-        titulo: 'TAREA ENTREGADA',
+        titulo: 'TAREA ENTREGADA AL DOCENTE',
         mensaje: `Registrada el ${student.fecha ?? new Date().toLocaleDateString('es-CR')}`,
       };
     } catch (e) {
       submitStatus = 'error';
       submitError  = String(e);
+      pdfRequired  = true;
       toast = {
         tipo: 'error',
         titulo: 'ERROR DE ENVÍO',
-        mensaje: 'Descargue el JSON como respaldo.',
+        mensaje: 'Entrega el PDF físicamente al docente.',
       };
     }
   }
@@ -245,6 +249,20 @@
     <p class="checklist-note">Complete todas las secciones antes de entregar.</p>
   {/if}
 
+  <!-- Banner PDF obligatorio cuando el envío falla -->
+  {#if pdfRequired}
+    <div class="pdf-required-banner">
+      <span class="pdf-req-icon">⚠️</span>
+      <div class="pdf-req-content">
+        <strong>No se pudo entregar en línea.</strong>
+        <span>Exporta el PDF y entrégalo físicamente al docente.</span>
+      </div>
+      {#if exportarPdf}
+        <button class="btn btn-pdf-urgent" onclick={exportPDF}>🖨️ Exportar PDF ahora</button>
+      {/if}
+    </div>
+  {/if}
+
   <!-- Action buttons -->
   <div class="result-actions">
     {#if exportarPdf}
@@ -360,4 +378,26 @@
     color: var(--color-error, #ff3a3a);
     text-align: center;
   }
+
+  .pdf-required-banner {
+    display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+    width: 100%; max-width: 480px;
+    background: rgba(248,81,73,.1);
+    border: 1px solid rgba(248,81,73,.35);
+    border-left: 4px solid #f85149;
+    border-radius: 8px; padding: 0.85rem 1rem;
+  }
+  .pdf-req-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .pdf-req-content {
+    flex: 1; display: flex; flex-direction: column; gap: 0.15rem; text-align: left;
+  }
+  .pdf-req-content strong { font-size: 0.82rem; color: #ff6b6b; }
+  .pdf-req-content span   { font-size: 0.75rem; color: var(--text-muted); }
+  .btn-pdf-urgent {
+    background: #f85149; color: #fff; border: none;
+    padding: 0.45rem 0.9rem; border-radius: 6px;
+    font-weight: 700; font-size: 0.8rem; cursor: pointer;
+    white-space: nowrap; transition: opacity 0.2s;
+  }
+  .btn-pdf-urgent:hover { opacity: 0.85; }
 </style>
