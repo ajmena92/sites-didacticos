@@ -1,144 +1,360 @@
 {
   "id": "diagnostico-hardware",
   "titulo": "Tarea 1 — Diagnóstico Técnico Profesional",
-  "subtitulo": "Análisis de arquitectura, criterios de actualización y toma de decisiones basadas en hardware real. Se asignan 2 casos de 10 para investigación.",
+  "subtitulo": "Análisis de arquitectura, criterios de actualización y toma de decisiones basadas en hardware real. Se asignan 2 casos de 12 para investigación.",
   "casos": [
     {
       "id": "C-01",
       "title": "Escalabilidad RAM híbrida",
       "model": "Lenovo IdeaPad 3 15ALC6",
-      "scenario": "El cliente compró este modelo para edición de fotos. Viene con 8 GB de RAM, pero el sistema indica que solo 5.8 GB son utilizables. Desea subir a 16 GB o 24 GB.",
+      "scenario": "El cliente compró este modelo para edición de fotos livianas. Viene con 8 GB de RAM pero el Administrador de tareas indica que solo 5.8 GB son utilizables. Quiere subir a 16 GB o 24 GB para trabajar con capas en Photoshop sin lag.",
       "difficulty": "Media / Arquitectura Mixta",
+      "specs": {
+        "CPU": "AMD Ryzen 5 5500U / Ryzen 7 5700U (Zen 3, 15 W)",
+        "RAM actual": "8 GB DDR4 — on-board + 1 slot SODIMM",
+        "Almacenamiento": "256–512 GB M.2 NVMe PCIe Gen 3",
+        "GPU": "AMD Radeon iGPU (VRAM compartida UMA)"
+      },
+      "fuentes": [
+        { "sitio": "Lenovo PSREF", "seccion": "IdeaPad 3 15ALC6 — Memory", "pista": "Muestra cuánta RAM viene soldada y capacidad del slot SODIMM disponible" },
+        { "sitio": "Crucial System Advisor", "seccion": "Busca IdeaPad 3 15ALC6 → Compatible upgrades", "pista": "Lista los módulos certificados y el máximo teórico del slot" },
+        { "sitio": "AMD — Product Specs (amd.com)", "seccion": "Ryzen 5 5500U → Max Memory Size / Memory Type", "pista": "Confirma la frecuencia DDR4 máxima soportada por el controlador" }
+      ],
       "questions": [
-        "¿Cuánta memoria RAM viene soldada (On-board) y cuántos slots SODIMM están disponibles en este modelo?",
-        "¿Por qué el sistema muestra menos memoria de la instalada? Explica el concepto de VRAM compartida en iGPU Ryzen.",
-        "¿Cuál es el módulo máximo (capacidad y frecuencia) que se puede instalar en el slot libre?"
+        "¿Cuánta memoria RAM viene soldada (On-board) y cuántos slots SODIMM están disponibles en este modelo según el PSREF?",
+        "¿Por qué el sistema muestra menos memoria de la instalada? Explica el concepto de VRAM compartida (UMA) en iGPU Ryzen.",
+        "¿Cuál es el módulo máximo (capacidad y frecuencia) que acepta el slot libre? ¿Puede llegar a 24 GB?"
+      ],
+      "answers": [
+        "Según PSREF: 8 GB on-board (soldados) + 1 slot SODIMM vacío en la mayoría de SKUs. Algunos sub-modelos traen 4 GB soldados + módulo SODIMM de 4 GB ya instalado — verificar número de parte exacto del equipo.",
+        "La iGPU AMD Radeon (Vega) usa VRAM dinámica (UMA — Unified Memory Architecture): reserva ~2 GB de la RAM del sistema como framebuffer de video. El SO los marca como 'Hardware reservado'. No es un defecto, es diseño de arquitectura AMD en plataformas APU.",
+        "SO-DIMM DDR4 3200 MHz, máximo 16 GB en el slot libre = 24 GB totales (8 soldados + 16 slot). La plataforma Ryzen 5000U soporta hasta 48 GB teóricos en dual-channel; el BIOS del IdeaPad 3 limita a 24 GB. Usar módulo de misma frecuencia para no degradar a single-channel."
       ]
     },
     {
       "id": "C-02",
       "title": "Restauración Business Class",
       "model": "HP ProBook 640 G4",
-      "scenario": "Una empresa tiene 50 unidades de este modelo con HDD mecánicos y 4 GB de RAM. El arranque tarda 3 minutos. El presupuesto por equipo es de $100.",
+      "scenario": "Una empresa tiene 50 unidades de este modelo corporate con HDD mecánicos de 500 GB y 4 GB de RAM. El arranque tarda 3 minutos y los empleados reportan que el sistema 'se congela' al abrir Excel con archivos grandes. El presupuesto disponible es de $100 por equipo.",
       "difficulty": "Alta / Gestión de Presupuesto",
+      "specs": {
+        "CPU": "Intel Core i5-8250U / i7-8550U (8ª Gen, Kaby Lake-R)",
+        "RAM actual": "4 GB DDR4 2400 MHz — 2 slots SODIMM",
+        "Almacenamiento actual": "HDD SATA 2.5\" 500 GB — 7200 RPM",
+        "Slot M.2": "1 slot M.2 2242/2280 (verificar interfaz en manual)"
+      },
+      "fuentes": [
+        { "sitio": "HP QuickSpecs (hp.com)", "seccion": "ProBook 640 G4 Notebook PC — QuickSpecs PDF", "pista": "Sección 'Storage' y 'Memory' muestran slots y capacidades máximas; sección M.2 indica si es SATA o NVMe" },
+        { "sitio": "HP Support (support.hp.com)", "seccion": "Manuals → Maintenance and Service Guide ProBook 640 G4", "pista": "El diagrama explica la ubicación física del slot M.2 y la bahía SATA" },
+        { "sitio": "Crucial System Advisor", "seccion": "HP ProBook 640 G4 → RAM compatible", "pista": "Confirma DDR4 2400 vs 2666 y capacidad máxima total (8 o 16 GB)" }
+      ],
       "questions": [
-        "¿Soporta este modelo discos M.2 NVMe y SATA de 2.5\" simultáneamente?",
-        "Investiga el precio de mercado de un SSD M.2 de 250 GB y un módulo de 8 GB DDR4 2400 MHz.",
-        "¿Es rentable esta actualización en 2026 frente a la compra de una laptop nueva de gama de entrada? Justifica."
+        "¿El slot M.2 de este modelo soporta NVMe (PCIe), SATA o ambas interfaces? Busca en el Manual de Mantenimiento oficial de HP.",
+        "Investiga el precio de mercado actual (2026) de un SSD M.2 de 256 GB y un módulo SODIMM de 8 GB DDR4 2400 MHz.",
+        "¿Es rentable esta actualización en flota de 50 equipos frente a reemplazar con laptops nuevas de gama de entrada? Justifica con cifras."
+      ],
+      "answers": [
+        "El slot M.2 del ProBook 640 G4 soporta SOLO M.2 SATA (no NVMe/PCIe). El controlador de chipset de la plataforma Kaby Lake-R no expone carriles PCIe al slot M.2 en este modelo específico. Verificar con QuickSpecs o el manual de servicio (capítulo 'Spare parts').",
+        "Precios de referencia 2026 CR: SSD M.2 SATA 256 GB ≈ $20–30 USD; SODIMM DDR4 8 GB 2400 MHz ≈ $15–22 USD. Total por equipo: ≈ $35–52 USD, dentro del presupuesto de $100.",
+        "Actualización: $50 avg × 50 equipos = $2,500 total. Laptop nueva gama entrada (Celeron/i3 básico): ≈ $350–450 × 50 = $17,500–22,500. Ahorro: ≈ $15,000–20,000. ROI positivo si los equipos tienen < 4 años de uso y el resto del hardware está en buen estado. La actualización extiende vida útil 3–4 años adicionales."
       ]
     },
     {
       "id": "C-03",
       "title": "Obsolescencia y Windows 11",
       "model": "Dell Latitude E6410",
-      "scenario": "Un usuario quiere instalar Windows 11 para usar aplicaciones modernas. El equipo tiene un Intel Core i5-520M y 4 GB de DDR3.",
+      "scenario": "Un docente quiere instalar Windows 11 para usar Teams moderno y aplicaciones de la nube. El equipo tiene procesador Intel Core i5-520M, 4 GB de DDR3 y un HDD de 320 GB. Encontró un tutorial en YouTube que 'bypasea' los requisitos.",
       "difficulty": "Baja / Restricciones de Software",
+      "specs": {
+        "CPU": "Intel Core i5-520M (Arrandale, 2010, 32 nm)",
+        "RAM": "4 GB DDR3 1066 MHz — 2 slots SODIMM",
+        "Almacenamiento": "HDD SATA 2.5\" 320 GB",
+        "TPM": "TPM 1.2 (si está presente)"
+      },
+      "fuentes": [
+        { "sitio": "Intel ARK (ark.intel.com)", "seccion": "Intel Core i5-520M → Specifications → Launch Date / Generation", "pista": "Confirma generación y si el procesador está en la lista de CPU compatibles con Windows 11" },
+        { "sitio": "Microsoft — Requisitos Windows 11 (microsoft.com)", "seccion": "Windows 11 Specifications → Compatible processors", "pista": "Descarga la lista de CPUs Intel soportados y compara con el i5-520M" },
+        { "sitio": "Microsoft PC Health Check App", "seccion": "Herramienta oficial de compatibilidad", "pista": "Instalar en el equipo para obtener el veredicto oficial de compatibilidad con detalles de cada requisito fallido" }
+      ],
       "questions": [
-        "¿Qué generación de procesadores Intel es el mínimo oficial para Windows 11? ¿Cumple el i5-520M ese requisito?",
-        "¿Tiene esta placa base chip TPM 2.0 integrado? Investiga la fecha de lanzamiento del modelo para determinar la generación de TPM.",
-        "Emite un veredicto técnico sobre la seguridad y estabilidad de forzar la instalación de sistemas operativos modernos en hardware legado."
+        "¿Qué generación mínima de procesador Intel requiere Windows 11 de forma oficial? ¿El i5-520M cumple ese requisito?",
+        "¿Tiene esta placa base chip TPM 2.0? Investiga la fecha de lanzamiento del Dell Latitude E6410 y la generación de TPM presente.",
+        "Emite un veredicto técnico sobre la seguridad y estabilidad de forzar Windows 11 en hardware no soportado, especialmente en uso institucional."
+      ],
+      "answers": [
+        "Windows 11 requiere mínimo procesadores Intel de 8ª generación (Coffee Lake, 2017+). El i5-520M es de 1ª generación (Arrandale, 2010) — NO cumple. No está en la lista oficial de CPUs soportados.",
+        "El Dell Latitude E6410 fue lanzado en 2010. Puede incluir TPM 1.2 opcional, pero NO TPM 2.0 (el estándar 2.0 se publicó en 2014). Windows 11 requiere TPM 2.0 — requisito no cumplible con actualización de firmware.",
+        "Forzar Windows 11 (bypass de TPM/CPU) implica: ausencia de actualizaciones de seguridad futuras según política Microsoft, posibles incompatibilidades con drivers (sin soporte del fabricante para esta generación), riesgo de vulnerabilidades no parcheadas. En entorno institucional docente es técnicamente irresponsable. Alternativa: instalar Windows 10 LTSC (soporte hasta oct 2025) o una distribución Linux liviana (Ubuntu, Linux Mint)."
       ]
     },
     {
       "id": "C-04",
       "title": "Reparabilidad en diseño sellado",
       "model": "Microsoft Surface Laptop 5",
-      "scenario": "La batería está degradada (salud al 60%) y el teclado tiene varias teclas que no funcionan.",
+      "scenario": "La batería del equipo muestra 60% de salud (verificado con BatteryInfoView) y varias teclas del teclado no responden al tacto. El propietario quiere saber si es más económico reparar o comprar uno nuevo. El equipo tiene 2 años de uso.",
       "difficulty": "Muy Alta / Diseño Propietario",
+      "specs": {
+        "CPU": "Intel Core i5-1235U / i7-1265U (Alder Lake, 2022)",
+        "RAM": "8–16 GB LPDDR5 — soldada en placa",
+        "Almacenamiento": "SSD M.2 NVMe propietario (no estándar)",
+        "Construcción": "Aluminio + Alcantara — diseño sellado sin tornillos accesibles"
+      },
+      "fuentes": [
+        { "sitio": "iFixit (ifixit.com)", "seccion": "Microsoft Surface Laptop 5 Repairability Score → Teardown", "pista": "El score y el desglose por categoría muestra exactamente qué piezas son accesibles y cuáles requieren herramientas especiales o se destruyen al intentar acceder" },
+        { "sitio": "Microsoft Surface — Service Manual (docs.microsoft.com)", "seccion": "Surface Laptop 5 Service Guide", "pista": "Documento oficial con procedimiento de reemplazo de batería y teclado; incluye advertencias de garantía" },
+        { "sitio": "iFixit Parts Store", "seccion": "Surface Laptop 5 → Battery", "pista": "Verifica disponibilidad y precio del ensamble de batería oficial vs aftermarket" }
+      ],
       "questions": [
-        "Busca en iFixit la puntuación de reparabilidad de este modelo. ¿Cómo está sujeta la batería (tornillos o pegamento)?",
-        "Describe el proceso para abrir este equipo sin dañar el panel de vidrio de la pantalla.",
-        "¿Es posible encontrar el Part Number oficial de la batería o es una pieza propietaria sin reemplazo externo?"
+        "Busca en iFixit la puntuación de reparabilidad del Surface Laptop 5. ¿Cómo está fijada la batería — tornillos o adhesivo?",
+        "Describe el proceso para abrir este equipo sin dañar el panel superior (palmrest). ¿Qué herramientas especiales se requieren?",
+        "¿Es posible conseguir la batería de repuesto (Part Number) en el mercado? ¿Y el conjunto de teclado?"
+      ],
+      "answers": [
+        "iFixit asigna 0/10 de reparabilidad al Surface Laptop 5. La batería está pegada con adhesivo de contacto fuerte en múltiples puntos; NO hay tornillos de fijación accesibles. Desmontaje es destructivo para el Alcantara.",
+        "Para acceder: se aplica calor (heat gun o iOpener) a ~60°C sobre el palmrest para ablandar el adhesivo; se insertan picks de plástico con mucho cuidado para evitar romper el panel LCD o los flex cables de Touch. Herramientas: pistola de calor, iOpener, opening picks, ventosa, pry tool. Riesgo alto de rotura del panel táctil integrado.",
+        "La batería (G3HTA057H o DYNR01 según sub-modelo) aparece ocasionalmente en aftermarket, precio ≈ $80–120 USD. El conjunto de teclado es pieza propietaria semi-integrada — disponibilidad muy limitada; Microsoft no vende piezas directamente al público. Recomendación: reparación en Microsoft Store o proveedor autorizado si hay garantía vigente."
       ]
     },
     {
       "id": "C-05",
       "title": "Mantenimiento térmico gaming",
       "model": "Acer Nitro 5 AN515-57",
-      "scenario": "El equipo alcanza los 100 °C en carga y se apaga bruscamente (Thermal Throttling). El cliente nunca le ha hecho mantenimiento en 2 años.",
+      "scenario": "El equipo alcanza 100 °C en la GPU durante sesiones de gaming de 30 minutos y se apaga bruscamente por protección térmica (Thermal Throttling / TJ-Max). El propietario menciona que nunca ha abierto el equipo en 2 años de uso diario. Los ventiladores hacen ruido excesivo.",
       "difficulty": "Media / Soporte Preventivo",
+      "specs": {
+        "CPU": "Intel Core i5-11400H / i7-11800H (Tiger Lake-H, 45 W)",
+        "GPU": "NVIDIA RTX 3050 / 3050 Ti (TGP 75–80 W)",
+        "Refrigeración": "2 ventiladores + heatpipes compartidas CPU/GPU",
+        "Pasta térmica": "Pasta térmica convencional (no Liquid Metal)"
+      },
+      "fuentes": [
+        { "sitio": "Acer Community / Support (acer.com)", "seccion": "AN515-57 Service Manual PDF", "pista": "Diagrama de desmontaje: orden de tornillos, tipo de pasta térmica y cómo acceder a los ventiladores sin dañar el palmrest" },
+        { "sitio": "iFixit (ifixit.com)", "seccion": "Acer Nitro 5 AN515-57 Teardown", "pista": "Fotos del estado del sistema de refrigeración y accesibilidad de los componentes" },
+        { "sitio": "Acer NitroSense App (documentación oficial)", "seccion": "Fan Speed Control / Thermal Profiles", "pista": "Configurar modo 'Max fan speed' para diagnóstico; verifica si el throttling es software o hardware" }
+      ],
       "questions": [
-        "¿Qué tipo de material térmico usa este modelo: pasta térmica convencional o Liquid Metal?",
-        "¿Es necesario retirar los ventiladores para limpiar las rejillas de salida de aire en este chasis?",
-        "Recomienda una base refrigerante o configuración de software (Acer NitroSense / Throttlestop) para mitigar la temperatura."
+        "¿Qué tipo de material térmico usa este modelo: pasta térmica convencional o Liquid Metal? ¿Tiene implicaciones para el reemplazo?",
+        "¿Es necesario retirar los ventiladores completamente para limpiar las rejillas de salida de aire caliente en este chasis?",
+        "Recomienda una solución (hardware o software) para mitigar el problema térmico a corto plazo sin abrir el equipo, y otra solución definitiva."
+      ],
+      "answers": [
+        "Pasta térmica convencional (ej. Shin-Etsu o similar de fábrica). A diferencia de modelos ASUS ROG/MSI con Liquid Metal, la AN515-57 usa pasta estándar — el reemplazo es seguro con cualquier pasta de calidad (Thermal Grizzly Kryonaut, Arctic MX-4). No hay riesgo de cortocircuito como con Liquid Metal en GPU sin protección.",
+        "Depende del acceso. En la AN515-57 se puede limpiar el radiador soplando aire comprimido desde las rejillas externas (solución parcial). Para limpieza completa de aletas del disipador se deben retirar los ventiladores (4 tornillos cada uno) — no es necesario desmontar el módulo heatpipe completo si solo hay pelusa acumulada en las salidas.",
+        "Corto plazo (sin abrir): usar perfil 'Max' en NitroSense, elevar el equipo 2–3 cm para mejorar entrada de aire inferior, base refrigerante activa. Definitivo: desmontar, limpiar aletas con pincel y aire comprimido, reemplazar pasta térmica CPU y GPU. Resultado esperado: reducción de 20–35 °C bajo carga. Frecuencia recomendada: cada 12–18 meses en uso gaming intensivo."
       ]
     },
     {
       "id": "C-06",
       "title": "Confusión DDR4 vs DDR5",
-      "model": "ASUS VivoBook 16X M1603",
-      "scenario": "El cliente compró un módulo de RAM DDR5 de 16 GB porque «era el más nuevo» para ampliar su equipo. Al instalarlo, el sistema no arranca.",
+      "model": "ASUS VivoBook 16X M1603QA",
+      "scenario": "El cliente compró un módulo de RAM DDR5 SO-DIMM de 16 GB «porque era el más nuevo y más rápido» para ampliar su equipo. Al intentar instalarlo, la tapa inferior se abre normalmente pero el módulo no entra por completo en el slot y el sistema no arranca.",
       "difficulty": "Baja / Compatibilidad de Memoria",
+      "specs": {
+        "CPU": "AMD Ryzen 5 5600H / Ryzen 7 5800H (Zen 3, 45 W)",
+        "RAM": "8 GB DDR4 3200 MHz — 1 slot SODIMM (1 soldado)",
+        "Plataforma": "AMD Cezanne / Barcelo — controlador DDR4",
+        "Nota": "Ryzen 5000H es familia Zen 3 — NO soporta DDR5 (eso es exclusivo de Ryzen 6000+ / Zen 3+)"
+      },
+      "fuentes": [
+        { "sitio": "ASUS Support (asus.com)", "seccion": "VivoBook 16X M1603QA → Specifications → Memory", "pista": "Confirma el tipo de RAM soportada: DDR4 vs DDR5 y la frecuencia máxima" },
+        { "sitio": "AMD Product Specs (amd.com)", "seccion": "Ryzen 5 5600H → Memory Specifications", "pista": "Verifica 'Memory Type' y 'Max Memory Speed' — distingue si soporta DDR4 o DDR5" },
+        { "sitio": "Crucial System Advisor", "seccion": "ASUS VivoBook 16X M1603QA → Compatible upgrades", "pista": "Muestra el módulo EXACTO compatible (tipo, frecuencia, capacidad) para agregar al slot disponible" }
+      ],
       "questions": [
         "¿Qué tipo de RAM (DDR4 o DDR5) soporta la plataforma AMD Ryzen 5 5600H presente en este modelo?",
-        "¿Son físicamente compatibles los módulos DDR4 y DDR5 en el mismo socket SODIMM? ¿Por qué el equipo no arrancó?",
-        "Recomienda el módulo correcto (tipo, capacidad, frecuencia) para ampliar este equipo a 24 GB."
+        "¿Son físicamente intercambiables los módulos DDR4 y DDR5 SO-DIMM? ¿Por qué el módulo no entró en el slot?",
+        "Recomienda el módulo correcto (tipo, capacidad, frecuencia) para expandir este equipo a 24 GB totales."
+      ],
+      "answers": [
+        "DDR4 exclusivamente. El Ryzen 5 5600H (arquitectura Zen 3, familia Cezanne) integra un controlador de memoria DDR4. DDR5 fue introducido con Ryzen 6000 (Zen 3+) y Ryzen 7000 (Zen 4). Verificar siempre generación del procesador antes de comprar RAM.",
+        "No son intercambiables físicamente. DDR5 SO-DIMM tiene la muesca (notch) en posición diferente a DDR4 SO-DIMM (desplazada ~1 mm). Un módulo DDR5 no encaja completamente en un socket DDR4 — es incompatible mecánica Y eléctricamente (1.1 V DDR5 vs 1.2 V DDR4). El módulo no entró por diseño intencional para prevenir instalación incorrecta.",
+        "SO-DIMM DDR4 3200 MHz 16 GB. Instalar en el slot disponible junto al módulo de 8 GB existente → 24 GB totales en dual-channel. Marcas compatibles certificadas: Crucial, Kingston, Samsung. Asegurarse que sea DDR4, frecuencia 3200 MHz y formato SO-DIMM (laptop), no DIMM (desktop)."
       ]
     },
     {
       "id": "C-07",
       "title": "Compatibilidad USB-C Power Delivery",
       "model": "Lenovo ThinkPad X1 Carbon Gen 10",
-      "scenario": "El usuario perdió el cargador original de 65 W y quiere usar un cargador USB-C genérico de 45 W que ya tiene.",
+      "scenario": "El usuario perdió el cargador original de 65 W USB-C y tiene disponible un cargador USB-C genérico de 45 W de una tablet Samsung. Pregunta si puede usarlo temporalmente sin dañar el equipo.",
       "difficulty": "Media / Gestión de Energía",
+      "specs": {
+        "CPU": "Intel Core i5-1235U / i7-1255U (12ª Gen, Alder Lake-U)",
+        "Puertos": "2× Thunderbolt 4 (USB-C, Full-Feature), 2× USB-A 3.2, HDMI 2.0",
+        "Carga": "65 W USB-C PD 3.0 (cargador incluido)",
+        "TDP": "~25 W PL1 / hasta 64 W PL2 en boost corto"
+      },
+      "fuentes": [
+        { "sitio": "Lenovo PSREF (psref.lenovo.com)", "seccion": "ThinkPad X1 Carbon Gen 10 → Power / AC Adapter", "pista": "Confirma el wattaje del cargador incluido y si los puertos Thunderbolt 4 soportan carga USB-C PD" },
+        { "sitio": "Lenovo Support (support.lenovo.com)", "seccion": "¿Puedo cargar el ThinkPad X1 Carbon con un cargador de 45 W?", "pista": "Base de conocimiento de Lenovo documenta el comportamiento con cargadores de menor wattaje" },
+        { "sitio": "USB Implementers Forum (usb.org)", "seccion": "USB-C Power Delivery 3.0 spec", "pista": "Explica la negociación de voltaje/corriente y los perfiles de potencia estándar" }
+      ],
       "questions": [
-        "¿Soporta este modelo carga por USB-C con Power Delivery? ¿Cuántos puertos Thunderbolt 4 tiene?",
-        "¿Qué sucede si se alimenta el equipo con un cargador de 45 W en lugar de 65 W bajo carga completa?",
-        "¿Existe riesgo de dañar la batería o la placa base al usar un cargador USB-C de terceros certificado con el wattaje correcto?"
+        "¿Soporta el ThinkPad X1 Carbon Gen 10 carga por USB-C con Power Delivery? ¿Cuántos puertos Thunderbolt 4 tiene y en cuáles se puede cargar?",
+        "¿Qué sucede al alimentar este equipo con 45 W en lugar de 65 W durante trabajo intenso (compilación, Teams + Chrome)?",
+        "¿Existe riesgo real de dañar la batería o la placa base al usar el cargador Samsung de 45 W USB-C con certificación USB-IF?"
+      ],
+      "answers": [
+        "Sí, soporta USB-C Power Delivery 3.0. Tiene 2 puertos Thunderbolt 4 (USB-C full-feature) y ambos admiten carga. El cargador original es 65 W; Lenovo también certifica cargadores de 45 W para carga estándar.",
+        "Con 45 W bajo carga intensa (CPU en turbo ~45 W + pantalla + periféricos): el sistema puede funcionar, pero la batería se descargará lentamente mientras trabaja si el consumo total supera 45 W. En tareas ligeras (office, web) los 45 W son suficientes para mantener y cargar. El equipo regula la potencia automáticamente — no se 'rompe', simplemente opera con menor headroom.",
+        "No hay riesgo si el cargador Samsung está certificado USB-IF (logo USB-C en empaque). El protocolo USB-PD negocia el voltaje/corriente entre dispositivo y cargador — un cargador bien construido solo entregará lo que el equipo solicite. El riesgo existe con cargadores sin certificación que puedan entregar voltaje incorrecto. Lenovo recomienda usar su cargador original para carga óptima pero no prohíbe el uso de cargadores certificados de terceros."
       ]
     },
     {
       "id": "C-08",
       "title": "Costo de reemplazo de pantalla",
       "model": "MacBook Pro 14\" 2021 M1 Pro",
-      "scenario": "La pantalla tiene una fractura en la esquina inferior izquierda. El técnico cotizó la pantalla en $600. El equipo tiene 2 años de uso.",
+      "scenario": "La pantalla Liquid Retina XDR tiene una fractura en la esquina inferior izquierda después de que el propietario dejó caer el equipo. Un técnico independiente cotizó la reparación en $600. El equipo tiene 2 años de uso y no tiene AppleCare+. El precio de un MacBook Pro 14\" M3 Pro nuevo es de ~$2,000.",
       "difficulty": "Alta / Análisis Costo-Beneficio",
+      "specs": {
+        "CPU/GPU": "Apple M1 Pro (8 o 10 núcleos CPU, 14/16 GPU)",
+        "Pantalla": "Liquid Retina XDR 3024×1964 — ProMotion 120 Hz — mini-LED",
+        "RAM": "16–32 GB Unified Memory (soldada en SoC)",
+        "Precio original": "~$2,000–2,500 USD (2021)"
+      },
+      "fuentes": [
+        { "sitio": "Apple Support (support.apple.com)", "seccion": "MacBook Pro 14\" 2021 → Repair pricing → Screen damage (sin AppleCare+)", "pista": "Apple publica el precio oficial de reparación de pantalla por modelo; busca 'MacBook Pro Repair Pricing'" },
+        { "sitio": "iFixit (ifixit.com)", "seccion": "MacBook Pro 14-inch M1 Pro — Screen Replacement Guide", "pista": "Muestra la dificultad del reemplazo, herramientas necesarias y qué componentes pueden dañarse durante el proceso" },
+        { "sitio": "Apple Parts (parts.apple.com) / MacPartsOnline", "seccion": "MacBook Pro 14\" 2021 — Display Assembly", "pista": "Precio del ensamble de pantalla completo (incluye cámara, sensores Face ID, antenas)" }
+      ],
       "questions": [
-        "¿Cuál es el precio oficial de reparación de pantalla en Apple Store para este modelo? ¿Cubre la garantía AppleCare+ este tipo de daño?",
-        "Busca en iFixit la dificultad de reemplazo de pantalla. ¿Qué componentes adicionales pueden dañarse durante el proceso?",
-        "Dado el precio del equipo nuevo (~$2,500) y el costo de reparación, ¿cuál es la recomendación técnica? Calcula el porcentaje que representa la reparación."
+        "¿Cuál es el precio oficial de Apple (sin AppleCare+) para reparación de pantalla en este modelo? ¿La garantía estándar de 1 año cubre daño accidental?",
+        "Según iFixit, ¿qué dificultad tiene el reemplazo de pantalla? ¿Qué componentes adicionales corren riesgo durante el proceso?",
+        "Dado el precio del equipo usado (~$1,200) y el costo de reparación estimado, ¿cuál es tu recomendación técnica? Calcula el porcentaje que representa la reparación."
+      ],
+      "answers": [
+        "Apple cobra ~$799 USD (sin AppleCare+) por reemplazo de pantalla del MacBook Pro 14\" M1 Pro. La garantía estándar (1 año) NO cubre daño accidental (solo defectos de fabricación). AppleCare+ cubre 2 incidentes de daño accidental al año con deducible de ~$99.",
+        "iFixit califica el reemplazo como 'Muy difícil'. Componentes en riesgo: cables flex de la cámara FaceTime 1080p, los sensores de luz/temperatura, el conector de pantalla en la placa lógica y la antena WiFi/Bluetooth que corre por el hinge. El display es un ensamble completo integrado — no se puede reemplazar solo el panel.",
+        "Valor de mercado usado ≈ $1,000–1,200. Costo reparación ≈ $600. Porcentaje: $600/$1,100 ≈ 55% del valor actual. ROI marginal. Recomendación: si el resto del equipo está en perfecto estado y el usuario depende del flujo M1 Pro, conviene reparar en Apple Store (garantía de 90 días en la reparación). Si el presupuesto es limitado, evaluar vender el equipo 'para partes' (~$300–400) y aplicar ese valor a un modelo M3 reacondicionado."
       ]
     },
     {
       "id": "C-09",
       "title": "Mitos de calibración de batería",
-      "model": "HP Pavilion 15-eh1xxx",
-      "scenario": "El cliente descargó una app de «calibración de batería» que le pide descargar completamente la batería hasta 0% cada semana para «alargar su vida útil».",
+      "model": "HP Pavilion 15-eh1xxx (AMD)",
+      "scenario": "El cliente descargó una app llamada 'Battery Calibrator Pro' que le pide descargar la batería completamente al 0% cada semana y luego cargar al 100% para 'resetear el medidor y alargar la vida útil'. La salud de la batería bajó del 96% al 80% en 6 meses siguiendo este proceso.",
       "difficulty": "Baja / Desmitificación Técnica",
+      "specs": {
+        "CPU": "AMD Ryzen 5 5500U / Ryzen 7 5700U (Zen 3)",
+        "Batería": "Li-Ion / Li-Po — 41 Wh o 55 Wh según SKU",
+        "Gestión": "HP Battery Check + HP Command Center (software de gestión)",
+        "Tecnología": "Litio-Ion (Li-Ion) — no requiere calibración como las antiguas NiCad"
+      },
+      "fuentes": [
+        { "sitio": "HP Support (support.hp.com)", "seccion": "HP Battery Check / HP Command Center — Battery Care Mode", "pista": "Documenta las opciones de gestión de batería disponibles en software HP, incluyendo límite de carga al 80%" },
+        { "sitio": "Battery University (batteryuniversity.com)", "seccion": "BU-808: How to Prolong Lithium-based Batteries", "pista": "Fuente técnica independiente que explica el efecto de la profundidad de descarga en ciclos de vida Li-Ion" },
+        { "sitio": "HP Pavilion 15-eh1 User Guide (hp.com)", "seccion": "Managing power → Battery information → Best practices", "pista": "Recomendaciones oficiales de HP para maximizar la vida útil de la batería en este modelo" }
+      ],
       "questions": [
-        "¿Es correcto descargar una batería de Litio-Ion hasta 0% regularmente? Explica qué sucede a nivel electroquímico.",
-        "¿Qué rango de carga (% mínimo y % máximo) recomienda HP para maximizar la vida útil de la batería en este modelo?",
-        "¿Existe en el software HP Command Center alguna opción de «Battery Care» o carga adaptativa? Describe cómo funciona."
+        "¿Es correcto descargar una batería Li-Ion al 0% regularmente? Explica qué ocurre a nivel electroquímico cuando una celda Li-Ion llega a voltaje mínimo.",
+        "¿Qué rango de carga (% mínimo y máximo) recomienda HP para maximizar la vida útil en este modelo?",
+        "¿Existe en HP Command Center una opción de Battery Care o carga adaptativa? ¿Qué hace exactamente?"
+      ],
+      "answers": [
+        "No. Las baterías Li-Ion degradan su capacidad con descargas profundas. Cuando una celda cae por debajo de ~3.0 V (sobre-descarga), el electrodo de ánodo sufre deposición de litio metálico irreversible y el electrolito se descompone parcialmente. Esto aumenta la resistencia interna y reduce permanentemente la capacidad. Las baterías NiCad (antiguas) sí requerían 'calibración' por memoria de efecto; Li-Ion no tiene ese problema.",
+        "HP recomienda mantener la batería entre 20% y 80% para uso cotidiano. Cargar al 100% ocasionalmente no daña, pero mantener siempre al 100% acelera la degradación por estrés de voltaje alto en las celdas. La cifra de degradación del cliente (96%→80% en 6 meses) es consistente con descargas profundas semanales.",
+        "Sí. HP Command Center incluye 'Battery Care Mode' (también llamado 'Adaptive Battery'): limita la carga máxima al 80% automáticamente cuando el equipo está conectado la mayor parte del tiempo. Ideal para uso en escritorio. Se activa en HP Command Center → Power → Battery Care Mode → ON. Resultado esperado: ciclos de vida útil 2–3× mayor con el límite del 80%."
       ]
     },
     {
       "id": "C-10",
       "title": "Riesgos de actualización de BIOS",
       "model": "Dell Inspiron 15 3520",
-      "scenario": "El usuario vio en YouTube que actualizar el BIOS «mejora el rendimiento». Intenta actualizar desde la versión 1.2.0 a la 1.8.0 saltándose versiones intermedias.",
+      "scenario": "El usuario vio en YouTube un video titulado 'Actualiza el BIOS y gana 20% más de rendimiento en tu laptop Dell'. Quiere actualizar desde la versión 1.2.0 a la versión 1.8.0 de un solo salto. Tiene el equipo conectado a la corriente pero el cargador está flojo.",
       "difficulty": "Alta / Gestión de Firmware",
+      "specs": {
+        "CPU": "Intel Core i5-1235U / i3-1215U (12ª Gen, Alder Lake-U)",
+        "Chipset": "Intel Alder Lake PCH",
+        "BIOS": "Dell — actualizaciones disponibles en support.dell.com",
+        "Recuperación": "Mecanismo Dell BIOS Recovery (archivo .rcv en USB)"
+      },
+      "fuentes": [
+        { "sitio": "Dell Support (support.dell.com)", "seccion": "Inspiron 15 3520 → Drivers → BIOS → Release Notes históricas", "pista": "Compara las notas de versión de 1.2.0 a 1.8.0; verifica si alguna versión intermedia requiere instalación previa (prerequisite)" },
+        { "sitio": "Dell Knowledge Base", "seccion": "Artículo: 'How to recover BIOS on Inspiron laptop' / Dell BIOS Recovery process", "pista": "Explica el proceso de recuperación desde USB si el BIOS queda corrompido durante actualización" },
+        { "sitio": "Dell Community Forums", "seccion": "Inspiron 15 3520 BIOS update discussion", "pista": "Usuarios reportan si saltos de versión múltiples han causado problemas en este modelo específico" }
+      ],
       "questions": [
-        "¿Permite Dell actualizar el BIOS saltando múltiples versiones o se requiere actualización secuencial? Investiga en el sitio oficial de Dell soporte para este modelo.",
-        "¿Qué puede ocurrir si se interrumpe el proceso de actualización de BIOS (corte de energía, cierre del laptop)? ¿Tiene este modelo mecanismo de recuperación?",
-        "¿En qué escenarios reales es necesario actualizar el BIOS? ¿Cuándo NO se recomienda hacerlo si el sistema funciona correctamente?"
+        "¿Permite Dell actualizar el BIOS saltando múltiples versiones de una vez, o se recomienda instalación secuencial? ¿Cómo verificas si hay prerequisitos entre versiones?",
+        "¿Qué ocurre si el proceso de actualización se interrumpe (cargador se desconecta, apagón)? ¿Tiene el Inspiron 15 3520 mecanismo de recuperación de BIOS?",
+        "¿En qué escenarios reales ES necesario actualizar el BIOS? ¿Cuándo NO se recomienda, aunque el video de YouTube lo sugiera?"
+      ],
+      "answers": [
+        "Dell generalmente permite saltos de versión, pero las release notes de cada versión pueden indicar 'Prerequisite: version X.X.X'. Siempre descargar y revisar las notas de CADA versión intermedia en support.dell.com antes de saltar. En el caso 1.2.0 → 1.8.0, verificar si alguna versión entre ambas tiene prerequisito obligatorio. Si no hay prerequisitos, el salto directo es técnicamente posible pero más riesgoso.",
+        "Si la actualización se interrumpe, el BIOS puede quedar corrompido → equipo no arranca (brick parcial). El Inspiron 15 3520 incluye mecanismo 'BIOS Recovery': colocar en USB FAT32 el archivo .rcv descargado de Dell, apagar equipo, mantener Ctrl+Esc al encender → el sistema busca el archivo de recuperación automáticamente. Importante: el cargador DEBE estar firmemente conectado durante toda la actualización.",
+        "SE debe actualizar: si hay vulnerabilidades de seguridad críticas documentadas (Intel ME, CVE publicados), si un nuevo componente de hardware no es reconocido (ej. nuevo SSD, módulo WiFi), si Dell publica fix para un bug específico que afecta el equipo. NO actualizar: si el sistema funciona estable y no hay beneficio concreto documentado en las release notes. El rendimiento del BIOS es prácticamente imperceptible en tareas cotidianas — el video de YouTube mezcla benchmarks de overclocking con actualizaciones de firmware normales."
+      ]
+    },
+    {
+      "id": "C-11",
+      "title": "Slot M.2 SATA vs NVMe — sin detección",
+      "model": "Dell Latitude 3420",
+      "scenario": "Un técnico instala un SSD M.2 NVMe PCIe Gen 3 (Samsung 980 250 GB, M-key) en el único slot M.2 disponible del equipo. La unidad entra físicamente y queda bien sujeta con el tornillo. Al arrancar, el BIOS no la detecta en ninguna sección, ni tampoco aparece en el Administrador de discos de Windows. El HDD SATA original sigue funcionando.",
+      "difficulty": "Media / Compatibilidad de Interfaz M.2",
+      "specs": {
+        "CPU": "Intel Core i5-1135G7 / i3-1115G4 (11ª Gen, Tiger Lake-U)",
+        "Slot M.2": "1× M.2 2242/2280 — interfaz SATA únicamente (verificar en manual)",
+        "Almacenamiento adicional": "1× bahía SATA 2.5\" (HDD/SSD)",
+        "Controlador": "Intel Tiger Lake PCH — no expone carriles PCIe al slot M.2 en este SKU"
+      },
+      "fuentes": [
+        { "sitio": "Dell Support (support.dell.com)", "seccion": "Latitude 3420 → Manuals → Service Manual PDF → Storage", "pista": "El diagrama del slot M.2 y la tabla de especificaciones indican explícitamente la interfaz soportada (SATA o PCIe NVMe)" },
+        { "sitio": "iFixit (ifixit.com)", "seccion": "Dell Latitude 3420 Teardown / SSD Replacement", "pista": "Las fotos del desmontaje muestran el tipo de slot M.2 y facilitan identificar la llave (key) del conector" },
+        { "sitio": "StorageReview / AnandTech", "seccion": "M.2 Interface Guide: SATA vs NVMe / B-key vs M-key explained", "pista": "Explicación técnica de la diferencia física entre llaves de conector y protocolos de comunicación en slots M.2" }
+      ],
+      "questions": [
+        "¿Qué interfaz soporta el slot M.2 de este modelo: SATA (AHCI), PCIe NVMe o ambas? Busca en el Service Manual oficial de Dell.",
+        "Explica la diferencia física entre una llave M-key (solo NVMe) y una llave B+M-key (SATA/NVMe dual). ¿Un SSD NVMe M-key puede insertarse en un slot solo SATA?",
+        "¿Qué unidad M.2 específica recomiendas para este equipo dado que la interfaz es limitada?"
+      ],
+      "answers": [
+        "El Latitude 3420 soporta SOLO M.2 SATA (protocolo AHCI) en su slot M.2. El chipset Intel Tiger Lake en el SKU de este modelo no conecta carriles PCIe al slot M.2 — solo el bus SATA III. Esto está documentado en el Service Manual, sección 'Solid-State Drive'. Un SSD NVMe no será detectado aunque físicamente entre en el conector.",
+        "B+M-key tiene DOS muescas en el módulo (una en posición B y otra en M) y es compatible mecánica y eléctricamente con slots SATA. M-key tiene UNA SOLA muesca (posición M) y está diseñado para NVMe/PCIe. Un SSD M-key (como el Samsung 980) puede INSERTARSE físicamente en un slot B+M si el espacio lo permite, pero el protocolo NVMe no funcionará en un controlador solo SATA — de ahí que no sea detectado.",
+        "M.2 2280 SATA III (B+M-key). Opciones: Samsung 870 EVO M.2, Kingston SA400M8/250G, Crucial MX500 M.2. Verificar que sea formato 2242 o 2280 según la longitud del tornillo de sujeción presente. Velocidad esperada: ~550 MB/s lectura / ~520 MB/s escritura — gran mejora sobre el HDD mecánico actual pero no alcanza velocidades NVMe."
+      ]
+    },
+    {
+      "id": "C-12",
+      "title": "M.2 PCIe Gen 4 en plataforma Ryzen 6000",
+      "model": "ASUS TUF Gaming A15 FA507RE",
+      "scenario": "El equipo tiene un slot M.2_1 PCIe Gen 4 x4 vacío. El cliente instaló un Samsung 980 (PCIe Gen 3 x4, 3,500 MB/s) porque era más barato que las opciones Gen 4. La unidad funciona y Windows la detecta. El cliente pregunta: ¿está 'desperdiciando' el slot Gen 4? ¿Vale la pena gastar $30 más en un SSD Gen 4?",
+      "difficulty": "Media / Rendimiento de Almacenamiento NVMe",
+      "specs": {
+        "CPU": "AMD Ryzen 7 6800H (Zen 3+, RDNA 2 iGPU, 45 W)",
+        "GPU": "NVIDIA RTX 3060 Laptop (TGP 100 W)",
+        "Slot M.2_1": "PCIe Gen 4 x4 (soportado por Ryzen 6000 nativo)",
+        "Slot M.2_2": "PCIe Gen 3 x4 (desde el chipset)"
+      },
+      "fuentes": [
+        { "sitio": "ASUS Support (asus.com)", "seccion": "TUF Gaming A15 FA507RE → Specifications → Storage", "pista": "Confirma los dos slots M.2 y sus interfaces (cuál es Gen 4 y cuál es Gen 3)" },
+        { "sitio": "AMD Product Specs (amd.com)", "seccion": "Ryzen 7 6800H → PCIe lanes / Storage interfaces", "pista": "Verifica cuántos carriles PCIe Gen 4 expone directamente la CPU al slot M.2 vs los que van por chipset" },
+        { "sitio": "TechPowerUp / AnandTech", "seccion": "PCIe Gen 3 vs Gen 4 NVMe benchmarks — real-world workloads", "pista": "Compara rendimiento en edición de video, compresión, compilación y gaming — no solo benchmarks sintéticos" }
+      ],
+      "questions": [
+        "¿Cuál es el ancho de banda teórico máximo de una unidad M.2 PCIe Gen 3 x4 vs Gen 4 x4 en MB/s? ¿Qué velocidad real alcanza el Samsung 980 en este slot?",
+        "¿Qué sucede eléctricamente cuando una unidad Gen 3 opera en un slot Gen 4 x4? ¿El sistema negocia la velocidad automáticamente o requiere configuración en BIOS?",
+        "Para los casos de uso del cliente (edición de video 4K H.265 y gaming con tiempos de carga), ¿justifica económicamente el salto de Gen 3 a Gen 4 en 2026? Investiga precios de ambas categorías."
+      ],
+      "answers": [
+        "Gen 3 x4: ancho de banda teórico ~32 Gb/s ≈ 3,940 MB/s. Gen 4 x4: ~64 Gb/s ≈ 7,880 MB/s — el doble teórico. El Samsung 980 en un slot Gen 4 operará a velocidad Gen 3 (≈3,500 MB/s lectura / 3,000 MB/s escritura) — no se 'acelera' por estar en un slot más rápido. El slot Gen 4 está siendo 'subutilizado' en cuanto a ancho de banda máximo disponible.",
+        "El slot PCIe Gen 4 es retrocompatible con Gen 3. La negociación de velocidad (link training) ocurre automáticamente durante el POST del BIOS — el sistema detecta que la unidad es Gen 3 y establece la velocidad Gen 3 x4. No requiere configuración manual en BIOS. No hay riesgo eléctrico: los voltajes son idénticos (3.3 V para la lógica del SSD) y la velocidad simplemente se limita al máximo del dispositivo.",
+        "En 2026: SSD NVMe Gen 3 1 TB ≈ $40–55 USD; Gen 4 1 TB ≈ $55–75 USD (diferencia ≈ $15–20). Para edición 4K H.265: Gen 4 ofrece mejora real al leer/escribir archivos RAW de cámaras (flujo sostenido a ~5,000 MB/s vs 3,500 MB/s). Para gaming: la diferencia de tiempos de carga es < 2 segundos en la mayoría de títulos — imperceptible. Recomendación: si el cliente edita video profesionalmente y el presupuesto lo permite, el salto vale la pena. Para gaming puro, Gen 3 es suficiente."
       ]
     }
   ],
   "secciones_estaticas": [
     {
       "id": "static1",
-      "titulo": "3.1 Diferencia de voltaje en memorias DDR3 (DDR3 vs DDR3L)",
-      "descripcion": "Explica qué sucede si se instala un módulo DDR3 (1.5V) en una placa que solo soporta DDR3L (1.35V) y cómo afecta esto a la vida útil del controlador de memoria."
+      "titulo": "3.1 Diferencia de voltaje DDR3 vs DDR3L",
+      "descripcion": "Un módulo DDR3 estándar opera a 1.5 V y un módulo DDR3L opera a 1.35 V. Explica qué consecuencias tiene instalar un módulo DDR3 (1.5 V) en una placa que solo soporta DDR3L (1.35 V): temperatura del controlador de memoria, estabilidad del sistema y vida útil del hardware."
     },
     {
       "id": "static2",
-      "titulo": "3.2 Criterio de Retorno de Inversión (ROI)",
-      "descripcion": "Si el costo de una reparación (pantalla + batería + SSD) supera el 60% del valor de un equipo nuevo con mejor procesador, ¿cuál debe ser la recomendación oficial al cliente?"
+      "titulo": "3.2 Criterio de Retorno de Inversión (ROI) en reparación",
+      "descripcion": "Si el costo total de una intervención (pantalla + batería + SSD) supera el 60% del valor de mercado de un equipo nuevo equivalente, ¿cuál debe ser la recomendación oficial al cliente? Describe el proceso para calcular el ROI y cita un caso concreto de los vistos en esta tarea donde aplicarías ese criterio."
     },
     {
       "id": "static3",
       "titulo": "3.3 Gestión de Residuos Electrónicos (E-Waste)",
-      "descripcion": "¿Cuál es el procedimiento correcto para desechar una batería de Litio-Ion que presenta abultamiento (bloating) durante el mantenimiento?"
+      "descripcion": "Durante el mantenimiento de un Acer Nitro 5, el técnico detecta que la batería presenta abultamiento (bloating/swelling). Describe el procedimiento correcto de manejo seguro de una batería Li-Ion hinchada: extracción, almacenamiento, transporte y disposición final conforme a normativas de residuos peligrosos."
     }
   ]
 }

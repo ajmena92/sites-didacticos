@@ -71,7 +71,14 @@ const admSoporteTareasCollection = defineCollection({
       model: z.string(),
       scenario: z.string(),
       difficulty: z.string(),
+      specs: z.record(z.string(), z.string()).optional(),
+      fuentes: z.array(z.object({
+        sitio: z.string(),
+        seccion: z.string(),
+        pista: z.string(),
+      })).optional(),
       questions: z.array(z.string()),
+      answers: z.array(z.string()).optional(),
     })),
     secciones_estaticas: z.array(z.object({
       id: z.string(),
