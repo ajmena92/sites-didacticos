@@ -198,48 +198,6 @@
       ]
     },
     {
-      "id": "2026C1-G08",
-      "nombre": "2026C1-G08 Redes de Computadora I",
-      "turno": "UMCA"
-    },
-    {
-      "id": "adm-11-2",
-      "nombre": "11-2 Adm. y Soporte",
-      "turno": "CTP PLATANARES",
-      "estudiantes": [
-        {
-          "cedula": "120530696",
-          "nombre": "Acuña Ramírez, Yojan Daniel",
-          "nivel": "11°"
-        },
-        {
-          "cedula": "120670044",
-          "nombre": "Araya Salas, Yariel Stif",
-          "nivel": "11°"
-        },
-        {
-          "cedula": "120580916",
-          "nombre": "Fallas Navarro, Leonardo",
-          "nivel": "11°"
-        },
-        {
-          "cedula": "120630371",
-          "nombre": "Masis Cascante, José Ignacio",
-          "nivel": "11°"
-        },
-        {
-          "cedula": "120540324",
-          "nombre": "Monge Ureña, Emerson Enrique",
-          "nivel": "11°"
-        },
-        {
-          "cedula": "120490346",
-          "nombre": "Quesada Hernández, Matías",
-          "nivel": "11°"
-        }
-      ]
-    },
-    {
       "id": "prog-10-1",
       "nombre": "10-1 Programación",
       "turno": "CTP PLATANARES"
