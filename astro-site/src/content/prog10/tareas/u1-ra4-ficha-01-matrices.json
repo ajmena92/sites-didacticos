@@ -1,0 +1,183 @@
+{
+  "id": "u1-ra4-ficha-01-matrices",
+  "titulo": "U1-RA4 · Ficha 01 — Matrices",
+  "subtitulo": "Fundamentos de Programación · Décimo · 2026",
+  "matrices_contexto": {
+    "L": {
+      "label": "Lunes — Matriz L",
+      "color": "accent",
+      "rows": ["Z1", "Z2", "Z3"],
+      "cols": ["S1 (Temp)", "S2 (Hum)"],
+      "data": [[23, 65], [31, 58], [19, 72]]
+    },
+    "M": {
+      "label": "Martes — Matriz M",
+      "color": "purple",
+      "rows": ["Z1", "Z2", "Z3"],
+      "cols": ["S1 (Temp)", "S2 (Hum)"],
+      "data": [[25, 62], [33, 55], [21, 70]]
+    }
+  },
+  "etapas": [
+    {
+      "id": "etapa1",
+      "titulo": "Etapa 1 — Conceptos fundamentales de matrices",
+      "subtitulo": "Construí el vocabulario técnico desde un caso real de redes",
+      "icono": "📐",
+      "tag": "Conceptos",
+      "tag_color": "blue",
+      "contexto": "El CTP Platanares instaló una red de sensores IoT en el edificio de talleres. Hay 3 zonas (Z1: Laboratorio, Z2: Taller mecánico, Z3: Bodega) y 2 tipos de sensores (S1: Temperatura °C, S2: Humedad %). El técnico de redes organiza las lecturas del lunes en la Matriz L y las del martes en la Matriz M.",
+      "mostrar_matrices": true,
+      "intro": "Una matriz es una tabla rectangular de números organizada en filas (m) (horizontales) y columnas (n) (verticales). Su tamaño se expresa como m × n — siempre filas primero, columnas después. Cada número interno se llama elemento y se identifica como Lij donde i es la fila y j es la columna.",
+      "pasos": [
+        {
+          "id": "p1",
+          "tipo": "select",
+          "num": "1",
+          "titulo": "Dimensión de la Matriz L",
+          "descripcion": "Cada fila de la Matriz L representa una zona del edificio y cada columna representa un tipo de sensor. La dimensión se escribe como (número de filas × número de columnas). ¿Cuál es la dimensión de la Matriz L?",
+          "placeholder": "Seleccioná...",
+          "opciones": [
+            { "valor": "w1", "texto": "2 × 3" },
+            { "valor": "c",  "texto": "3 × 2" },
+            { "valor": "w2", "texto": "6 × 1" },
+            { "valor": "w3", "texto": "3 × 3" }
+          ],
+          "correcto": "c",
+          "hint": "💡 Regla de oro: dimensión = (filas) × (columnas). Contá primero las filas horizontales, luego las columnas verticales. Siempre: filas primero."
+        },
+        {
+          "id": "p2",
+          "tipo": "select",
+          "num": "2",
+          "titulo": "Localización de elementos",
+          "descripcion": "El técnico necesita revisar la lectura de humedad en el Taller mecánico (Z2) del lunes. En notación matricial, esa posición es el elemento L₂₂ (fila 2 = Z2, columna 2 = S2: Humedad). ¿Cuál es ese valor en la Matriz L?",
+          "placeholder": "Valor de ℓ₂₂ ...",
+          "opciones": [
+            { "valor": "w1", "texto": "31" },
+            { "valor": "w2", "texto": "65" },
+            { "valor": "c",  "texto": "58" },
+            { "valor": "w3", "texto": "72" }
+          ],
+          "correcto": "c",
+          "hint": "💡 L₂₂: fila 2 → Z2 (Taller), columna 2 → S2 (Humedad). Localizá esa intersección en la tabla de la Matriz L."
+        },
+        {
+          "id": "p3",
+          "tipo": "select",
+          "num": "3",
+          "titulo": "Condición para sumar o restar matrices",
+          "descripcion": "Antes de operar la Matriz L con la Matriz M, es obligatorio verificar que la operación sea válida. ¿Cuál es la condición que deben cumplir dos matrices para poder sumarse o restarse?",
+          "placeholder": "Seleccioná la condición correcta...",
+          "opciones": [
+            { "valor": "w1", "texto": "Ambas deben ser matrices cuadradas (m = n)." },
+            { "valor": "c",  "texto": "Deben tener exactamente la misma dimensión (m × n)." },
+            { "valor": "w2", "texto": "La primera debe tener más filas que la segunda." },
+            { "valor": "w3", "texto": "Sus elementos deben ser todos números positivos." }
+          ],
+          "correcto": "c",
+          "hint": "💡 Pensá en sumar dos vectores de tamaños distintos: ¿se puede hacer elemento a elemento si uno tiene 3 posiciones y el otro 5? Con matrices aplica la misma lógica: solo hay correspondencia perfecta cuando tienen el mismo tamaño."
+        }
+      ]
+    },
+    {
+      "id": "etapa2",
+      "titulo": "Etapa 2 — Suma y diferencia de matrices",
+      "subtitulo": "Aplicá los algoritmos elemento a elemento",
+      "icono": "⚙️",
+      "tag": "Operaciones",
+      "tag_color": "purple",
+      "contexto": "El sistema tiene las lecturas de dos días consecutivos: Lunes (L) y Martes (M). El técnico de redes quiere calcular la lectura acumulada de ambos días (suma) y la variación entre días (diferencia) para detectar anomalías en los sensores.",
+      "mostrar_matrices": false,
+      "intro": "",
+      "pasos": [
+        {
+          "id": "opA",
+          "tipo": "matrix-input",
+          "num": "A",
+          "titulo": "Suma de matrices: S = L + M",
+          "descripcion": "La suma de matrices se realiza elemento a elemento: Sij = Lij + Mij. Cada celda del resultado es la suma de las celdas en la misma posición de L y M. Calculá cada uno de los 6 elementos de la Matriz S y completá la grilla.",
+          "rows": ["Z1", "Z2", "Z3"],
+          "cols": ["S1 (T°)", "S2 (H%)"],
+          "placeholders": [["s₁₁", "s₁₂"], ["s₂₁", "s₂₂"], ["s₃₁", "s₃₂"]],
+          "solucion": [[48, 127], [64, 113], [40, 142]],
+          "hint": "💡 Para S₁₁: tomá la fila 1, columna 1 de L (= 23) y sumale la fila 1, columna 1 de M. Repetí ese procedimiento para las 6 posiciones. Todos los valores resultantes son positivos en esta suma."
+        },
+        {
+          "id": "opB",
+          "tipo": "matrix-input",
+          "num": "B",
+          "titulo": "Diferencia de matrices: D = M − L",
+          "descripcion": "Para detectar variaciones, el técnico calcula la diferencia entre el martes y el lunes: Dij = Mij − Lij. La resta también es elemento a elemento. El resultado puede ser positivo (subió la lectura), negativo (bajó) o cero (sin cambio). Calculá cada uno de los 6 elementos de la Matriz D.",
+          "rows": ["Z1", "Z2", "Z3"],
+          "cols": ["S1 (T°)", "S2 (H%)"],
+          "placeholders": [["d₁₁", "d₁₂"], ["d₂₁", "d₂₂"], ["d₃₁", "d₃₂"]],
+          "solucion": [[2, -3], [2, -3], [2, -2]],
+          "hint": "💡 Dij = Mij − Lij: valor del martes menos valor del lunes. Algunos resultados serán negativos si el martes la lectura fue menor. Por ejemplo D₁₂: humedad Z1 martes (62) − lunes (65) = ?"
+        },
+        {
+          "id": "opC",
+          "tipo": "select",
+          "num": "C",
+          "titulo": "Interpretación del resultado",
+          "descripcion": "Revisá la Matriz D que calculaste. Un valor positivo en D significa que la lectura aumentó; un valor negativo significa que disminuyó. Según tu Matriz D, ¿qué ocurrió con la temperatura (columna S1) en todas las zonas del lunes al martes?",
+          "placeholder": "Seleccioná la interpretación correcta...",
+          "opciones": [
+            { "valor": "w1", "texto": "La temperatura bajó en todas las zonas (valores negativos en col. S1)." },
+            { "valor": "c",  "texto": "La temperatura subió en todas las zonas (valores positivos en col. S1)." },
+            { "valor": "w2", "texto": "La temperatura no cambió en ninguna zona (valores cero)." },
+            { "valor": "w3", "texto": "La temperatura subió en Z1 pero bajó en Z2 y Z3." }
+          ],
+          "correcto": "c",
+          "hint": "💡 Mirá la columna S1 (Temperatura) de tu Matriz D. Son los resultados de Mi1 − Li1 para cada zona. ¿Esos valores son positivos, negativos o mixtos? Eso indica si la temperatura subió, bajó o varió por zona."
+        }
+      ]
+    }
+  ],
+  "evaluacion": {
+    "titulo": "Evaluación — Comprobación de conocimientos",
+    "subtitulo": "Sin ayuda. Demostrá lo que aprendiste.",
+    "preguntas": [
+      {
+        "id": "q1",
+        "texto": "Un nuevo edificio tiene 4 zonas y 3 tipos de sensores. El técnico registra datos en la Matriz N (lunes) y la Matriz K (martes). ¿Cuál es la dimensión de N? ¿Y se puede calcular N + K directamente?",
+        "opciones": [
+          { "valor": "w1",     "texto": "N es 3 × 4. N + K es posible si K es cuadrada." },
+          { "valor": "w2",     "texto": "N es 4 × 3. N + K no es posible porque tienen distinto número de zonas." },
+          { "valor": "correct","texto": "N es 4 × 3. N + K es posible si K también tiene dimensión 4 × 3." },
+          { "valor": "w3",     "texto": "N es 3 × 4. N + K es posible si K tiene dimensión 3 × 4." }
+        ],
+        "correcto": "correct"
+      },
+      {
+        "id": "q2",
+        "texto": "Con los datos de la práctica: Z3/S1 lunes = 19 °C, Z3/S1 martes = 21 °C. ¿Cuál es el valor del elemento D₃₁ en la Matriz D = M − L?",
+        "opciones": [
+          { "valor": "w1",     "texto": "−2 (la temperatura bajó en Z3)" },
+          { "valor": "correct","texto": "+2 (la temperatura subió en Z3)" },
+          { "valor": "w2",     "texto": "40 (suma de los dos valores)" },
+          { "valor": "w3",     "texto": "0 (no hubo cambio)" }
+        ],
+        "correcto": "correct"
+      },
+      {
+        "id": "q3",
+        "texto": "El técnico tiene la Matriz S = L + M. ¿Qué representa el elemento S₁₂ en el contexto del sistema IoT?",
+        "opciones": [
+          { "valor": "w1",     "texto": "La humedad del martes en Z1 solamente." },
+          { "valor": "correct","texto": "La suma acumulada de humedad en Z1 entre el lunes y el martes." },
+          { "valor": "w2",     "texto": "La diferencia de temperatura entre Z1 y Z2." },
+          { "valor": "w3",     "texto": "El promedio de humedad de todas las zonas." }
+        ],
+        "correcto": "correct"
+      }
+    ],
+    "calificacion": {
+      "umbrales": [
+        { "nivel": "Avanzado",   "max_errores": 0 },
+        { "nivel": "Intermedio", "max_errores": 3 },
+        { "nivel": "Inicial",    "max_errores": 99 }
+      ]
+    }
+  }
+}
