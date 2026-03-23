@@ -238,6 +238,16 @@
           "nivel": "11°"
         }
       ]
+    },
+    {
+      "id": "prog-10-1",
+      "nombre": "10-1 Programación",
+      "turno": "CTP PLATANARES"
+    },
+    {
+      "id": "prog-10-3",
+      "nombre": "10-3 Programación",
+      "turno": "CTP PLATANARES"
     }
   ],
   "cursos": {
@@ -260,6 +270,10 @@
     "adm-soporte": {
       "nombre": "Adm. y Soporte — Informática",
       "color_accent": "#8b5cf6"
+    },
+    "prog10": {
+      "nombre": "Fundamentos de Programación 10°",
+      "color_accent": "#4f8ef7"
     }
   },
   "entregas": [
@@ -323,6 +337,26 @@
       "fecha_apertura": "2026-03-18T00:00:00",
       "fecha_cierre": "2026-03-18T23:59:00",
       "puntos": 40,
+      "google_script_url": "https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec",
+      "parametros": {
+        "mostrar_respuestas": true,
+        "exportar_pdf": true,
+        "mostrar_progreso": false,
+        "permitir_reintento": true
+      }
+    },
+    {
+      "id": "u1-ra4-ficha-01-matrices",
+      "curso": "prog10",
+      "modulo": "unidad1",
+      "tipo": "ficha",
+      "tipo_ejercicio": "ficha-interactiva",
+      "titulo": "U1-RA4 · Ficha 01 — Matrices",
+      "grupos_habilitados": ["prog-10-1", "prog-10-3"],
+      "activa": true,
+      "fecha_apertura": "2026-03-23T00:00:00",
+      "fecha_cierre": "2026-06-30T23:59:00",
+      "puntos": 0,
       "google_script_url": "https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec",
       "parametros": {
         "mostrar_respuestas": true,
