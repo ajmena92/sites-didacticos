@@ -242,16 +242,20 @@
             <div class="mat-wrap">
               <div class="mat-label mat-{mat.color}">{mat.label}</div>
               <table class="mat-tbl">
-                <tr class="hdr">
-                  <td></td>
-                  {#each mat.cols as col}<td>{col}</td>{/each}
-                </tr>
-                {#each mat.data as row, ri}
-                  <tr class="rh">
-                    <td>{mat.rows[ri]}</td>
-                    {#each row as cell}<td>{cell}</td>{/each}
+                <thead>
+                  <tr class="hdr">
+                    <td></td>
+                    {#each mat.cols as col}<td>{col}</td>{/each}
                   </tr>
-                {/each}
+                </thead>
+                <tbody>
+                  {#each mat.data as row, ri}
+                    <tr class="rh">
+                      <td>{mat.rows[ri]}</td>
+                      {#each row as cell}<td>{cell}</td>{/each}
+                    </tr>
+                  {/each}
+                </tbody>
               </table>
             </div>
           {/each}

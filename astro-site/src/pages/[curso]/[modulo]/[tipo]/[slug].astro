@@ -8,17 +8,21 @@ import Ordering from '../../../../components/ejercicios/Ordering.svelte';
 import MultipleChoice from '../../../../components/ejercicios/MultipleChoice.svelte';
 import VlsmExercise from '../../../../components/ejercicios/VlsmExercise.svelte';
 import CasoDiagnostico from '../../../../components/ejercicios/CasoDiagnostico.svelte';
+import FichaInteractiva from '../../../../components/ejercicios/FichaInteractiva.svelte';
 import ResultPanel from '../../../../components/ui/ResultPanel.svelte';
 import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const tareas    = await getCollection('ccna1-tareas');
-  const tareasAdm = await getCollection('adm-soporte-tareas');
+  const tareas       = await getCollection('ccna1-tareas');
+  const tareasAdm    = await getCollection('adm-soporte-tareas');
+  const tareasProg10 = await getCollection('prog10-tareas');
 
   return config.entregas.map((entrega) => {
     let ejercicio = null;
     if (entrega.tipo_ejercicio === 'caso-diagnostico') {
       ejercicio = tareasAdm.find(t => t.id.includes(entrega.id)) ?? null;
+    } else if (entrega.tipo_ejercicio === 'ficha-interactiva') {
+      ejercicio = tareasProg10.find(t => t.id.includes(entrega.id)) ?? null;
     } else if (entrega.tipo_ejercicio !== 'vlsm') {
       ejercicio = tareas.find(t => t.id.includes(entrega.id)) ?? null;
     }
@@ -42,8 +46,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { entrega, ejercicio, grupos } = Astro.props;
 const ej      = ejercicio as any;
 const tipoEj  = (entrega as any).tipo_ejercicio;
-const esVlsm  = tipoEj === 'vlsm';
-const esCasoDiag = tipoEj === 'caso-diagnostico';
+const esVlsm             = tipoEj === 'vlsm';
+const esCasoDiag         = tipoEj === 'caso-diagnostico';
+const esFichaInteractiva = tipoEj === 'ficha-interactiva';
 
 // Filtrar solo los grupos habilitados para esta entrega
 const gruposHabilitados = grupos.filter((g: any) =>
@@ -77,6 +82,22 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
       client:visible
       casos={ej.casos}
       seccionesEstaticas={ej.secciones_estaticas ?? []}
+      entregaId={entrega.id}
+      scriptUrl={(entrega as any).google_script_url ?? ''}
+      exportarPdf={(entrega as any).parametros.exportar_pdf}
+      tituloTarea={entrega.titulo}
+      cursoNombre={cursoNombre}
+      docenteNombre={docenteNombre}
+    />
+  )}
+
+  {/* ── Ficha Interactiva (prog10 y futuras materias) ── */}
+  {esFichaInteractiva && ej && (
+    <FichaInteractiva
+      client:visible
+      etapas={ej.etapas}
+      evaluacion={ej.evaluacion}
+      matrices_contexto={ej.matrices_contexto ?? {}}
       entregaId={entrega.id}
       scriptUrl={(entrega as any).google_script_url ?? ''}
       exportarPdf={(entrega as any).parametros.exportar_pdf}
@@ -164,7 +185,7 @@ const docenteNombre     = (config as any).docente?.nombre ?? '';
     />
   )}
 
-  {!esVlsm && !esCasoDiag && (
+  {!esVlsm && !esCasoDiag && !esFichaInteractiva && (
     <ResultPanel
       client:visible
       totalPuntos={entrega.puntos}
