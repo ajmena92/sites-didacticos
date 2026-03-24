@@ -43,7 +43,9 @@
     const hasAnswers =
       ['fillInBlank', 'matching', 'ordering', 'multipleChoice'].some(
         sec => localStorage.getItem(`respuestas_v1_${entregaId}_${sec}`) !== null
-      ) || localStorage.getItem(`caso_diag_${entregaId}`) !== null;
+      ) ||
+      localStorage.getItem(`caso_diag_${entregaId}`) !== null ||
+      localStorage.getItem(`ficha_${entregaId}`) !== null;
     if (hasAnswers) return;
 
     try {
@@ -73,6 +75,12 @@
                 `caso_diag_${entregaId}`,
                 JSON.stringify({ casosAsignados: extras.casosAsignados, respuestas: extras.respuestas })
               );
+              hayRespuestas = true;
+            }
+
+            // FichaInteractiva: { fichaState: { pasosCompletados, respuestasSelect, ... } }
+            if (extras.fichaState) {
+              localStorage.setItem(`ficha_${entregaId}`, JSON.stringify(extras.fichaState));
               hayRespuestas = true;
             }
 
