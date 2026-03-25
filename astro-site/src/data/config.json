@@ -299,11 +299,12 @@
       "tipo_ejercicio": "vlsm",
       "titulo": "Práctica — Esquema VLSM Completo",
       "grupos_habilitados": [
-        "2026C1-G08"
+        "redes-11-2",
+        "redes-11-3"
       ],
       "activa": true,
-      "fecha_apertura": "2026-03-18T00:00:00",
-      "fecha_cierre": "2026-03-18T23:59:00",
+      "fecha_apertura": "2026-03-25T00:00:00",
+      "fecha_cierre": "2026-03-25T16:20:00",
       "puntos": 40,
       "google_script_url": "https://script.google.com/macros/s/AKfycbwQKRs4OiVXIY-Sjqnvu1bghl_89pySwRBgybD-FhnP3kvJHLRAu6gooU7VDwwStYBcjA/exec",
       "parametros": {

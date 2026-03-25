@@ -64,12 +64,6 @@
     updateSection('fillInBlank', 0);
   }
 
-  function handleKeydown(e, i) {
-    if (e.ctrlKey && e.shiftKey && e.key === 'Enter' && !verified && !locked) {
-      e.preventDefault();
-      answers[i] = items[i].respuestas_validas[0];
-    }
-  }
 </script>
 
 <section class="ejercicio card" id="sec-fill">
@@ -95,12 +89,8 @@
             bind:value={answers[i]}
             disabled={verified || locked}
             placeholder="___"
-            onkeydown={e => handleKeydown(e, i)}
           />
           {#if item.post}<span class="term-post">{item.post}</span>{/if}
-          {#if !verified && !locked}
-            <span class="term-hint-key">Ctrl+Shift+Enter</span>
-          {/if}
           <div class="term-desc">{item.desc}</div>
           {#if verified && results[i] === false && mostrarRespuestas}
             <div class="term-hint">✓ {item.respuestas_validas[0]}</div>
