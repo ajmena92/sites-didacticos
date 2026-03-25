@@ -48,6 +48,11 @@
           "cedula": "120490346",
           "nombre": "Quesada Hernández, Matías",
           "nivel": "11°"
+        },
+        {
+          "cedula": "120380340",
+          "nombre": "Mata Campos, Cristopher de Jesús",
+          "nivel": "11°"
         }
       ]
     },
@@ -310,7 +315,10 @@
       "tipo": "ficha",
       "tipo_ejercicio": "ficha-interactiva",
       "titulo": "U1-RA4 · Ficha 01 — Matrices",
-      "grupos_habilitados": ["prog-10-1", "prog-10-3"],
+      "grupos_habilitados": [
+        "prog-10-1",
+        "prog-10-3"
+      ],
       "activa": true,
       "fecha_apertura": "2026-03-23T00:00:00",
       "fecha_cierre": "2026-06-30T23:59:00",

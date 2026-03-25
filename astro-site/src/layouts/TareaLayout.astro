@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import CountdownClock from '../components/ui/CountdownClock.svelte';
 import StudentGate from '../components/ui/StudentGate.svelte';
 import ScoreBadge from '../components/ui/ScoreBadge.svelte';
+import config from '../data/config.json';
 import ProgressBar from '../components/ui/ProgressBar.svelte';
 import ResumeBanner from '../components/ui/ResumeBanner.svelte';
 import SectionNav from '../components/ui/SectionNav.svelte';
@@ -30,12 +31,14 @@ const {
   activa = true,
   scriptUrl = '',
 } = Astro.props;
+
+const cursoNombre = (config.cursos as any)[curso]?.nombre ?? curso.toUpperCase();
 ---
 
 <BaseLayout title={titulo} course={curso} type="tarea" exportarPdf={exportarPdf}>
   <header class="tarea-header">
     <div class="header-brand">
-      <span class="brand-path">CISCO › {curso.toUpperCase()}</span>
+      <span class="brand-path">{cursoNombre}</span>
       <ScoreBadge client:load totalPuntos={puntos} />
     </div>
     <h1 class="header-title">{titulo}</h1>
